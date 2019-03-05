@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ -f ~/dotfiles/.env ]; then
+if [ -f ~/dotfiles/.creds ]; then
     . ~/dotfiles/.creds
 else
 	echo 

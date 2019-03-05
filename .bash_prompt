@@ -31,6 +31,9 @@ FRSOPGIT | FRSOPELASTIC)
 intranetpreprod)
 	PS1="$bold$yellow$promptUsername$grey@$yellow$promptHost$normal:$blue$promptPath$normal$ "
 	;;
+sophia)
+	PS1="$bold$red$promptUsername$grey@$red$promptHost$normal:$blue$promptPath$normal$ "
+	;;
 # ==============================
 
 # pmt

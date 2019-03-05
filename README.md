@@ -10,8 +10,11 @@ server/machine
 ```
 git clone git@github.com:tyteck/dotfiles.git
 
-ln -s dotfiles/.bash_aliases .bash_aliases
+if [ -f ~/.bash_aliases ];then mv ~/.bash_aliases ~/.bash_aliases.back;fi
+
+ln -s dotfiles/.bash_aliases ~/.bash_aliases
 ```
+
 
 Some alias require credentials and they are stored in dotfiles/.creds
 ```

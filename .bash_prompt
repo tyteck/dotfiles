@@ -1,0 +1,56 @@
+#!/bin/bash
+# colors
+red="\[\033[38;5;196m\]"
+orange="\[\033[38;5;166m\]"
+green="\[\033[38;5;10m\]"
+white="\[\033[38;5;15m\]"
+yellow="\[\033[38;5;11m\]"
+blue="\[\033[38;5;68m\]"
+grey="\[\033[38;5;249m\]"
+purple="\[\033[38;5;93m\]"
+
+# font weight
+bold="\[$(tput bold)\]"
+normal="\[$(tput sgr0)\]"
+
+# Information
+promptHour="\A"
+promptUsername="\u"
+promptPath="\w"
+promptHost="\h"
+
+case $NODE_NAME in
+# ==============================
+# micromania
+frsopdreg3)
+	PS1="$bold$green$promptUsername$grey@$green$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+FRSOPGIT | FRSOPELASTIC)
+	PS1="$bold$orange$promptUsername$grey@$orange$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+intranetpreprod)
+	PS1="$bold$yellow$promptUsername$grey@$yellow$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+# ==============================
+
+# pmt
+vps256025.ovh.net)
+	PS1="$bold$yellow$promptUsername$grey@$yellow$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+newintranetpreprod)
+	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+vps591114)
+	PS1="$bold$red$promptUsername$grey@$red$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+ns3071385)
+	PS1="$bold$purple$promptUsername$grey@$purple$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+# home
+MSI-Laptop)
+	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$green$promptPath $normal$ "
+	;;
+*)
+	PS1="$bold$green$promptUsername$grey@$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+esac

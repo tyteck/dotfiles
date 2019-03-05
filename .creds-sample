@@ -1,0 +1,2 @@
+#!/bin/bash
+MYSQLMASTER_CREDS="-u<LOGIN> -p<PASSWORD>"

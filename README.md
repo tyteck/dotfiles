@@ -15,6 +15,6 @@ ln -s dotfiles/.bash_aliases .bash_aliases
 
 Some alias require credentials and they are stored in dotfiles/.creds
 ```
-cat dotfiles/.creds-sample dotfiles/.creds
+cat dotfiles/.creds-sample > dotfiles/.creds
 ```
 I will be glad to get any tips to improve this :)

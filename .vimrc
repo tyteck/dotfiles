@@ -3,6 +3,10 @@ let mapleader=","
 "set digraph "once commented no more backspace problem with meta char
 set laststatus=2
 
+" stop creating backup with ~
+set nobackup
+set nowritebackup
+
 scriptencoding utf-8
 set encoding=utf-8
 set fileencoding=utf-8

@@ -36,6 +36,7 @@ alias vbashrc="vim ~/.bashrc && source ~/.bashrc && echo 'bashrc sourced'"
 alias sbashrc="source ~/.bashrc"
 alias valiases="vim ~/dotfiles/.bash_aliases && source ~/dotfiles/.bash_aliases && echo 'bash_aliases sourced'"
 alias phpext="php -i | grep extension_dir"
+alias phpmods="php -m"
 alias cls="clear"
 
 # Laravel

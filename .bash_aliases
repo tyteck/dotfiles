@@ -88,27 +88,27 @@ alias spaceleft='df -h'
 # common aliases
 alias dbroot='mysql --login-path=root'
 case $NODE_NAME in
-	frsopdreg3|intranetpreprod)
+	frsopdreg3)
+		export PMT_DB="pmt"
+		export REV_DB="rev"
+		export INTRA_CONTAINER_NAME="intramania"
+		export SFMI_CONTAINER_NAME="mysqlmaster"
 		# Aliases that are used on micromania
 		alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
 		alias micro="cd /home/docker/intranet/src/web && clear && ls -lsa sfmi/docs" 
 		alias cdcore="cd /home/www/core"
 		alias cdreve="cd /home/www/reve"
-		export PMT_DB="pmt"
-		export REV_DB="rev"
-		alias report="cd /home/www/activities-report"
-		alias myadmin='cd /home/www/phpmyadmin.local'
 		alias cddash="cd /home/www/dash"
 		alias cdwww="cd /home/www/web/www"
-		alias cdsand="cd /home/www/sandbox"
-		alias dbpmt="mysql --login-path=pmt pmt"
-		alias dbreve='mysql --login-path=reve rev'
-		alias dbtestpmt="mysql --login-path=testspmt podmytubeTests"
-		alias toggle_php_version="source toggle_php_version.sh"
-		alias getTables="docker exec intramania /var/opt/getTables.sh --host mysqlmaster -v"
+		;;
+	intranetpreprod)
+		# Aliases that are used on micromania
+		alias db="mysql --login-path=sfmiread"
+		alias micro="cd /usr/local/web" 
 		;;
 	FRSOPGIT)
-		alias getTables="docker exec intranetrec.sfmi.lan /var/opt/getTables.sh --host mysql"
+		export INTRA_CONTAINER_NAME="intranetrec.sfmi.lan"
+		export SFMI_CONTAINER_NAME="mysql"
 		;;
 	ns3071385)
 		alias cdmp3="cd /home/www/mp3.podmytube.com/www"
@@ -132,20 +132,18 @@ case $NODE_NAME in
 		alias cdval='cd /home/www/valentin.tyteca.net/'
 		alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 		alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
-		alias cdbilling='cd /home/www/billing/'
 
 		# database access
 		alias dbtyt='mysql --login-path=tyt tytecadotnet'
-		alias dbpmt='mysql --login-path=pmt podmytube'
-		alias dbreve='mysql --login-path=reve reverse'
 		alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
 		alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
 		alias dbdevpod='mysql --login-path=devpod devPodmytube'
-		alias dblogs='mysql --login-path=apachelogs apachelogs'
 		alias dbval='mysql --login-path=valentin valentin'
-		alias dblog='mysql --login-path=log apachelogs'
 		;;
 esac
+alias dbpmt="mysql --login-path=pmt $PMT_DB"
+alias dbreve="mysql --login-path=reve $REV_DB"
+alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"
 
 # Add custom prompt
 if [ -f ~/dotfiles/.bash_prompt ]; then

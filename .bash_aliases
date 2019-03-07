@@ -46,6 +46,7 @@ alias migtus='php artisan migrate:status'
 alias artseed='php artisan db:seed'
 alias sf='php bin/console'
 alias tinker='artisan tinker'
+alias tinkertest="echo '=== env=testing ===' && artisan tinker --env=testing"
 
 # Git
 alias gtus='git status'

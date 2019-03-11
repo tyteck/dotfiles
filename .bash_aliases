@@ -104,7 +104,7 @@ case $NODE_NAME in
 		;;
 	intranetpreprod)
 		# Aliases that are used on micromania
-		alias db="mysql --login-path=sfmiread"
+		alias db="mysql --login-path=sfmiread sfmi"
 		alias micro="cd /usr/local/web" 
 		;;
 	FRSOPGIT)

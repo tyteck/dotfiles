@@ -46,6 +46,7 @@ alias migtus='php artisan migrate:status'
 alias artseed='php artisan db:seed'
 alias sf='php bin/console'
 alias tinker='artisan tinker'
+alias tinkertest="echo '=== env=testing ===' && artisan tinker --env=testing"
 
 # Git
 alias gtus='git status'
@@ -91,6 +92,7 @@ alias dbroot='mysql --login-path=root'
 case $NODE_NAME in
 	frsopdreg3)
 		export PMT_DB="pmt"
+		export PMT_TEST_DB="podmytubeTests"
 		export REV_DB="rev"
 		export INTRA_CONTAINER_NAME="intramania"
 		export SFMI_CONTAINER_NAME="mysqlmaster"
@@ -120,6 +122,7 @@ case $NODE_NAME in
 		;;
 	*)
 		export PMT_DB="podmytube"
+		export PMT_TEST_DB="podmytubeTests"
 		export REV_DB="reverse"
 		# Aliases that are used elsewhere
 		# pathes
@@ -143,6 +146,7 @@ case $NODE_NAME in
 		;;
 esac
 alias dbpmt="mysql --login-path=pmt $PMT_DB"
+alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"
 alias dbreve="mysql --login-path=reve $REV_DB"
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"
 

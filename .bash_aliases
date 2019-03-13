@@ -94,11 +94,12 @@ case $NODE_NAME in
 		export PMT_DB="pmt"
 		export PMT_TEST_DB="podmytubeTests"
 		export REV_DB="rev"
-		export INTRA_CONTAINER_NAME="intramania"
+		export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 		export SFMI_CONTAINER_NAME="mysqlmaster"
 		# Aliases that are used on micromania
 		alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
-		alias micro="cd /home/docker/intranet/src/web && clear && ls -lsa sfmi/docs" 
+		alias dbpmt="docker exec -it pmtdb mysql $PMTDB_CREDS pmt"
+		alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs" 
 		alias cdcore="cd /home/www/core"
 		alias cdreve="cd /home/www/reve"
 		alias cddash="cd /home/www/dash"
@@ -138,6 +139,7 @@ case $NODE_NAME in
 		alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
 
 		# database access
+		alias dbpmt="mysql --login-path=pmt $PMT_DB"
 		alias dbtyt='mysql --login-path=tyt tytecadotnet'
 		alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
 		alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
@@ -145,7 +147,6 @@ case $NODE_NAME in
 		alias dbval='mysql --login-path=valentin valentin'
 		;;
 esac
-alias dbpmt="mysql --login-path=pmt $PMT_DB"
 alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"
 alias dbreve="mysql --login-path=reve $REV_DB"
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"

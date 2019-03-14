@@ -96,6 +96,8 @@ case $NODE_NAME in
 		export REV_DB="rev"
 		export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 		export SFMI_CONTAINER_NAME="mysqlmaster"
+		alias goIntra="dokexec $INTRA_CONTAINER_NAME bash"
+		alias goSfmi="dokexec $SFMI_CONTAINER_NAME bash"
 		# Aliases that are used on micromania
 		alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
 		alias dbpmt="docker exec -it pmtdb mysql $PMTDB_CREDS pmt"

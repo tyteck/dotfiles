@@ -24,7 +24,7 @@ gmit() {
 			shift
 			;;
 		*)
-			if [ ! -f $1 ] && [ ! -d $1 ] && ;then
+			if [ ! -f $1 ] && [ ! -d $1 ];then
 				echo "file/folder $1 doesn't exists"				
 			else 
 				commitFiles="$commitFiles $1"

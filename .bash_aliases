@@ -1,28 +1,60 @@
 #!/bin/bash
 if [ -f ~/dotfiles/.creds ]; then
-    . ~/dotfiles/.creds
+	. ~/dotfiles/.creds
 else
-	echo 
+	echo
 	echo '°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸'
 	echo "~/dotfiles/.creds not set"
 	echo '°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸'
 	echo
 fi
 
+# This function will allow me to commit one list of file (with messages) 
+# Then push them on origin.
+gcommit() {
+	commitFiles=""
+	while [ $# -gt 0 ]; do
+		echo "$1 --- $2"
+		case $1 in
+		'-?' | '-h' | '--help')
+			usage
+			;;
+		'-m')
+			commitMessage=$2
+			shift
+			;;
+		*)
+			if [ ! -f $1 ];then
+				echo "file $1 doesn't exists"				
+			else 
+				commitFiles="$commitFiles $1"
+			fi
+			;;
+		esac
+		shift
+	done
+	if  [ ! -z $commitFiles ]; then
+		git commit -m "$commitMessage" $commitFiles && git push
+		if [ "$?" != 0 ]; then
+			echo "Commit has failed !"
+		fi 
+	else 
+		echo "No valid files to commit."
+	fi
+}
 
-export NODE_NAME=`hostname`
+export NODE_NAME=$(hostname)
 export EDITOR="/usr/bin/vim"
 
 if [ -d ~/sbin ]; then
-    PATH="${PATH}:~/sbin"
+	PATH="${PATH}:~/sbin"
 fi
 
-
 # history tricks
-export HISTSIZE=100000                   # big big history
-export HISTFILESIZE=100000               # big big history
-export HISTTIMEFORMAT="%d/%m/%y %T "	 # history formatting
-shopt -s histappend                      # append to history, don't overwrite it
+export HISTSIZE=100000               # big big history
+export HISTFILESIZE=100000           # big big history
+export HISTTIMEFORMAT="%d/%m/%y %T " # history formatting
+shopt -s histappend                  # append to history, don't overwrite it
 
 # Save and reload the history after each command finishes
 export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
@@ -30,7 +62,6 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
-
 
 alias vbashrc="vim ~/.bashrc && source ~/.bashrc && echo 'bashrc sourced'"
 alias sbashrc="source ~/.bashrc"
@@ -51,7 +82,6 @@ alias tinkertest="echo '=== env=testing ===' && artisan tinker --env=testing"
 # Git
 alias gtus='git status'
 alias gdiff='git diff'
-alias gmit='git commit -m '
 alias gpush='git push'
 alias gpull='git pull'
 alias gbr='git branch'
@@ -90,70 +120,72 @@ alias spaceleft='df -h'
 # common aliases
 alias dbroot='mysql --login-path=root'
 case $NODE_NAME in
-	frsopdreg3)
-		export PMT_DB="pmt"
-		export PMT_TEST_DB="podmytubeTests"
-		export REV_DB="rev"
-		export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
-		export SFMI_CONTAINER_NAME="mysqlmaster"
-		alias goIntra="dokexec $INTRA_CONTAINER_NAME bash"
-		alias goSfmi="dokexec $SFMI_CONTAINER_NAME bash"
-		# Aliases that are used on micromania
-		alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
-		alias dbpmt="docker exec -it pmtdb mysql $PMTDB_CREDS pmt"
-		alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs" 
-		alias cdcore="cd /home/www/core"
-		alias cdreve="cd /home/www/reve"
-		alias cddash="cd /home/www/dash"
-		alias cdwww="cd /home/www/web/www"
-		;;
-	intranetpreprod)
-		# Aliases that are used on micromania
-		alias db="mysql --login-path=sfmiread sfmi"
-		alias micro="cd /usr/local/web" 
-		;;
-	FRSOPGIT)
-		export INTRA_CONTAINER_NAME="intranetrec.sfmi.lan"
-		export SFMI_CONTAINER_NAME="mysql"
-		;;
-	ns3071385)
-		alias cdmp3="cd /home/www/mp3.podmytube.com/www"
-		alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
-		;;
-	vps256025.ovh.net)
-		alias cdcore="cd /home/www/www.podmytube.com/"
-		;;
-	*)
-		export PMT_DB="podmytube"
-		export PMT_TEST_DB="podmytubeTests"
-		export REV_DB="reverse"
-		# Aliases that are used elsewhere
-		# pathes
-		alias cddash="cd /home/www/dashboard.podmytube.com/"
-		alias cdreve="cd /home/www/reverse.podmytube.com/"
-		alias cdcore="cd /home/www/core.podmytube.com/"
-		alias cdreve="cd /home/www/reverse.podmytube.com/"
-		alias cdwww="cd /home/www/www.new.podmytube.com/www"
-		alias frpod='cd /home/www/fr.podmytube.com/'
-		alias cdtyt='cd /home/www/www.tyteca.net/'
-		alias cdval='cd /home/www/valentin.tyteca.net/'
-		alias cdlyc='cd /home/www/www.lycee-ilec.fr'
-		alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
+frsopdreg3)
+	export PMT_DB="pmt"
+	export PMT_TEST_DB="podmytubeTests"
+	export REV_DB="rev"
+	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
+	export SFMI_CONTAINER_NAME="mysqlmaster"
+	alias goIntra="dokexec $INTRA_CONTAINER_NAME bash"
+	alias goSfmi="dokexec $SFMI_CONTAINER_NAME bash"
+	# Aliases that are used on micromania
+	alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
+	alias dbpmt="docker exec -it pmtdb mysql $PMTDB_CREDS pmt"
+	alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs"
+	alias cdcore="cd /home/www/core"
+	alias cdreve="cd /home/www/reve"
+	alias cddash="cd /home/www/dash"
+	alias cdwww="cd /home/www/web/www"
+	;;
+intranetpreprod)
+	# Aliases that are used on micromania
+	alias db="mysql --login-path=sfmiread sfmi"
+	alias micro="cd /usr/local/web"
+	;;
+FRSOPGIT)
+	export INTRA_CONTAINER_NAME="intranetrec.sfmi.lan"
+	export SFMI_CONTAINER_NAME="mysql"
+	;;
+ns3071385)
+	alias cdmp3="cd /home/www/mp3.podmytube.com/www"
+	alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
+	;;
+vps256025.ovh.net)
+	alias cdcore="cd /home/www/www.podmytube.com/"
+	;;
+*)
+	export PMT_DB="podmytube"
+	export PMT_TEST_DB="podmytubeTests"
+	export REV_DB="reverse"
+	# Aliases that are used elsewhere
+	# pathes
+	alias cddash="cd /home/www/dashboard.podmytube.com/"
+	alias cdreve="cd /home/www/reverse.podmytube.com/"
+	alias cdcore="cd /home/www/core.podmytube.com/"
+	alias cdreve="cd /home/www/reverse.podmytube.com/"
+	alias cdwww="cd /home/www/www.new.podmytube.com/www"
+	alias frpod='cd /home/www/fr.podmytube.com/'
+	alias cdtyt='cd /home/www/www.tyteca.net/'
+	alias cdval='cd /home/www/valentin.tyteca.net/'
+	alias cdlyc='cd /home/www/www.lycee-ilec.fr'
+	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
 
-		# database access
-		alias dbpmt="mysql --login-path=pmt $PMT_DB"
-		alias dbtyt='mysql --login-path=tyt tytecadotnet'
-		alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
-		alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
-		alias dbdevpod='mysql --login-path=devpod devPodmytube'
-		alias dbval='mysql --login-path=valentin valentin'
-		;;
+	# database access
+	alias dbpmt="mysql --login-path=pmt $PMT_DB"
+	alias dbtyt='mysql --login-path=tyt tytecadotnet'
+	alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
+	alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
+	alias dbdevpod='mysql --login-path=devpod devPodmytube'
+	alias dbval='mysql --login-path=valentin valentin'
+	;;
 esac
 alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"
 alias dbreve="mysql --login-path=reve $REV_DB"
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"
 
+function bin() { docker exec -it $INTRA_CONTAINER_NAME php ../sfmi/bin/$1; }
+
 # Add custom prompt
 if [ -f ~/dotfiles/.bash_prompt ]; then
-    . ~/dotfiles/.bash_prompt
+	. ~/dotfiles/.bash_prompt
 fi

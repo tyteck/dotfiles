@@ -11,6 +11,7 @@ fi
 
 # This function will allow me to commit one list of file (with messages) 
 # Then push them on origin.
+# I never push 
 gmit() {
 	commitFiles=""
 	while [ $# -gt 0 ]; do
@@ -23,8 +24,8 @@ gmit() {
 			shift
 			;;
 		*)
-			if [ ! -f $1 ];then
-				echo "file $1 doesn't exists"				
+			if [ ! -f $1 ] && [ ! -d $1 ] && ;then
+				echo "file/folder $1 doesn't exists"				
 			else 
 				commitFiles="$commitFiles $1"
 			fi

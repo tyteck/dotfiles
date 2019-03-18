@@ -9,38 +9,6 @@ else
 	echo
 fi
 
-# This function will allow me to commit one list of file (with messages) 
-# Then push them on origin.
-gmit() {
-	commitFiles=""
-	while [ $# -gt 0 ]; do
-		case $1 in
-		'-?' | '-h' | '--help')
-			usage
-			;;
-		'-m')
-			commitMessage=$2
-			shift
-			;;
-		*)
-			if [ ! -f $1 ] && [ ! -d $1 ];then
-				echo "file/folder $1 doesn't exists"				
-			else 
-				commitFiles="$commitFiles $1"
-			fi
-			;;
-		esac
-		shift
-	done
-	if  [ ! -z $commitFiles ]; then
-		git commit -m "$commitMessage" $commitFiles && git push
-		if [ "$?" != 0 ]; then
-			echo "Commit has failed !"
-		fi 
-	else 
-		echo "No valid files to commit."
-	fi
-}
 
 export NODE_NAME=$(hostname)
 export EDITOR="/usr/bin/vim"
@@ -184,9 +152,47 @@ alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"
 alias dbreve="mysql --login-path=reve $REV_DB"
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"
 
-function bin() { docker exec -it $INTRA_CONTAINER_NAME php ../sfmi/bin/$1; }
-
-# Add custom prompt
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+# 							  CUSTOM PROMPT
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 if [ -f ~/dotfiles/.bash_prompt ]; then
 	. ~/dotfiles/.bash_prompt
 fi
+
+
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+# 								FUNCTIONS
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+
+# This function will allow me to commit one list of file (with messages) 
+# Then push them on origin.
+gmit() {
+	commitFiles=""
+	while [ $# -gt 0 ]; do
+		case $1 in
+		'-?' | '-h' | '--help')
+			usage
+			;;
+		'-m')
+			commitMessage=$2
+			shift
+			;;
+		*)
+			if [ ! -f $1 ] && [ ! -d $1 ];then
+				echo "file/folder $1 doesn't exists"				
+			else 
+				commitFiles="$commitFiles $1"
+			fi
+			;;
+		esac
+		shift
+	done
+	if  [ ! -z $commitFiles ]; then
+		git commit -m "$commitMessage" $commitFiles && git push
+		if [ "$?" != 0 ]; then
+			echo "Commit has failed !"
+		fi 
+	else 
+		echo "No valid files to commit."
+	fi
+}

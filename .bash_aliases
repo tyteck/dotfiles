@@ -14,7 +14,6 @@ fi
 gmit() {
 	commitFiles=""
 	while [ $# -gt 0 ]; do
-		echo "$1 --- $2"
 		case $1 in
 		'-?' | '-h' | '--help')
 			usage

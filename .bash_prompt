@@ -54,6 +54,6 @@ MSI-Laptop)
 	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$green$promptPath $normal$ "
 	;;
 *)
-	PS1="$bold$green$promptUsername$grey@$promptHost$normal:$blue$promptPath$normal$ "
+	PS1="$bold$green$promptUsername$grey@$green$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 esac

@@ -11,7 +11,6 @@ fi
 
 # This function will allow me to commit one list of file (with messages) 
 # Then push them on origin.
-# I never push 
 gmit() {
 	commitFiles=""
 	while [ $# -gt 0 ]; do

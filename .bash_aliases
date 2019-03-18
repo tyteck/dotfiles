@@ -11,7 +11,7 @@ fi
 
 # This function will allow me to commit one list of file (with messages) 
 # Then push them on origin.
-gcommit() {
+gmit() {
 	commitFiles=""
 	while [ $# -gt 0 ]; do
 		echo "$1 --- $2"

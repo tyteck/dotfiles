@@ -62,6 +62,8 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# on debian ll is not uncommented within skel/.bashrc
+alias ll='ls -alF'
 alias vbashrc="vim ~/.bashrc && source ~/.bashrc && echo 'bashrc sourced'"
 alias sbashrc="source ~/.bashrc"
 alias valiases="vim ~/dotfiles/.bash_aliases && source ~/dotfiles/.bash_aliases && echo 'bash_aliases sourced'"

@@ -90,9 +90,13 @@ alias spaceleft='df -h'
 alias dbroot='mysql --login-path=root'
 case $NODE_NAME in
 frsopdreg3)
+	
 	export PMT_DB="pmt"
-	export PMT_TEST_DB="podmytubeTests"
+	export PMT_HOST="pmtdb"
+	export PMTEST_DB="podmytubeTests"
+	export PMTEST_HOST="pmtests"
 	export REV_DB="rev"
+	export REV_HOST="revdb"
 	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 	export SFMI_CONTAINER_NAME="mysqlmaster"
 	alias goIntra="dokexec $INTRA_CONTAINER_NAME bash"
@@ -124,8 +128,11 @@ vps256025.ovh.net)
 	;;
 *)
 	export PMT_DB="podmytube"
-	export PMT_TEST_DB="podmytubeTests"
+	export PMT_HOST="localhost"
+	export PMTEST_DB="podmytubeTests"
+	export PMTEST_HOST="localhost"
 	export REV_DB="reverse"
+	export REV_HOST="localhost"
 	# Aliases that are used elsewhere
 	# pathes
 	alias cddash="cd /home/www/dashboard.podmytube.com/"
@@ -140,7 +147,7 @@ vps256025.ovh.net)
 	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
 
 	# database access
-	alias dbpmt="mysql --login-path=pmt $PMT_DB"
+	alias dbpmt="mysql $PMTDB_CREDS $PMT_DB"
 	alias dbtyt='mysql --login-path=tyt tytecadotnet'
 	alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
 	alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'

@@ -90,7 +90,6 @@ alias spaceleft='df -h'
 alias dbroot='mysql --login-path=root'
 case $NODE_NAME in
 frsopdreg3)
-	
 	export PMT_DB="pmt"
 	export PMT_HOST="pmtdb"
 	export PMTEST_DB="podmytubeTests"
@@ -126,7 +125,7 @@ ns3071385)
 vps256025.ovh.net)
 	alias cdcore="cd /home/www/www.podmytube.com/"
 	;;
-*)
+MSI-Laptop)
 	export PMT_DB="podmytube"
 	export PMT_HOST="localhost"
 	export PMTEST_DB="podmytubeTests"
@@ -145,7 +144,6 @@ vps256025.ovh.net)
 	alias cdval='cd /home/www/valentin.tyteca.net/'
 	alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
-
 	# database access
 	alias dbpmt="mysql $PMTDB_CREDS $PMT_DB"
 	alias dbtyt='mysql --login-path=tyt tytecadotnet'
@@ -153,6 +151,14 @@ vps256025.ovh.net)
 	alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
 	alias dbdevpod='mysql --login-path=devpod devPodmytube'
 	alias dbval='mysql --login-path=valentin valentin'
+	;;
+*)
+	export PMT_DB="pmt"
+	export PMT_HOST="pmtdb"
+	export PMTEST_DB="podmytubeTests"
+	export PMTEST_HOST="pmtests"
+	export REV_DB="rev"
+	export REV_HOST="revdb"
 	;;
 esac
 alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"

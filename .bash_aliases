@@ -145,6 +145,7 @@ MSI-Laptop)
 	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
 	# database access
 	alias dbpmt="mysql $PMTDB_CREDS $PMT_DB"
+	alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"
 	alias dbtyt='mysql --login-path=tyt tytecadotnet'
 	alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
 	alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
@@ -160,9 +161,11 @@ MSI-Laptop)
 	export REV_DB="rev"
 	export REV_HOST="revdb"
 	alias phpunit="./vendor/bin/phpunit"
+	alias dbpmtest="mysql -h $PMTEST_HOST $PMTESTDB_CREDS $PMTEST_DB"
 	;;
+
 esac
-alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"
+
 alias dbreve="mysql --login-path=reve $REV_DB"
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"
 

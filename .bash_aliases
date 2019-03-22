@@ -153,12 +153,14 @@ MSI-Laptop)
 	alias dbval='mysql --login-path=valentin valentin'
 	;;
 *)
+	# this part will apply on docker images
 	export PMT_DB="pmt"
 	export PMT_HOST="pmtdb"
 	export PMTEST_DB="podmytubeTests"
 	export PMTEST_HOST="pmtests"
 	export REV_DB="rev"
 	export REV_HOST="revdb"
+	alias phpunit="./vendor/bin/phpunit"
 	;;
 esac
 alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"

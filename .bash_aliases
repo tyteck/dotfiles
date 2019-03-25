@@ -160,7 +160,6 @@ MSI-Laptop)
 	export PMTEST_HOST="pmtests"
 	export REV_DB="rev"
 	export REV_HOST="revdb"
-	alias phpunit="./vendor/bin/phpunit"
 	alias dbpmtest="mysql -h $PMTEST_HOST $PMTESTDB_CREDS $PMTEST_DB"
 	;;
 

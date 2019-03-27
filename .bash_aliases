@@ -126,9 +126,9 @@ vps256025.ovh.net)
 	;;
 MSI-Laptop)
 	export PMT_DB="podmytube"
-	export PMT_HOST="localhost"
+	export PMT_HOST="pmtdb"
 	export PMTEST_DB="podmytubeTests"
-	export PMTEST_HOST="localhost"
+	export PMTEST_HOST="pmtestsdb"
 	export REV_DB="reverse"
 	export REV_HOST="localhost"
 	# Aliases that are used elsewhere

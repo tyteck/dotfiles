@@ -102,6 +102,7 @@ frsopdreg3)
 	# Aliases that are used on micromania
 	alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
 	alias dbpmt="docker exec -it pmtdb mysql $PMTDB_CREDS pmt"
+	alias dbpmtests="docker exec -it pmtests mysql $PMTESTDB_CREDS podmytubeTests"
 	alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs"
 	alias cdcore="cd /home/www/core"
 	alias cdreve="cd /home/www/reve"

@@ -37,6 +37,7 @@ alias valiases="vim ~/dotfiles/.bash_aliases && source ~/dotfiles/.bash_aliases 
 alias phpext="php -i | grep extension_dir"
 alias phpmods="php -m"
 alias cls="clear"
+alias env="env|sort"
 
 # Laravel
 alias artisan='php artisan'
@@ -86,13 +87,13 @@ alias biggestFiles='du -Sh . | sort -rh | head -20'
 alias spaceleft='df -h'
 
 # common aliases
+
+export PMTDB_HOST="mysqlServer"
+export PMTDB_NAME="pmt"
+export PMTESTSDB_NAME="pmtests"
 alias dbroot='mysql --login-path=root'
 case $NODE_NAME in
 frsopdreg3)
-	export PMT_DB="pmt"
-	export PMT_HOST="pmtdb"
-	export PMTEST_DB="podmytubeTests"
-	export PMTEST_HOST="pmtests"
 	export REV_DB="rev"
 	export REV_HOST="revdb"
 	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
@@ -101,8 +102,6 @@ frsopdreg3)
 	alias goSfmi="dokexec $SFMI_CONTAINER_NAME bash"
 	# Aliases that are used on micromania
 	alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
-	alias dbpmt="docker exec -it pmtdb mysql $PMTDB_CREDS pmt"
-	alias dbpmtests="docker exec -it pmtests mysql $PMTESTDB_CREDS podmytubeTests"
 	alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs"
 	alias cdcore="cd /home/www/core"
 	alias cdreve="cd /home/www/reve"
@@ -145,8 +144,6 @@ MSI-Laptop)
 	alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
 	# database access
-	alias dbpmt="mysql $PMTDB_CREDS $PMT_DB"
-	alias dbpmtest="mysql --login-path=pmtests $PMT_TEST_DB"
 	alias dbtyt='mysql --login-path=tyt tytecadotnet'
 	alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
 	alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
@@ -154,11 +151,9 @@ MSI-Laptop)
 	alias dbval='mysql --login-path=valentin valentin'
 	;;
 *)
-	# this part will apply on docker images
-	export PMT_DB="pmt"
-	export PMT_HOST="pmtdb"
-	export PMTEST_DB="podmytubeTests"
-	export PMTEST_HOST="pmtests"
+	export PMTDB_NAME="pmt"
+	export PMTESTSDB_NAME="pmtests"
+	export PMTDB_HOST="mysqlServer"
 	export REV_DB="rev"
 	export REV_HOST="revdb"
 	alias dbpmtest="mysql -h $PMTEST_HOST $PMTESTDB_CREDS $PMTEST_DB"
@@ -166,6 +161,8 @@ MSI-Laptop)
 
 esac
 
+alias dbpmt="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmt"
+alias dbpmtests="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmtests"
 alias dbreve="mysql --login-path=reve $REV_DB"
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"
 

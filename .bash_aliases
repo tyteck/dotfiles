@@ -30,7 +30,7 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 shopt -s checkwinsize
 
 # on debian ll is not uncommented within skel/.bashrc
-alias ll='ls -alF'
+alias ll='ls -alFh'
 alias vbashrc="vim ~/.bashrc && source ~/.bashrc && echo 'bashrc sourced'"
 alias sbashrc="source ~/.bashrc"
 alias valiases="vim ~/dotfiles/.bash_aliases && source ~/dotfiles/.bash_aliases && echo 'bash_aliases sourced'"
@@ -127,9 +127,9 @@ vps256025.ovh.net)
 	;;
 MSI-Laptop)
 	export PMT_DB="podmytube"
-	export PMT_HOST="localhost"
+	export PMT_HOST="pmtdb"
 	export PMTEST_DB="podmytubeTests"
-	export PMTEST_HOST="localhost"
+	export PMTEST_HOST="pmtestsdb"
 	export REV_DB="reverse"
 	export REV_HOST="localhost"
 	# Aliases that are used elsewhere

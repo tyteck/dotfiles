@@ -98,10 +98,8 @@ frsopdreg3)
 	export REV_HOST="revdb"
 	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 	export SFMI_CONTAINER_NAME="mysqlmaster"
-	alias goIntra="dokexec $INTRA_CONTAINER_NAME bash"
-	alias goSfmi="dokexec $SFMI_CONTAINER_NAME bash"
 	# Aliases that are used on micromania
-	alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
+	alias castest="dokexec intranetlocal.sfmi.lan phpunit --colors=auto ./sfmi/docs/stats/loots/ventes_par_casier/tests/"
 	alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs"
 	alias cdcore="cd /home/www/core"
 	alias cdreve="cd /home/www/reve"
@@ -176,40 +174,3 @@ fi
 if [ -f ~/dotfiles/.bash_functions ]; then
 	. ~/dotfiles/.bash_functions
 fi
-
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-# 								FUNCTIONS
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-
-# This function will allow me to commit one list of file (with messages) 
-# Then push them on origin.
-gmit() {
-	commitFiles=""
-	while [ $# -gt 0 ]; do
-		case $1 in
-		'-?' | '-h' | '--help')
-			usage
-			;;
-		'-m')
-			commitMessage=$2
-			shift
-			;;
-		*)
-			if [ ! -f $1 ] && [ ! -d $1 ];then
-				echo "file/folder $1 doesn't exists"				
-			else 
-				commitFiles="$commitFiles $1"
-			fi
-			;;
-		esac
-		shift
-	done
-	if  [[ ! -z ${commitFiles} ]]; then
-		git commit -m "$commitMessage" $commitFiles && git push
-		if [ "$?" != 0 ]; then
-			echo "Commit has failed !"
-		fi 
-	else 
-		echo "No valid files to commit."
-	fi
-}

@@ -122,6 +122,9 @@ ns3071385)
 vps256025.ovh.net)
 	alias cdcore="cd /home/www/www.podmytube.com/"
 	;;
+vps591114)
+	alias cdwww="cd /home/www/www.new.podmytube.com"
+	;;
 MSI-Laptop)
 	export PMT_DB="podmytube"
 	export PMT_HOST="pmtdb"

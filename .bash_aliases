@@ -99,8 +99,8 @@ alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 
 # default db shortcuts
 alias dbroot='mysql --login-path=root'
-alias dbpmt="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmt"
-alias dbpmtests="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmtests"
+alias dbpmt="docker exec -it mysqlServer mysql $PMTDB_CREDS pmt"
+alias dbpmtests="docker exec -it mysqlServer mysql $PMTESTDB_CREDS pmtests"
 
 # common aliases
 export PMTDB_HOST="mysqlServer"
@@ -114,6 +114,7 @@ frsopdreg3)
 	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 	export SFMI_CONTAINER_NAME="mysqlmaster"
 	# Aliases that are used on micromania
+	alias dbroot="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS"
 	alias castest="dokexec intranetlocal.sfmi.lan phpunit --colors=auto ./sfmi/docs/stats/loots/ventes_par_casier/tests/"
 	alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs"
 	alias cdcore="cd /home/www/core"

@@ -86,16 +86,31 @@ alias biggestFolders='du -a . | sort -n -r | head -n 10'
 alias biggestFiles='du -Sh . | sort -rh | head -20'
 alias spaceleft='df -h'
 
-# common aliases
+# default pathes cd shortcuts
+alias cddash="cd /home/www/dashboard.podmytube.com/"
+alias cdreve="cd /home/www/reverse.podmytube.com/"
+alias cdcore="cd /home/www/core.podmytube.com/"
+alias cdreve="cd /home/www/reverse.podmytube.com/"
+alias cdwww="cd /home/www/www.new.podmytube.com/www"
+alias frpod='cd /home/www/fr.podmytube.com/'
+alias cdtyt='cd /home/www/www.tyteca.net/'
+alias cdval='cd /home/www/valentin.tyteca.net/'
+alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 
+# default db shortcuts
+alias dbroot='mysql --login-path=root'
+alias dbpmt="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmt"
+alias dbpmtests="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmtests"
+
+# common aliases
 export PMTDB_HOST="mysqlServer"
 export PMTDB_NAME="pmt"
 export PMTESTSDB_NAME="pmtests"
-alias dbroot='mysql --login-path=root'
+export REV_DB="rev"
+export REV_HOST="revdb"
+
 case $NODE_NAME in
 frsopdreg3)
-	export REV_DB="rev"
-	export REV_HOST="revdb"
 	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 	export SFMI_CONTAINER_NAME="mysqlmaster"
 	# Aliases that are used on micromania
@@ -119,30 +134,14 @@ ns3071385)
 	alias cdmp3="cd /home/www/mp3.podmytube.com/www"
 	alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
 	;;
-vps256025.ovh.net)
-	alias cdcore="cd /home/www/www.podmytube.com/"
-	;;
 vps591114)
 	alias cdwww="cd /home/www/www.new.podmytube.com"
+	alias dbpmt="mysql --login-path=pmt podmytube"
 	;;
 MSI-Laptop)
-	export PMT_DB="podmytube"
-	export PMT_HOST="pmtdb"
-	export PMTEST_DB="podmytubeTests"
-	export PMTEST_HOST="pmtestsdb"
 	export REV_DB="reverse"
 	export REV_HOST="localhost"
 	# Aliases that are used elsewhere
-	# pathes
-	alias cddash="cd /home/www/dashboard.podmytube.com/"
-	alias cdreve="cd /home/www/reverse.podmytube.com/"
-	alias cdcore="cd /home/www/core.podmytube.com/"
-	alias cdreve="cd /home/www/reverse.podmytube.com/"
-	alias cdwww="cd /home/www/www.new.podmytube.com/www"
-	alias frpod='cd /home/www/fr.podmytube.com/'
-	alias cdtyt='cd /home/www/www.tyteca.net/'
-	alias cdval='cd /home/www/valentin.tyteca.net/'
-	alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
 	# database access
 	alias dbtyt='mysql --login-path=tyt tytecadotnet'
@@ -150,21 +149,9 @@ MSI-Laptop)
 	alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
 	alias dbdevpod='mysql --login-path=devpod devPodmytube'
 	alias dbval='mysql --login-path=valentin valentin'
+	alias dbreve="mysql --login-path=reve $REV_DB"
 	;;
-*)
-	export PMTDB_NAME="pmt"
-	export PMTESTSDB_NAME="pmtests"
-	export PMTDB_HOST="mysqlServer"
-	export REV_DB="rev"
-	export REV_HOST="revdb"
-	alias dbpmtest="mysql -h $PMTEST_HOST $PMTESTDB_CREDS $PMTEST_DB"
-	;;
-
 esac
-
-alias dbpmt="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmt"
-alias dbpmtests="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS pmtests"
-alias dbreve="mysql --login-path=reve $REV_DB"
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME_"
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸

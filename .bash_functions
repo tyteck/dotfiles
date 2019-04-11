@@ -5,7 +5,7 @@
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 
 # Git commit then push in one command
-# do not work to commit/push one deleted file
+# if no file is specified the . folder is commit then pushed
 gmit() {
 	commitFiles=""
 	while [ $# -gt 0 ]; do
@@ -29,12 +29,13 @@ gmit() {
 	done
 	if  [[ ! -z ${commitFiles} ]]; then
 		git commit -m "$commitMessage" $commitFiles && git push
-		if [ "$?" != 0 ]; then
-			echo "Commit has failed !"
-		fi 
 	else 
-		echo "No valid files to commit."
+		git commit -m "$commitMessage" . && git push
 	fi
+	if [ "$?" != 0 ]; then
+		echo "Commit has failed !"
+	fi 
+
 }
 
 # this function will display one title the way we can't miss it on term

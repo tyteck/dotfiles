@@ -91,6 +91,8 @@ alias cddash="cd /home/www/dashboard.podmytube.com/"
 alias cdreve="cd /home/www/reverse.podmytube.com/"
 alias cdcore="cd /home/www/core.podmytube.com/"
 alias cdreve="cd /home/www/reverse.podmytube.com/"
+alias cdplay="cd /home/www/playlists.podmytube.com/"
+alias cdpods="cd /home/www/podcasts.podmytube.com/"
 alias cdwww="cd /home/www/www.new.podmytube.com/www"
 alias frpod='cd /home/www/fr.podmytube.com/'
 alias cdtyt='cd /home/www/www.tyteca.net/'
@@ -114,13 +116,15 @@ frsopdreg3)
 	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 	export SFMI_CONTAINER_NAME="mysqlmaster"
 	# Aliases that are used on micromania
-	alias dbroot="docker exec -it mysqlServer mysql $MYSQLSERVER_CREDS"
+	alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
 	alias castest="dokexec intranetlocal.sfmi.lan phpunit --colors=auto ./sfmi/docs/stats/loots/ventes_par_casier/tests/"
 	alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs"
 	alias cdcore="cd /home/www/core"
 	alias cdreve="cd /home/www/reve"
 	alias cddash="cd /home/www/dash"
 	alias cdwww="cd /home/www/web/www"
+	alias cdplay="cd /home/www/play"
+	alias cdpods="cd /home/www/pods"
 	;;
 intranetpreprod)
 	# Aliases that are used on micromania

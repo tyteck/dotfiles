@@ -139,6 +139,7 @@ ns3071385)
 	alias cdmp3="cd /home/www/mp3.podmytube.com/www"
 	alias cdpod="cd /home/www/podcasts.podmytube.com/www"
 	alias cdplay="cd /home/www/playlists.podmytube.com/www"
+	alias cdthumbs="cd /home/www/thumbs.podmytube.com/www"
 	alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
 	;;
 vps591114)

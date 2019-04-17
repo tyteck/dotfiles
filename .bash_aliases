@@ -92,10 +92,10 @@ alias cddash="cd /home/www/dashboard.podmytube.com/"
 alias cdreve="cd /home/www/reverse.podmytube.com/"
 alias cdcore="cd /home/www/core.podmytube.com/"
 alias cdreve="cd /home/www/reverse.podmytube.com/"
-alias cdplay="cd /home/www/playlists.podmytube.com/"
-alias cdpods="cd /home/www/podcasts.podmytube.com/"
-alias cdforest="cd /home/docker/forest"
+alias cdplay="cd /home/docker/playlists.podmytube.com/"
+alias cdpods="cd /home/docker/podcasts.podmytube.com/"
 alias cdwww="cd /home/www/www.new.podmytube.com/www"
+alias cdforest="cd /home/docker/forest"
 alias frpod='cd /home/www/fr.podmytube.com/'
 alias cdtyt='cd /home/www/www.tyteca.net/'
 alias cdval='cd /home/www/valentin.tyteca.net/'
@@ -139,6 +139,9 @@ FRSOPGIT)
 	;;
 ns3071385)
 	alias cdmp3="cd /home/www/mp3.podmytube.com/www"
+	alias cdpod="cd /home/www/podcasts.podmytube.com/www"
+	alias cdplay="cd /home/www/playlists.podmytube.com/www"
+	alias cdthumbs="cd /home/www/thumbs.podmytube.com/www"
 	alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
 	;;
 vps591114)

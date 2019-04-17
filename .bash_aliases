@@ -58,10 +58,11 @@ alias gco='git checkout'
 
 # docker & docker compose
 alias dokbuild="docker-compose build"
+alias dokconfig="docker-compose config"
 alias dokdown="docker-compose down"
 alias dokexec="docker exec -it "
 alias doklog="docker logs"
-alias dokprune="docker container prune -f && docker image prune && docker network prune -f && docker volume prune -f"
+alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
 alias dokrestart="docker-compose down && docker-compose up -d"
 alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
@@ -93,6 +94,7 @@ alias cdcore="cd /home/www/core.podmytube.com/"
 alias cdreve="cd /home/www/reverse.podmytube.com/"
 alias cdplay="cd /home/www/playlists.podmytube.com/"
 alias cdpods="cd /home/www/podcasts.podmytube.com/"
+alias cdforest="cd /home/docker/forest"
 alias cdwww="cd /home/www/www.new.podmytube.com/www"
 alias frpod='cd /home/www/fr.podmytube.com/'
 alias cdtyt='cd /home/www/www.tyteca.net/'

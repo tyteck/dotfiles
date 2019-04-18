@@ -27,11 +27,10 @@ gmit() {
 		esac
 		shift
 	done
-	if  [[ ! -z ${commitFiles} ]]; then
-		git commit -m "$commitMessage" $commitFiles && git push
-	else 
-		git commit -m "$commitMessage" . && git push
+	if  [[ -z ${commitFiles} ]]; then
+		commitFiles='.'
 	fi
+	git commit -m "$commitMessage" $commitFiles && git push
 	if [ "$?" != 0 ]; then
 		echo "Commit has failed !"
 	fi 

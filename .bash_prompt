@@ -2,7 +2,8 @@
 # colors
 red="\[\033[38;5;196m\]"
 orange="\[\033[38;5;166m\]"
-green="\[\033[38;5;10m\]"
+darkgreen="\[\033[38;5;2m\]"
+lightgreen="\[\033[38;5;10m\]"
 white="\[\033[38;5;15m\]"
 yellow="\[\033[38;5;11m\]"
 blue="\[\033[38;5;68m\]"
@@ -23,7 +24,7 @@ case $NODE_NAME in
 # ==============================
 # micromania
 frsopdreg3)
-	PS1="$bold$green$promptUsername$grey@$green$promptHost$normal:$blue$promptPath$normal$ "
+	PS1="$bold$lightgreen$promptUsername$grey@$lightgreen$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 FRSOPGIT | FRSOPELASTIC)
 	PS1="$bold$orange$promptUsername$grey@$orange$promptHost$normal:$blue$promptPath$normal$ "
@@ -44,16 +45,16 @@ newintranetpreprod)
 	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 vps591114)
-	PS1="$bold$red$promptUsername$grey@$red$promptHost$normal:$blue$promptPath$normal$ "
+	PS1="$bold$darkgreen$promptUsername$grey@$darkgreen$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 ns3071385)
 	PS1="$bold$purple$promptUsername$grey@$purple$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 # home
 MSI-Laptop)
-	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$green$promptPath $normal$ "
+	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$lightgreen$promptPath $normal$ "
 	;;
 *)
-	PS1="$bold$green$promptUsername$grey@$green$promptHost$normal:$blue$promptPath$normal$ "
+	PS1="$bold$lightgreen$promptUsername$grey@$lightgreen$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 esac

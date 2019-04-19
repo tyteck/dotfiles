@@ -146,7 +146,6 @@ ns3071385)
 	;;
 vps591114)
 	alias cdwww="cd /home/www/www.new.podmytube.com"
-	alias dbpmt="mysql --login-path=pmt podmytube"
 	;;
 MSI-Laptop)
 	export REV_DB="reverse"

@@ -103,8 +103,8 @@ alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 
 # default db shortcuts
 alias dbroot='mysql --login-path=root'
-alias dbpmt="docker exec -it mysqlServer mysql $PMTDB_CREDS pmt"
-alias dbpmtests="docker exec -it mysqlServer mysql $PMTESTDB_CREDS pmtests"
+alias dbpmt='mysql --login-path=pmt'
+alias dbpmtests='mysql --login-path=pmtests'
 
 # common aliases
 export PMTDB_HOST="mysqlServer"

@@ -1,12 +1,6 @@
 #!/bin/bash
 if [ -f ~/dotfiles/.creds ]; then
 	. ~/dotfiles/.creds
-else
-	echo
-	echo '°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸'
-	echo "~/dotfiles/.creds not set"
-	echo '°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸'
-	echo
 fi
 
 export NODE_NAME=$(hostname)

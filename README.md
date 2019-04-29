@@ -24,4 +24,4 @@ I will be glad to get any tips to improve this :)
 
 
 ## VSCode settings
-rm -fv ~/.config/Code/User/settings.json && ln -s ~/dotfiles/vscode_setting.json .config/Code/User/settings.json
+rm -fv ~/.config/Code/User/settings.json && ln -s ~/dotfiles/vscode_setting.json ~/.config/Code/User/settings.json

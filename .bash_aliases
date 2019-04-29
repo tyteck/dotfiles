@@ -97,8 +97,8 @@ alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 
 # default db shortcuts
 alias dbroot='mysql --login-path=root'
-alias dbpmt='mysql --login-path=pmt'
-alias dbpmtests='mysql --login-path=pmtests'
+alias dbpmt='mysql --login-path=pmt pmt'
+alias dbpmtests='mysql --login-path=pmtests pmtests'
 
 # common aliases
 export PMTDB_HOST="mysqlServer"

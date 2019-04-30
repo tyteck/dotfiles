@@ -82,17 +82,23 @@ dokip(){
 	docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 }
 
+# this function is exporting list of installed VSCode extensions
 exportVSCodeExtList() {
 	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
 	code --list-extensions > $VSCodeExtFile
 }
 
+# this function is installing VSCode extensions according to one prefious export
 importVSCodeExtList() {
 	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
-	while IFS= read -r extensionToInstall
-	do
-		code --install-extension $extensionToInstall
-	done < "$VSCodeExtFile"
+	if [ -f $VSCodeExtFile ];then
+		while IFS= read -r extensionToInstall
+		do
+			code --install-extension $extensionToInstall
+		done < "$VSCodeExtFile"
+	else
+		error "Le fichier contenant la liste des extensions est absent."
+	fi
 }
 
 

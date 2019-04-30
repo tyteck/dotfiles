@@ -10,20 +10,20 @@ gmit() {
 	commitFiles=""
 	while [ $# -gt 0 ]; do
 		case $1 in
-		'-?' | '-h' | '--help')
-			usage
-			;;
-		'-m')
-			commitMessage=$2
-			shift
-			;;
-		*)
-			if [ ! -f $1 ] && [ ! -d $1 ];then
-				echo "file/folder $1 doesn't exists"				
-			else 
-				commitFiles="$commitFiles $1"
-			fi
-			;;
+			'-?' | '-h' | '--help')
+				usage
+				;;
+			'-m')
+				commitMessage=$2
+				shift
+				;;
+			*)
+				if [ ! -f $1 ] && [ ! -d $1 ];then
+					echo "file/folder $1 doesn't exists"				
+				else 
+					commitFiles="$commitFiles $1"
+				fi
+				;;
 		esac
 		shift
 	done
@@ -34,7 +34,6 @@ gmit() {
 	if [ "$?" != 0 ]; then
 		echo "Commit has failed !"
 	fi 
-
 }
 
 # this function will display one title the way we can't miss it on term
@@ -82,3 +81,18 @@ dokip(){
 	CONTAINER_NAME=$1
 	docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 }
+
+exportVSCodeExtList() {
+	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
+	code --list-extensions > $VSCodeExtFile
+}
+
+importVSCodeExtList() {
+	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
+	while IFS= read -r extensionToInstall
+	do
+		code --install-extension $extensionToInstall
+	done < "$VSCodeExtFile"
+}
+
+

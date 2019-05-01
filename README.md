@@ -25,3 +25,8 @@ I will be glad to get any tips to improve this :)
 
 ## VSCode settings
 rm -fv ~/.config/Code/User/settings.json && ln -s ~/dotfiles/vscode_setting.json ~/.config/Code/User/settings.json
+
+
+## docker ps/images settings
+ln -s ~/dotfiles/docker_config.json ~/.docker/config.json
+

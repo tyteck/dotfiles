@@ -82,6 +82,12 @@ dokip(){
 	docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 }
 
+dokips(){
+	for CONTAINER_NAME in $(docker ps --format '{{.Names}}');do
+		echo $CONTAINER_NAME --- $(dokip $CONTAINER_NAME)
+	done
+}
+
 # this function is exporting list of installed VSCode extensions
 exportVSCodeExtList() {
 	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"

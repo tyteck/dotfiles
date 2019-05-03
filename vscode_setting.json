@@ -1,20 +1,26 @@
 {
-    "files.autoSave": "afterDelay",
-    "php.suggest.basic": false,
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "workbench.statusBar.visible": true,
-    "editor.minimap.enabled": false,
-    "workbench.activityBar.visible": false,
     "better-phpunit.phpunitBinary": "/usr/bin/phpunit",
-    "workbench.startupEditor": "newUntitledFile",
-    "extensions.ignoreRecommendations": true,
-    "workbench.iconTheme": "eq-material-theme-icons-darker",
-    "window.zoomLevel": 0,
-    "php.validate.enable": false,
     "editor.fontFamily": "'Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontLigatures": true,
+    "editor.minimap.enabled": false,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+    "editor.wordBasedSuggestions": true,
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "afterDelay",
+    "php.validate.enable": false,
+    "php.suggest.basic": false,
     "files.watcherExclude": {
         "**/vendor/**": true
-    }
+    },
+    "workbench.activityBar.visible": false,
+    "workbench.iconTheme": "eq-material-theme-icons-darker",
+    "workbench.startupEditor": "newUntitledFile",
+    "workbench.statusBar.visible": true,
+    "window.zoomLevel": 0
 }

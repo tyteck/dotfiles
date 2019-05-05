@@ -98,6 +98,8 @@ exportVSCodeExtList() {
 importVSCodeExtList() {
 	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
 	if [ -f $VSCodeExtFile ];then
+		echo "cleaning existing extensions"
+		rm -rf $HOME/.vscode/extensions/*
 		while IFS= read -r extensionToInstall
 		do
 			code --install-extension $extensionToInstall

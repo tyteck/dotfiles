@@ -12,9 +12,12 @@ git clone git@github.com:tyteck/dotfiles.git
 
 if [ -f ~/.bash_aliases ];then mv ~/.bash_aliases ~/.bash_aliases.back;fi
 
-ln -s dotfiles/.bash_aliases ~/.bash_aliases
+ln -s ~/dotfiles/.bash_aliases ~/.bash_aliases
 
-ln -s dotfiles/.vimrc ~/.vimrc
+ln -s ~/dotfiles/.vimrc ~/.vimrc
+
+if [ -f .config/Code/User/settings.json ];then mv .config/Code/User/settings.json .config/Code/User/settings.json.back;fi
+ln -s ~/dotfiles/vscode_setting.json .config/Code/User/settings.json
 ```
 
 

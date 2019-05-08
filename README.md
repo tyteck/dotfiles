@@ -13,6 +13,8 @@ git clone git@github.com:tyteck/dotfiles.git
 if [ -f ~/.bash_aliases ];then mv ~/.bash_aliases ~/.bash_aliases.back;fi
 
 ln -s dotfiles/.bash_aliases ~/.bash_aliases
+
+ln -s dotfiles/.vimrc ~/.vimrc
 ```
 
 

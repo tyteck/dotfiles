@@ -36,6 +36,22 @@ gmit() {
 	fi 
 }
 
+# it s mine
+# chowning files or folders to be mine. 
+# I need to OWN THEM ALL !!!!
+# MUHAHAHAHAHAHAHAHAHA
+itsmine(){
+	for FILE_OR_FOLDER_THAT_IS_MINE in "$@";do
+		if [ -f $FILE_OR_FOLDER_THAT_IS_MINE ];then
+			sudo chown $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
+		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ];then
+			sudo chown -R $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
+		else 
+			error "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
+		fi
+	done
+}
+
 # this function will display one title the way we can't miss it on term
 title() {
 	MESSAGE=$1

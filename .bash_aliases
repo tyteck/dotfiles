@@ -59,8 +59,10 @@ alias doklog="docker logs"
 alias doknames="docker ps --format '{{.Names}}'" 
 alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
 alias dokrestart="docker-compose down && docker-compose up -d"
+alias dokrestartprod="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
+alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # apt
 alias aptinstall="sudo apt install -y"
@@ -139,9 +141,6 @@ ns3071385)
 	alias cdthumbs="cd /home/www/thumbs.podmytube.com/www"
 	alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
 	;;
-vps591114)
-	alias cdwww="cd /home/www/www.new.podmytube.com"
-	;;
 MSI-Laptop)
 	export REV_DB="reverse"
 	export REV_HOST="localhost"
@@ -154,6 +153,7 @@ MSI-Laptop)
 	alias dbdevpod='mysql --login-path=devpod devPodmytube'
 	alias dbval='mysql --login-path=valentin valentin'
 	alias dbreve="mysql --login-path=reve $REV_DB"
+	alias cdwww="cd /home/www/www.podmytube.com/"
 	;;
 esac
 alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME"

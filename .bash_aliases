@@ -1,10 +1,6 @@
 #!/bin/bash
-if [ -f ~/dotfiles/.creds ]; then
-	. ~/dotfiles/.creds
-fi
-
 export NODE_NAME=$(hostname)
-export EDITOR="/usr/bin/vim"
+export EDITOR=`which vim`
 
 if [ -d ~/sbin ]; then
 	PATH="${PATH}:~/sbin"
@@ -34,13 +30,9 @@ alias cls="clear"
 alias env="env|sort"
 
 # Laravel
-alias artisan='php artisan'
-alias migrate='php artisan migrate'
-alias migtus='php artisan migrate:status'
-alias artseed='php artisan db:seed'
-alias sf='php bin/console'
-alias tinker='artisan tinker'
-alias tinkertest="echo '=== env=testing ===' && artisan tinker --env=testing"
+alias artisan='docker exec -it dash php artisan'
+alias tinker='docker exec -it dash php artisan tinker'
+alias tinkertest="echo '--- env=testing ---' && docker exec -it dash php artisan tinker --env=testing"
 
 # Git
 alias gtus='git status'
@@ -65,7 +57,7 @@ alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # apt
-alias aptinstall="sudo apt install -y"
+alias aptinstall="sudo apt-get install -y"
 alias fullapt='echo ==== APT-GET ==== && \
 	sudo apt-get upgrade -q -y && \
 	sudo apt-get upgrade -q -y && \
@@ -104,12 +96,6 @@ alias dbpmt='mysql --login-path=pmt pmt'
 alias dbpmtests='mysql --login-path=pmtests pmtests'
 
 # common aliases
-export PMTDB_HOST="mysqlServer"
-export PMTDB_NAME="pmt"
-export PMTESTSDB_NAME="pmtests"
-export REV_DB="rev"
-export REV_HOST="revdb"
-
 case $NODE_NAME in
 frsopdreg3)
 	export INTRA_CONTAINER_NAME="intra"
@@ -142,8 +128,6 @@ ns3071385)
 	alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
 	;;
 MSI-Laptop)
-	export REV_DB="reverse"
-	export REV_HOST="localhost"
 	# Aliases that are used elsewhere
 	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
 	# database access
@@ -165,6 +149,10 @@ if [ -f ~/dotfiles/.bash_prompt ]; then
 	. ~/dotfiles/.bash_prompt
 fi
 
+
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+# 							  	FUNCTIONS
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 if [ -f ~/dotfiles/.bash_functions ]; then
 	. ~/dotfiles/.bash_functions
 fi

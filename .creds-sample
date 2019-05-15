@@ -1,4 +1,0 @@
-#!/bin/bash
-export PMTDB_CREDS="-u<LOGIN> -p<PASSWORD>"
-export PMTESTDB_CREDS="-u<LOGIN> -p<PASSWORD>"
-export MYSQLSERVER_CREDS="-u<LOGIN> -p<PASSWORD>"

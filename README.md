@@ -18,6 +18,7 @@ ln -s ~/dotfiles/.vimrc ~/.vimrc
 
 if [ -f .config/Code/User/settings.json ];then mv .config/Code/User/settings.json .config/Code/User/settings.json.back;fi
 ln -s ~/dotfiles/vscode_setting.json .config/Code/User/settings.json
+ln -s ~/dotfiles/vscode_keybindings.json .config/Code/User/keybindings.json
 ```
 
 

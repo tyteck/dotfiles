@@ -22,5 +22,6 @@
     "workbench.iconTheme": "eq-material-theme-icons-darker",
     "workbench.startupEditor": "newUntitledFile",
     "workbench.statusBar.visible": true,
-    "window.zoomLevel": 0
+    "window.zoomLevel": 0,
+    "editor.renderWhitespace": "boundary"
 }

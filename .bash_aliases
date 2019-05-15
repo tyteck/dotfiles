@@ -29,24 +29,11 @@ alias phpmods="php -m"
 alias cls="clear"
 alias env="env|sort"
 
-# Laravel
-alias artisan='docker exec -it dash php artisan'
-alias tinker='docker exec -it dash php artisan tinker'
-alias tinkertest="echo '--- env=testing ---' && docker exec -it dash php artisan tinker --env=testing"
-
-# Git
-alias gtus='git status'
-alias gdiff='git diff'
-alias gpush='git push'
-alias gpull='git pull'
-alias gbr='git branch'
-alias gco='git checkout'
-
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
 alias dokdown="docker-compose down"
-alias dokexec="docker exec -it "
+alias dokexec="docker exec -it --user $(id -u):$(id -g)"
 alias doklog="docker logs"
 alias doknames="docker ps --format '{{.Names}}'" 
 alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
@@ -55,6 +42,19 @@ alias dokrestartprod="docker-compose down && docker-compose -f docker-compose.ym
 alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
+
+# Laravel
+alias artisan='dokexec dash php artisan'
+alias tinker='dokexec dash php artisan tinker'
+alias tinkertest="echo '--- env=testing ---' && dokexec dash php artisan tinker --env=testing"
+
+# Git
+alias gtus='git status'
+alias gdiff='git diff'
+alias gpush='git push'
+alias gpull='git pull'
+alias gbr='git branch'
+alias gco='git checkout'
 
 # apt
 alias aptinstall="sudo apt-get install -y"

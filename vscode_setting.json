@@ -23,5 +23,8 @@
     "workbench.startupEditor": "newUntitledFile",
     "workbench.statusBar.visible": true,
     "window.zoomLevel": 0,
-    "editor.renderWhitespace": "boundary"
+    "editor.renderWhitespace": "boundary",
+    "[php]": {
+        "editor.defaultFormatter": "kokororin.vscode-phpfmt"
+    }
 }

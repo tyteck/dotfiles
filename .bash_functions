@@ -39,7 +39,7 @@ gmit() {
 # this function will restore one previously deleted (and committed file)
 grestore(){
 	FILEPATH_TO_RESTORE=$1
-	git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE")^ -- "$FILEPATH_TO_RESTORE"
+	git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
 	if [ "$?" != 0 ]; then
 		echo "Git restoring file $FILEPATH_TO_RESTORE has failed !"
 	fi 

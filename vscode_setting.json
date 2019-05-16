@@ -13,7 +13,6 @@
     "explorer.confirmDragAndDrop": false,
     "extensions.ignoreRecommendations": true,
     "files.autoSave": "afterDelay",
-    "php.validate.enable": false,
     "php.suggest.basic": false,
     "files.watcherExclude": {
         "**/vendor/**": true
@@ -26,5 +25,6 @@
     "editor.renderWhitespace": "boundary",
     "[php]": {
         "editor.defaultFormatter": "kokororin.vscode-phpfmt"
-    }
+    },
+    "php.validate.enable": false
 }

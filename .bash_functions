@@ -10,51 +10,52 @@ gmit() {
 	commitFiles=""
 	while [ $# -gt 0 ]; do
 		case $1 in
-			'-?' | '-h' | '--help')
-				usage
-				;;
-			'-m')
-				commitMessage=$2
-				shift
-				;;
-			*)
-				if [ ! -f $1 ] && [ ! -d $1 ];then
-					echo "file/folder $1 doesn't exists"				
-				else 
-					commitFiles="$commitFiles $1"
-				fi
-				;;
+		'-?' | '-h' | '--help')
+			usage
+			;;
+		'-m')
+			commitMessage=$2
+			shift
+			;;
+		*)
+			if [ ! -f $1 ] && [ ! -d $1 ]; then
+				echo "file/folder $1 doesn't exists"
+			else
+				commitFiles="$commitFiles $1"
+			fi
+			;;
 		esac
 		shift
 	done
-	if  [[ -z ${commitFiles} ]]; then
+	if [[ -z ${commitFiles} ]]; then
 		commitFiles='.'
 	fi
 	git commit -m "$commitMessage" $commitFiles && git push
 	if [ "$?" != 0 ]; then
 		echo "Commit has failed !"
-	fi 
+	fi
 }
 
 # this function will restore one previously deleted (and committed file)
-grestore(){
+grestore() {
 	FILEPATH_TO_RESTORE=$1
 	git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
 	if [ "$?" != 0 ]; then
 		echo "Git restoring file $FILEPATH_TO_RESTORE has failed !"
-	fi 
+	fi
 }
+
 # it s mine
-# chowning files or folders to be mine. 
+# chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!
 # MUHAHAHAHAHAHAHAHAHA
-itsmine(){
-	for FILE_OR_FOLDER_THAT_IS_MINE in "$@";do
-		if [ -f $FILE_OR_FOLDER_THAT_IS_MINE ];then
+itsmine() {
+	for FILE_OR_FOLDER_THAT_IS_MINE in "$@"; do
+		if [ -f $FILE_OR_FOLDER_THAT_IS_MINE ]; then
 			sudo chown $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
-		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ];then
+		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ]; then
 			sudo chown -R $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
-		else 
+		else
 			error "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
 		fi
 	done
@@ -101,13 +102,13 @@ notice() {
 }
 
 # get the ip address for one container
-dokip(){
+dokip() {
 	CONTAINER_NAME=$1
 	docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 }
 
-dokips(){
-	for CONTAINER_NAME in $(docker ps --format '{{.Names}}');do
+dokips() {
+	for CONTAINER_NAME in $(docker ps --format '{{.Names}}'); do
 		echo $CONTAINER_NAME --- $(dokip $CONTAINER_NAME)
 	done
 }
@@ -115,22 +116,19 @@ dokips(){
 # this function is exporting list of installed VSCode extensions
 exportVSCodeExtList() {
 	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
-	code --list-extensions > $VSCodeExtFile
+	code --list-extensions >$VSCodeExtFile
 }
 
 # this function is installing VSCode extensions according to one prefious export
 importVSCodeExtList() {
 	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
-	if [ -f $VSCodeExtFile ];then
+	if [ -f $VSCodeExtFile ]; then
 		echo "cleaning existing extensions"
 		rm -rf $HOME/.vscode/extensions/*
-		while IFS= read -r extensionToInstall
-		do
+		while IFS= read -r extensionToInstall; do
 			code --install-extension $extensionToInstall
-		done < "$VSCodeExtFile"
+		done <"$VSCodeExtFile"
 	else
 		error "Le fichier contenant la liste des extensions est absent."
 	fi
 }
-
-

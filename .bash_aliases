@@ -33,7 +33,7 @@ alias env="env|sort"
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
 alias dokdown="docker-compose down"
-alias dokexec="docker exec -it --user $(id -u):$(id -g)"
+alias dokexec="docker exec -it"
 alias doklog="docker logs"
 alias doknames="docker ps --format '{{.Names}}'" 
 alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
@@ -44,9 +44,9 @@ alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # Laravel
-alias artisan='dokexec dash php artisan'
-alias tinker='dokexec dash php artisan tinker'
-alias tinkertest="echo '--- env=testing ---' && dokexec dash php artisan tinker --env=testing"
+alias artisan='dokexec --user $(id -u):$(id -g) dash php artisan'
+alias tinker='dokexec --user $(id -u):$(id -g) dash php artisan tinker'
+alias tinkertest="echo '--- env=testing ---' && dokexec --user $(id -u):$(id -g) dash php artisan tinker --env=testing"
 
 # Git
 alias gtus='git status'

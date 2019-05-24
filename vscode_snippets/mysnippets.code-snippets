@@ -27,9 +27,9 @@
 		"scope": "php",
 		"prefix": "die",
 		"body": [
-			"die(__FILE__);"
+			"die(\"\\e[30;48;5;166m\".__FILE__ . '::' . __LINE__ .\"\\e[0m\". PHP_EOL);"
 		],
-		"description": "Write a full die with __FILE__ in it"
+		"description": "Write a die with visible informations (to find it easily) in it"
 	},
 	"var_dump pre encapsulate" :{
 		"scope": "php",

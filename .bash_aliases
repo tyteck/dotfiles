@@ -101,7 +101,6 @@ frsopdreg3)
 	export INTRA_CONTAINER_NAME="intra"
 	export SFMI_CONTAINER_NAME="mysqlmaster"
 	# Aliases that are used on micromania
-	alias db="docker exec -it mysqlmaster mysql $MYSQLMASTER_CREDS sfmi"
 	alias castest="dokexec $INTRA_CONTAINER_NAME phpunit --colors=auto ./sfmi/docs/stats/loots/ventes_par_casier/tests/"
 	alias micro="cd /var/www/intranet/ && clear && ls -lsa web/sfmi/docs"
 	alias cdcore="cd /home/www/core"

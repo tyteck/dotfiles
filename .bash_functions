@@ -61,6 +61,20 @@ itsmine() {
 	done
 }
 
+# extract one value from .env file
+# @param $1 variable name
+# @param $2 file where is set this variable (default .env)
+readVar() {
+	VAR_NAME=$1
+	FILE_NAME=$2
+	if [ -z $FILE_NAME ];then
+		FILE_NAME='.env'
+	fi
+	VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
+    IFS="=" read -ra VAR <<< "$VAR"
+    echo ${VAR[1]}
+}
+
 # this function will display one title the way we can't miss it on term
 title() {
 	MESSAGE=$1
@@ -75,6 +89,12 @@ error() {
 	format="\e[1;41m"
 	normal="\e[0m"
 	echo -e "${format}Error :$normal $MESSAGE"
+}
+
+errorAndExit() {
+	MESSAGE=$1
+	error "$MESSAGE"
+	exit 1
 }
 
 # Warning (white on orange) will precede the message

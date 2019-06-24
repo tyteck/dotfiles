@@ -59,7 +59,7 @@ alias gco='git checkout'
 # apt
 alias aptinstall="sudo apt-get install -y"
 alias fullapt='echo ==== APT-GET ==== && \
-	sudo apt-get upgrade -q -y && \
+	sudo apt-get update -q -y && \
 	sudo apt-get upgrade -q -y && \
 	sudo apt-get autoclean -q -y && \
 	sudo apt-get autoremove -q -y'

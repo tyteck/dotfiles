@@ -133,6 +133,12 @@ dokips() {
 	done
 }
 
+dokrmi(){
+	IMAGE_NAME=$1
+	docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
+}
+
+
 # this function is exporting list of installed VSCode extensions
 exportVSCodeExtList() {
 	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"

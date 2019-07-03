@@ -26,5 +26,9 @@
     "[php]": {
         "editor.defaultFormatter": "kokororin.vscode-phpfmt"
     },
-    "php.validate.enable": false
+    "php.validate.enable": false,
+    "files.encoding": "iso88591",
+    "yaml.schemas": {
+        "file:///home/ftyteca/.vscode/extensions/docsmsft.docs-yaml-0.2.2/schemas/toc.schema.json": "/toc\\.yml/i"
+    }
 }

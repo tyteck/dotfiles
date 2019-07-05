@@ -33,7 +33,8 @@ alias env="env|sort"
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
 alias dokdown="docker-compose down"
-alias dokexec="docker exec --user $(id -u):$(id -g) -it"
+alias dokexec="docker exec -it"
+alias dokexecu="docker exec --user $(id -u):$(id -g) -it"
 alias doklog="docker logs"
 alias doknames="docker ps --format '{{.Names}}'" 
 alias dokrm="docker container rm -f"
@@ -77,19 +78,19 @@ alias biggestFolders='du -a . | sort -n -r | head -n 10'
 alias biggestFiles='du -Sh . | sort -rh | head -20'
 alias spaceleft='df -h'
 
+# some phpunit shortcuts
+alias testcore='dokexec --user $(id -u):$(id -g) core phpunit'
+
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"
 alias cdreve="cd /home/www/reverse.podmytube.com/"
 alias cdcore="cd /home/www/core.podmytube.com/"
-alias cdreve="cd /home/www/reverse.podmytube.com/"
 alias cdplay="cd /home/docker/playlists.podmytube.com/"
 alias cdpods="cd /home/docker/podcasts.podmytube.com/"
 alias cdwww="cd /home/www/www.new.podmytube.com/www"
-alias cdforest="cd /home/docker/forest"
 alias frpod='cd /home/www/fr.podmytube.com/'
 alias cdtyt='cd /home/www/www.tyteca.net/'
 alias cdval='cd /home/www/valentin.tyteca.net/'
-alias cdlyc='cd /home/www/www.lycee-ilec.fr'
 
 # default db shortcuts
 alias dbroot='mysql --login-path=root'

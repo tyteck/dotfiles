@@ -100,10 +100,9 @@ alias dbpmtests='mysql --login-path=pmtests pmtests'
 # common aliases
 case $NODE_NAME in
 frsopdreg3)
-	export INTRA_CONTAINER_NAME="intra"
+	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
 	export SFMI_CONTAINER_NAME="mysqlmaster"
 	# Aliases that are used on micromania
-	alias castest="dokexec $INTRA_CONTAINER_NAME phpunit --colors=auto ./sfmi/docs/stats/loots/ventes_par_casier/tests/"
 	alias micro="cd /var/www/intranet/web/webintra && clear && ls -lsa sfmi/docs"
 	alias cdcore="cd /home/www/core"
 	alias cdreve="cd /home/www/reve"
@@ -141,7 +140,7 @@ MSI-Laptop)
 	alias cdwww="cd /home/www/www.podmytube.com/"
 	;;
 esac
-alias getTables="docker exec $INTRA_CONTAINER_NAME /var/opt/getTables.sh --host $SFMI_CONTAINER_NAME"
+alias getTables="docker exec $SFMI_CONTAINER_NAME /var/opt/getTables.sh"
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 # 							  CUSTOM PROMPT

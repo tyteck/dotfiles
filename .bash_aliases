@@ -47,8 +47,8 @@ alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml
 
 # Laravel
 alias artisan='dokexec --user $(id -u):$(id -g) dash php artisan'
-alias tinker='dokexec --user $(id -u):$(id -g) dash php artisan tinker'
-alias tinkertest="echo '--- env=testing ---' && dokexec --user $(id -u):$(id -g) dash php artisan tinker --env=testing"
+alias tinker='docker exec -it dash php artisan tinker'
+alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
 
 # Git
 alias gtus='git status'

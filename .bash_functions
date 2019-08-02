@@ -138,21 +138,22 @@ dokrmi(){
 	docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
 }
 
+VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
 
 # this function is exporting list of installed VSCode extensions
 exportVSCodeExtList() {
-	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
-	code --list-extensions >$VSCodeExtFile
+	echo $(code --list-extensions) > ${VSCodeExtFile}
 }
 
 # this function is installing VSCode extensions according to one prefious export
 importVSCodeExtList() {
-	VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
 	if [ -f $VSCodeExtFile ]; then
 		echo "cleaning existing extensions"
 		rm -rf $HOME/.vscode/extensions/*
-		while IFS= read -r extensionToInstall; do
-			code --install-extension $extensionToInstall
+		while read line;do
+			for extensionToInstall in $line; do
+				code --install-extension $extensionToInstall
+			done
 		done <"$VSCodeExtFile"
 	else
 		error "Le fichier contenant la liste des extensions est absent."

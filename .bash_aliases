@@ -83,6 +83,7 @@ alias testcore='dokexec --user $(id -u):$(id -g) core phpunit'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"
+alias cddot="cd $HOME/dotfiles/"
 alias cdreve="cd /home/www/reverse.podmytube.com/"
 alias cdcore="cd /home/www/core.podmytube.com/"
 alias cdplay="cd /home/docker/playlists.podmytube.com/"

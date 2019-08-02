@@ -47,7 +47,7 @@ newintranetpreprod)
 vps591114)
 	PS1="$bold$darkgreen$promptUsername$grey@$darkgreen$promptHost$normal:$blue$promptPath$normal$ "
 	;;
-ns3071385)
+ns3071385|ns3309553)
 	PS1="$bold$purple$promptUsername$grey@$purple$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 # home

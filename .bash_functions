@@ -4,6 +4,14 @@
 # 								FUNCTIONS
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 
+gitown() {
+	if [ -d ".git" ];then
+		git config user.email "frederick@tyteca.net"
+		git config user.name "frederick tyteca"
+		echo "git config done"
+	fi
+}
+
 # Git commit then push in one command
 # if no file is specified the . folder is commit then pushed
 gmit() {

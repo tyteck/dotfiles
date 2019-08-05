@@ -46,7 +46,7 @@ alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # Laravel
-alias artisan='dokexec --user $(id -u):$(id -g) dash php artisan'
+alias artisan='docker exec -it dash php artisan'
 alias tinker='docker exec -it dash php artisan tinker'
 alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
 

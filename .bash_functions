@@ -12,6 +12,21 @@ gitown() {
 	fi
 }
 
+gdelete() {
+	BRANCH_TO_DELETE=$1
+	if [ -z $BRANCH_TO_DELETE ];then
+		errorAndExit "To delete a branch we need a branch name ... don't you think so ?" 
+	fi
+	git branch -d $BRANCH_TO_DELETE
+	if [ "$?" != 0 ]; then
+		errorAndExit "Branch {$BRANCH_TO_DELETE} deletion has failed"
+	fi
+	git push origin --delete $BRANCH_TO_DELETE
+	if [ "$?" != 0 ]; then
+		errorAndExit "Branch {$BRANCH_TO_DELETE} deletion has failed"
+	fi
+}
+
 # Git commit then push in one command
 # if no file is specified the . folder is commit then pushed
 gmit() {

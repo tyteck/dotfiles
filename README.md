@@ -18,14 +18,6 @@ ln -s ~/dotfiles/.vimrc ~/.vimrc
 
 ```
 
-
-Some alias require credentials and they are stored in dotfiles/.creds
-```
-cat dotfiles/.creds-sample > dotfiles/.creds
-```
-I will be glad to get any tips to improve this :)
-
-
 ## VSCode settings
 VSCode is a great ide, but sharing same conf from all places is much greater :).
 

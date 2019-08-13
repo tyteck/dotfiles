@@ -27,6 +27,7 @@ alias valiases="vim ~/dotfiles/.bash_aliases && source ~/dotfiles/.bash_aliases 
 alias phpext="php -i | grep extension_dir"
 alias phpmods="php -m"
 alias cls="clear"
+alias please="sudo"
 alias env="env|sort"
 
 # docker & docker compose

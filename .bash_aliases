@@ -19,6 +19,15 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+
+# Directory navigation.
+alias -- -='cd -'
+alias ..='cd ..'
+alias ..2='..; ..'
+alias ..3='..2; ..'
+alias ..4='..3; ..'
+alias ..5='..4; ..'
+
 # on debian ll is not uncommented within skel/.bashrc
 alias ll='ls -alFh'
 alias vbashrc="vim ~/.bashrc && source ~/.bashrc && echo 'bashrc sourced'"

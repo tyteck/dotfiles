@@ -1,6 +1,11 @@
 #!/bin/bash
 
-filesToReplace=".bashrc .bash_aliases .vimrc"
+if [ -z $HOME ];then
+    echo "Environment variable HOME not set, I prefer to stop"
+    exit 1
+fi
+
+filesToReplace="$HOME/.bashrc $HOME/.bash_aliases $HOME/.vimrc $HOME/.config/Code/User/settings.json"
 userChoice=""
 waitForUser() {
     message=$1
@@ -20,10 +25,10 @@ waitForUser() {
     done
 }
 
-for file in $filesToReplace; do
-    fileInHome="$HOME/$file"
-    fileFromRepo="$HOME/dotfiles/$file"
-    backupFile="$fileInHome.back"
+for fileToReplace in $filesToReplace; do
+    file=$(basename $fileToReplace)
+    sourceFile="$HOME/dotfiles/$file"
+    backupFile="$fileToReplace.back"
 
     if [ -L $backupFile ]; then
         # if backup file already exists AND is one symlink => removing
@@ -34,13 +39,13 @@ for file in $filesToReplace; do
         unlink $backupFile
     fi
 
-    if [ -L $fileInHome ]; then
+    if [ -L $fileToReplace ]; then
         # if file to replace already exists AND is one symlink => removing
-        unlink $fileInHome
-    elif [ -f $fileInHome ]; then
+        unlink $fileToReplace
+    elif [ -f $fileToReplace ]; then
         # if file to replace already exists AND is one regulaar file => moving
-        mv $fileInHome $backupFile
+        mv $fileToReplace $backupFile
     fi 
-    ln -s $fileFromRepo $fileInHome
+    ln -s $sourceFile $fileToReplace
 done
 exit 0

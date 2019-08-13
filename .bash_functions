@@ -1,8 +1,37 @@
 #!/bin/bash
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+# 						    DEFAULT VARIABLES
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+
+#
+# some colors
+#
+darkgreen="\e[32m"
+red="\e[31m"
+normal="\e[0m"       # Text Reset
+
+notice="\e[44m"
+success="\e[42m"
+warning="\e[30;48;5;166m"
+error="\e[41m"
+
+#
+# message level 
+#
+LEVEL_INFO=0
+LEVEL_WARNING=1
+LEVEL_ERROR=2
+LEVEL_NOTICE=3
+LEVEL_SUCCESS=4
+LEVEL_COMMENT=5
+
+VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
+
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 # 								FUNCTIONS
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+
 
 gitown() {
 	if [ -d ".git" ];then
@@ -102,47 +131,85 @@ readVar() {
 title() {
 	MESSAGE=$1
 	format="\e[1;100m"
-	normal="\e[0m"
 	echo -e "$format=== $MESSAGE ===$normal"
 }
 
 # Error (white on red) will precede the message
 error() {
-	MESSAGE=$1
-	format="\e[1;41m"
-	normal="\e[0m"
-	echo -e "${format}Error :$normal $MESSAGE"
+	message=$1
+	showMessage "$message" $LEVEL_ERROR
 }
 
 errorAndExit() {
-	MESSAGE=$1
-	error "$MESSAGE"
+	error "$1"
 	exit 1
 }
 
-# Warning (white on orange) will precede the message
 warning() {
-	MESSAGE=$1
-	format="\e[30;48;5;166m"
-	normal="\e[0m"
-	echo -e "${format}Warning :$normal $MESSAGE"
+	message=$1
+	showMessage "$message" $LEVEL_WARNING
 }
 
-# success message
 success() {
-	MESSAGE=$1
-	format="\e[30;48;5;82m"
-	normal="\e[0m"
-	echo -e "${format}Success :$normal $MESSAGE"
+	message=$1
+	showMessage "$message" $LEVEL_SUCCESS
 }
 
-# single notice
 notice() {
-	MESSAGE=$1
-	format="\e[1;44m"
-	normal="\e[0m"
-	echo -e "${format}Notice :$normal $MESSAGE"
+	message=$1
+	showMessage "$message" $LEVEL_NOTICE
 }
+
+comment() {
+	message=$1
+	showMessage "$message" $LEVEL_COMMENT
+}
+
+verbose(){
+    message=$1
+    [ "${VERBOSE}" -eq "${TRUE}" ] && comment "$message" 
+}
+
+showMessage() {
+    message=$1
+    level=$2
+    color=""
+    levelMessage=""
+    case $level in
+        $LEVEL_WARNING*)
+            color=$warning
+            levelMessage="Warning"
+            ;;
+        $LEVEL_SUCCESS*)
+            color=$success
+            levelMessage="Success"
+            ;;
+        $LEVEL_ERROR*)
+            color=$error
+            levelMessage="Error"
+            ;;
+        $LEVEL_NOTICE*)
+            color=$notice
+            levelMessage="Notice"
+            ;;
+        $LEVEL_COMMENT*)
+            color=$darkgreen
+            levelMessage="Comment"
+            ;;
+        *) 
+            color=$darkgreen
+            levelMessage="Notice"
+    esac
+    echo -e "${color}${levelMessage}${normal} : ${message}"
+}
+
+# tests
+#comment "lorem ipsum"
+#notice "lorem ipsum"
+#warning "lorem ipsum"
+#error "lorem ipsum"
+#success "lorem ipsum"
+
 
 # get the ip address for one container
 dokip() {
@@ -160,8 +227,6 @@ dokrmi(){
 	IMAGE_NAME=$1
 	docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
 }
-
-VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
 
 # this function is exporting list of installed VSCode extensions
 exportVSCodeExtList() {

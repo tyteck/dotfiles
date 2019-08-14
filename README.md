@@ -6,25 +6,10 @@ this is the best way (til now) I found to use same aliases/conf on every
 server/machine 
 
 ## Installation 
-
 ```
-git clone git@github.com:tyteck/dotfiles.git
-
-if [ -f ~/.bash_aliases ];then mv ~/.bash_aliases ~/.bash_aliases.back;fi
-
-ln -s ~/dotfiles/.bash_aliases ~/.bash_aliases
-
-ln -s ~/dotfiles/.vimrc ~/.vimrc
-
+./dotfiles/install.sh
 ```
-
-
-Some alias require credentials and they are stored in dotfiles/.creds
-```
-cat dotfiles/.creds-sample > dotfiles/.creds
-```
-I will be glad to get any tips to improve this :)
-
+Should install .bashrc, .bash_aliases and .vimrc (at the moment)
 
 ## VSCode settings
 VSCode is a great ide, but sharing same conf from all places is much greater :).

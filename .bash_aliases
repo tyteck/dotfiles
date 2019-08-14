@@ -27,6 +27,7 @@ alias valiases="vim ~/dotfiles/.bash_aliases && source ~/dotfiles/.bash_aliases 
 alias phpext="php -i | grep extension_dir"
 alias phpmods="php -m"
 alias cls="clear"
+alias please="sudo"
 alias env="env|sort"
 
 # docker & docker compose
@@ -46,7 +47,7 @@ alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # Laravel
-alias artisan='dokexec --user $(id -u):$(id -g) dash php artisan'
+alias artisan='docker exec -it dash php artisan'
 alias tinker='docker exec -it dash php artisan tinker'
 alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
 

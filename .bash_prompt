@@ -46,7 +46,7 @@ vps256025.ovh.net)
 	;;
 #vps2
 vps591114)
-	PS1="$bold$darkgreen$promptUsername$grey@$darkgreen$promptHost$normal:$blue$promptPath$normal$ "
+	PS1="$bold$orange$promptUsername$grey@$orange$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 #dedie
 ns3071385)

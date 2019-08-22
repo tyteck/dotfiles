@@ -1,18 +1,48 @@
 #!/bin/bash
 # Maintainer : frederick tyteca <frederick@tyteca.net>
 # This script only goal is to prepare my dev environment
-# It is copying some bash configuration files 
+# It is copying some bash configuration files
 # - .bashrc
 # - .bash_aliases
 # - .vimrc
+# - settings.json (VS Code)
 # and some configuration file for VScode as well.
 #
 SCRIPT_DIR=$(dirname ${0})
 SCRIPT_NAME=$(basename ${0})
 
-if [ -f .bash_functions ];then
+if [ -f .bash_functions ]; then
     . .bash_functions
 fi
+
+function createBackupFile() {
+    local fileToBeBackuped=$1
+    local backupFile=$2
+    verbose "backuping file ${fileToBeBackuped} => ${backupFile}"
+    mv $fileToBeBackuped $backupFile
+    if [ $? != 0 ]; then
+        errorAndExit "Creating backup file ${backupFile} from ${fileToBeBackuped} has failed"
+    fi
+}
+
+function removeExistingFile() {
+    local fileToRemove=$1
+    local fileToRemoveType=""
+    if [ ! -f $fileToRemove ]; then
+        return 0
+    fi
+    if [ -L $fileToRemove ]; then
+        fileToRemoveType="symlink"
+    else
+        fileToRemoveType="file"
+    fi
+    verbose "Removing ${fileToRemoveType} ${fileToRemove}"
+    unlink $fileToRemove
+    if [ $? != 0 ]; then
+        errorAndExit "Removing ${fileToRemove} has failed"
+    fi
+    return 0
+}
 
 #
 # Default values
@@ -23,7 +53,6 @@ VERBOSE=${FALSE}
 INFO=0
 WARNING=1
 ERROR=2
-
 
 waitForUser() {
     message=$1
@@ -42,11 +71,16 @@ waitForUser() {
 }
 
 #
-# Files I will replace with the dotfiles
+# Files I will replace with symlinks to their dotfiles equivalent.
 #
-filesToReplace="$HOME/.bashrc $HOME/.bash_aliases $HOME/.vimrc $HOME/.config/Code/User/settings.json"
+filesToReplaceWithSymlink="$HOME/.bashrc \
+    $HOME/.bash_aliases \
+    $HOME/.vimrc \
+    $HOME/.config/Code/User/settings.json\
+    $HOME/.config/Code/User/keybindings.json\
+    "
 
-if [ -z $HOME ];then
+if [ -z $HOME ]; then
     errorAndExit "Environment variable HOME not set, I prefer to stop !"
 fi
 
@@ -54,64 +88,69 @@ fi
 # Getting params
 #
 while [ $# -gt 0 ]; do
-	case $1 in
-		'-?' | '-h' | '--help')
-			usage
-			;;
-		'-v' | '--verbose')
-			VERBOSE=${TRUE}
-			;;
-	esac
-	shift
+    case $1 in
+    '-?' | '-h' | '--help')
+        usage
+        ;;
+    '-v' | '--verbose')
+        VERBOSE=${TRUE}
+        ;;
+    esac
+    shift
 done
 
 #
-# Processing config files 
+# Processing config files
 #
-for fileToReplace in $filesToReplace; do
-    file=$(basename $fileToReplace)
-    dir=$(dirname $fileToReplace)
-    
-    sourceFile="$HOME/dotfiles/$file"
-    backupFile="$fileToReplace.back"
+for fileToReplaceWithSymlink in $filesToReplaceWithSymlink; do
+    fileNameToBeReplaced=$(basename $fileToReplaceWithSymlink)
+    directoryWhereIsLocatedTheFileToReplace=$(dirname $fileToReplaceWithSymlink)
 
+    sourceFile="$HOME/dotfiles/${fileNameToBeReplaced}"
+    backupFile="$fileToReplaceWithSymlink.back"
+
+    #echo "--$fileToReplaceWithSymlink--"
+    #continue
     #
     # Creating target directory
     #
-    if [ ! -d $dir ];then
-        verbose "Creating directory ${dir}"
-        mkdir -p $dir
+    if [ ! -d $directoryWhereIsLocatedTheFileToReplace ]; then
+        verbose "Creating directory ${directoryWhereIsLocatedTheFileToReplace}"
+        mkdir -p $directoryWhereIsLocatedTheFileToReplace
     fi
 
     if [ -L $backupFile ]; then
         #
         # if backup file already exists AND is one symlink => removing
         #
-        verbose "Removing symlink ${backupFile}"
-        unlink $backupFile
+        verbose "backup file ${backupFile} is a symlink => removing"
+        removeExistingFile ${backupFile}
     elif [ -f $backupFile ]; then
         #
         # if backup file already exists AND is one regular file => removing
+        # else => exit
         #
+        verbose "backup file ${backupFile} is a regular file => asking what to do"
         waitForUser "Backup file $backupFile already exists. Do you agree to overwrite it ? [y/N] : "
-        verbose "Removing file ${backupFile}"
-        unlink $backupFile
+        removeExistingFile ${backupFile}
     fi
 
-    if [ -L $fileToReplace ]; then
+    if [ -L $fileToReplaceWithSymlink ]; then
         #
         # if file to replace already exists AND is one symlink => removing
         #
-        verbose "Removing symlink ${fileToReplace}"
-        unlink $fileToReplace
-    elif [ -f $fileToReplace ]; then
+        removeExistingFile ${fileToReplaceWithSymlink}
+    elif [ -f ${fileToReplaceWithSymlink} ]; then
         #
         # if file to replace already exists AND is one regulaar file => moving
         #
-        verbose "backuping file ${fileToReplace} => ${backupFile}"
-        mv $fileToReplace $backupFile
-    fi 
-    verbose "Creating symlink to ${sourceFile}"
-    ln -s $sourceFile $fileToReplace
+        createBackupFile "${fileToReplaceWithSymlink}" "${backupFile}"
+    fi
+
+    verbose "Creating symlink ${fileToReplaceWithSymlink} => ${sourceFile}"
+    ln -s ${sourceFile} ${fileToReplaceWithSymlink}
+    if [ $? != 0 ]; then
+        errorAndExit "Creating symlink ${fileToReplaceWithSymlink} => ${sourceFile} has failed"
+    fi
 done
 exit 0

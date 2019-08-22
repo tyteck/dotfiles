@@ -12,7 +12,7 @@ red="\e[31m"
 normal="\e[0m"       # Text Reset
 
 notice="\e[44m"
-success="\e[42m"
+success="\e[48;5;22m"
 warning="\e[30;48;5;166m"
 error="\e[41m"
 
@@ -37,7 +37,7 @@ gitown() {
 	if [ -d ".git" ];then
 		git config user.email "frederick@tyteca.net"
 		git config user.name "frederick tyteca"
-		echo "git config done"
+		success "git config done"
 	fi
 }
 
@@ -84,7 +84,7 @@ gmit() {
 	fi
 	git commit -m "$commitMessage" $commitFiles && git push
 	if [ "$?" != 0 ]; then
-		echo "Commit has failed !"
+		errorAndExit "Commit has failed !"
 	fi
 }
 
@@ -93,7 +93,7 @@ grestore() {
 	FILEPATH_TO_RESTORE=$1
 	git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
 	if [ "$?" != 0 ]; then
-		echo "Git restoring file $FILEPATH_TO_RESTORE has failed !"
+		errorAndExit "Git restoring file $FILEPATH_TO_RESTORE has failed !"
 	fi
 }
 
@@ -108,7 +108,7 @@ itsmine() {
 		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ]; then
 			sudo chown -R $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
 		else
-			error "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
+			errorAndExit "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
 		fi
 	done
 }

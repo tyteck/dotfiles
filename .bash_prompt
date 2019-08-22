@@ -36,25 +36,28 @@ intranetpreprod)
 sophia)
 	PS1="$bold$red$promptUsername$grey@$red$promptHost$normal:$blue$promptPath$normal$ "
 	;;
+newintranetpreprod)
+	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$blue$promptPath$normal$ "
+	;;
 # ==============================
-
 #vps1
 vps256025.ovh.net)
 	PS1="$bold$yellow$promptUsername$grey@$yellow$promptHost$normal:$blue$promptPath$normal$ "
 	;;
-newintranetpreprod)
-	PS1="$bold$blue$promptUsername$grey@$blue$promptHost$normal:$blue$promptPath$normal$ "
-	;;
 #vps2
 vps591114)
-	PS1="$bold$darkgreen$promptUsername$grey@$darkgreen$promptHost$normal:$blue$promptPath$normal$ "
+	PS1="$bold$orange$promptUsername$grey@$orange$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 #dedie
 ns3071385)
 	PS1="$bold$purple$promptUsername$grey@$purple$promptHost$normal:$blue$promptPath$normal$ "
 	;;
-#kim
+#kim1
 ns3309553)
+	PS1="$bold$pink$promptUsername$grey@$pink$promptHost$normal:$blue$promptPath$normal$ "
+	;;
+#Pc Sabine (WSL)
+PC-Sabine)
 	PS1="$bold$pink$promptUsername$grey@$pink$promptHost$normal:$blue$promptPath$normal$ "
 	;;
 # home

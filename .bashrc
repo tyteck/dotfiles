@@ -73,6 +73,13 @@ if [ -f $micromania_conf ]; then
     . $micromania_conf
 fi
 
+# ==================================================
+# wsl conf
+wsl_conf=~/.wsl_conf
+if [ -f $wsl_conf ]; then
+	# this file should not be versionned
+    . $wsl_conf
+fi
 
 
 # enable programmable completion features (you don't need to enable

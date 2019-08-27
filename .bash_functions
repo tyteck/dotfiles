@@ -9,7 +9,7 @@
 #
 darkgreen="\e[32m"
 red="\e[31m"
-normal="\e[0m"       # Text Reset
+normal="\e[0m" # Text Reset
 
 notice="\e[44m"
 success="\e[48;5;22m"
@@ -17,7 +17,7 @@ warning="\e[30;48;5;166m"
 error="\e[41m"
 
 #
-# message level 
+# message level
 #
 LEVEL_INFO=0
 LEVEL_WARNING=1
@@ -32,9 +32,8 @@ VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
 # 								FUNCTIONS
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 
-
 gitown() {
-	if [ -d ".git" ];then
+	if [ -d ".git" ]; then
 		git config user.email "frederick@tyteca.net"
 		git config user.name "frederick tyteca"
 		success "git config done"
@@ -43,8 +42,8 @@ gitown() {
 
 gdelete() {
 	BRANCH_TO_DELETE=$1
-	if [ -z $BRANCH_TO_DELETE ];then
-		errorAndExit "To delete a branch we need a branch name ... don't you think so ?" 
+	if [ -z $BRANCH_TO_DELETE ]; then
+		errorAndExit "To delete a branch we need a branch name ... don't you think so ?"
 	fi
 	git branch -d $BRANCH_TO_DELETE
 	if [ "$?" != 0 ]; then
@@ -119,12 +118,12 @@ itsmine() {
 readVar() {
 	VAR_NAME=$1
 	FILE_NAME=$2
-	if [ -z $FILE_NAME ];then
+	if [ -z $FILE_NAME ]; then
 		FILE_NAME='.env'
 	fi
 	VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
-    IFS="=" read -ra VAR <<< "$VAR"
-    echo ${VAR[1]}
+	IFS="=" read -ra VAR <<<"$VAR"
+	echo ${VAR[1]}
 }
 
 # this function will display one title the way we can't miss it on term
@@ -165,42 +164,43 @@ comment() {
 	showMessage "$message" $LEVEL_COMMENT
 }
 
-verbose(){
-    message=$1
-    [ "${VERBOSE}" -eq "${TRUE}" ] && comment "$message" 
+verbose() {
+	message=$1
+	[ "${VERBOSE}" -eq "${TRUE}" ] && comment "$message"
 }
 
 showMessage() {
-    message=$1
-    level=$2
-    color=""
-    levelMessage=""
-    case $level in
-        $LEVEL_WARNING*)
-            color=$warning
-            levelMessage="Warning"
-            ;;
-        $LEVEL_SUCCESS*)
-            color=$success
-            levelMessage="Success"
-            ;;
-        $LEVEL_ERROR*)
-            color=$error
-            levelMessage="Error"
-            ;;
-        $LEVEL_NOTICE*)
-            color=$notice
-            levelMessage="Notice"
-            ;;
-        $LEVEL_COMMENT*)
-            color=$darkgreen
-            levelMessage="Comment"
-            ;;
-        *) 
-            color=$darkgreen
-            levelMessage="Notice"
-    esac
-    echo -e "${color}${levelMessage}${normal} : ${message}"
+	message=$1
+	level=$2
+	color=""
+	levelMessage=""
+	case $level in
+	$LEVEL_WARNING*)
+		color=$warning
+		levelMessage="Warning"
+		;;
+	$LEVEL_SUCCESS*)
+		color=$success
+		levelMessage="Success"
+		;;
+	$LEVEL_ERROR*)
+		color=$error
+		levelMessage="Error"
+		;;
+	$LEVEL_NOTICE*)
+		color=$notice
+		levelMessage="Notice"
+		;;
+	$LEVEL_COMMENT*)
+		color=$darkgreen
+		levelMessage="Comment"
+		;;
+	*)
+		color=$darkgreen
+		levelMessage="Notice"
+		;;
+	esac
+	echo -e "${color}${levelMessage}${normal} : ${message}"
 }
 
 # tests
@@ -209,7 +209,6 @@ showMessage() {
 #warning "lorem ipsum"
 #error "lorem ipsum"
 #success "lorem ipsum"
-
 
 # get the ip address for one container
 dokip() {
@@ -223,14 +222,14 @@ dokips() {
 	done
 }
 
-dokrmi(){
+dokrmi() {
 	IMAGE_NAME=$1
 	docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
 }
 
 # this function is exporting list of installed VSCode extensions
 exportVSCodeExtList() {
-	echo $(code --list-extensions) > ${VSCodeExtFile}
+	echo $(code --list-extensions) >${VSCodeExtFile}
 }
 
 # this function is installing VSCode extensions according to one prefious export
@@ -238,7 +237,7 @@ importVSCodeExtList() {
 	if [ -f $VSCodeExtFile ]; then
 		echo "cleaning existing extensions"
 		rm -rf $HOME/.vscode/extensions/*
-		while read line;do
+		while read line; do
 			for extensionToInstall in $line; do
 				code --install-extension $extensionToInstall
 			done

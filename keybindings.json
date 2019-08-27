@@ -25,5 +25,22 @@
         "key": "ctrl+tab",
         "command": "-workbench.action.quickOpenNavigateNextInEditorPicker",
         "when": "inEditorsPicker && inQuickOpen"
+    },
+    {
+        "key": "ctrl+shift+j",
+        "command": "-workbench.action.search.toggleQueryDetails",
+        "when": "searchViewletVisible"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "editor.action.joinLines"
+    },
+    {
+        "key": "ctrl+shift+j",
+        "command": "workbench.action.togglePanel"
+    },
+    {
+        "key": "ctrl+j",
+        "command": "-workbench.action.togglePanel"
     }
 ]

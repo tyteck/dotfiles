@@ -83,7 +83,7 @@ gmit() {
 	fi
 	git commit -m "$commitMessage" $commitFiles && git push
 	if [ "$?" != 0 ]; then
-		error "Commit has failed !"
+		error "Commit has failed"
 	fi
 }
 
@@ -204,11 +204,11 @@ showMessage() {
 }
 
 # tests
-#comment "lorem ipsum"
-#notice "lorem ipsum"
-#warning "lorem ipsum"
-#error "lorem ipsum"
-#success "lorem ipsum"
+comment "lorem ipsum"
+notice "lorem ipsum"
+warning "lorem ipsum"
+error "lorem ipsum"
+success "lorem ipsum"
 
 # get the ip address for one container
 dokip() {

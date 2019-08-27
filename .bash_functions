@@ -9,8 +9,6 @@
 #
 darkgreen="\e[32m"
 red="\e[31m"
-normal="\e[0m" # Text Reset
-
 notice="\e[44m"
 success="\e[48;5;22m"
 warning="\e[30;48;5;166m"
@@ -130,12 +128,13 @@ readVar() {
 title() {
 	MESSAGE=$1
 	format="\e[1;100m"
-	echo -e "$format=== $MESSAGE ===$normal"
+	echo -e "$format=== $MESSAGE ===\e[0m"
 }
 
 # Error (white on red) will precede the message
 error() {
-	message=$1
+	message="$1"
+	echo "message : $message --- level_error : $LEVEL_ERROR"
 	showMessage "$message" $LEVEL_ERROR
 }
 
@@ -145,53 +144,54 @@ errorAndExit() {
 }
 
 warning() {
-	message=$1
+	message="$1"
 	showMessage "$message" $LEVEL_WARNING
 }
 
 success() {
-	message=$1
+	message="$1"
 	showMessage "$message" $LEVEL_SUCCESS
 }
 
 notice() {
-	message=$1
+	message="$1"
 	showMessage "$message" $LEVEL_NOTICE
 }
 
 comment() {
-	message=$1
+	message="$1"
 	showMessage "$message" $LEVEL_COMMENT
 }
 
 verbose() {
-	message=$1
+	message="$1"
 	[ "${VERBOSE}" -eq "${TRUE}" ] && comment "$message"
 }
 
-showMessage() {
-	message=$1
-	level=$2
-	color=""
-	levelMessage=""
+function showMessage() {
+	local message="$1"
+	if [ -z "$message" ]; then message="no comments"; fi
+	local level="$2"
+	local color=""
+	local levelMessage=""
 	case $level in
-	$LEVEL_WARNING*)
+	$LEVEL_WARNING)
 		color=$warning
 		levelMessage="Warning"
 		;;
-	$LEVEL_SUCCESS*)
+	$LEVEL_SUCCESS)
 		color=$success
 		levelMessage="Success"
 		;;
-	$LEVEL_ERROR*)
+	$LEVEL_ERROR)
 		color=$error
 		levelMessage="Error"
 		;;
-	$LEVEL_NOTICE*)
+	$LEVEL_NOTICE)
 		color=$notice
 		levelMessage="Notice"
 		;;
-	$LEVEL_COMMENT*)
+	$LEVEL_COMMENT)
 		color=$darkgreen
 		levelMessage="Comment"
 		;;
@@ -200,15 +200,15 @@ showMessage() {
 		levelMessage="Notice"
 		;;
 	esac
-	echo -e "${color}${levelMessage}${normal} : ${message}"
+	echo -e "$color$levelMessage\e[0m : $message"
 }
 
 # tests
-comment "lorem ipsum"
-notice "lorem ipsum"
-warning "lorem ipsum"
+#comment "lorem ipsum"
+#notice "lorem ipsum"
+#warning "lorem ipsum"
 error "lorem ipsum"
-success "lorem ipsum"
+#success "lorem ipsum"
 
 # get the ip address for one container
 dokip() {

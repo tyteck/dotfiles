@@ -83,7 +83,7 @@ gmit() {
 	fi
 	git commit -m "$commitMessage" $commitFiles && git push
 	if [ "$?" != 0 ]; then
-		errorAndExit "Commit has failed !"
+		error "Commit has failed !"
 	fi
 }
 

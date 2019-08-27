@@ -1,6 +1,21 @@
 #!/bin/bash
+
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+# 							  	FUNCTIONS
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+if [ -f ~/dotfiles/.bash_functions ]; then
+	. ~/dotfiles/.bash_functions
+fi
+
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+# 							  CUSTOM PROMPT
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 export NODE_NAME=$(hostname)
-export EDITOR=`which vim`
+if [ -f ~/dotfiles/.bash_prompt ]; then
+	. ~/dotfiles/.bash_prompt
+fi
+
+export EDITOR=$(which vim)
 
 if [ -d ~/sbin ]; then
 	PATH="${PATH}:~/sbin"
@@ -18,7 +33,6 @@ export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
-
 
 # Directory navigation.
 alias -- -='cd -'
@@ -46,7 +60,7 @@ alias dokdown="docker-compose down"
 alias dokexec="docker exec -it"
 alias dokexecu="docker exec --user $(id -u):$(id -g) -it"
 alias doklog="docker logs"
-alias doknames="docker ps --format '{{.Names}}'" 
+alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"
 alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
 alias dokrestart="docker-compose down && docker-compose up -d"
@@ -69,12 +83,18 @@ alias gbr='git branch'
 alias gco='git checkout'
 
 # apt
-alias aptinstall="sudo apt-get install -y"
 alias fullapt='echo ==== APT-GET ==== && \
 	sudo apt-get update -q -y && \
 	sudo apt-get upgrade -q -y && \
 	sudo apt-get autoclean -q -y && \
 	sudo apt-get autoremove -q -y'
+if hash ansible-playbook 2>/dev/null; then
+	ansiblePlaybooksDirectory=$HOME/ansible-playbooks
+	if [ -d $HOME/ansible-playbooks/ ]; then
+		alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
+	fi
+fi
+alias aptinstall="sudo apt-get install -y"
 
 # curl
 alias prettyjson="python -m json.tool"
@@ -152,18 +172,3 @@ MSI-Laptop)
 	;;
 esac
 alias getTables="docker exec $SFMI_CONTAINER_NAME /var/opt/getTables.sh"
-
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-# 							  CUSTOM PROMPT
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-if [ -f ~/dotfiles/.bash_prompt ]; then
-	. ~/dotfiles/.bash_prompt
-fi
-
-
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-# 							  	FUNCTIONS
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-if [ -f ~/dotfiles/.bash_functions ]; then
-	. ~/dotfiles/.bash_functions
-fi

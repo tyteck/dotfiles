@@ -92,6 +92,8 @@ if hash ansible-playbook 2>/dev/null; then
 	ansiblePlaybooksDirectory=$HOME/ansible-playbooks
 	if [ -d $HOME/ansible-playbooks/ ]; then
 		alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
+	else
+		comment "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
 	fi
 fi
 alias aptinstall="sudo apt-get install -y"

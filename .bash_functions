@@ -133,8 +133,7 @@ title() {
 
 # Error (white on red) will precede the message
 error() {
-	message="$1"
-	echo "message : $message --- level_error : $LEVEL_ERROR"
+	message=$1
 	showMessage "$message" $LEVEL_ERROR
 }
 
@@ -192,7 +191,7 @@ function showMessage() {
 		levelMessage="Notice"
 		;;
 	$LEVEL_COMMENT)
-		color=$darkgreen
+		color="\e[32m"
 		levelMessage="Comment"
 		;;
 	*)
@@ -207,7 +206,7 @@ function showMessage() {
 #comment "lorem ipsum"
 #notice "lorem ipsum"
 #warning "lorem ipsum"
-error "lorem ipsum"
+#error "lorem ipsum"
 #success "lorem ipsum"
 
 # get the ip address for one container

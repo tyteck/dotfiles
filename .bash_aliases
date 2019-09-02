@@ -111,7 +111,7 @@ alias biggestFiles='du -Sh . | sort -rh | head -20'
 alias spaceleft='df -h'
 
 # some phpunit shortcuts
-alias testcore='dokexec --user $(id -u):$(id -g) core phpunit'
+alias testcore='dokexec core phpunit'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"

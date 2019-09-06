@@ -1,5 +1,4 @@
 {
-    "better-phpunit.phpunitBinary": "/usr/bin/phpunit",
     "editor.fontFamily": "'Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontLigatures": true,
     "editor.minimap.enabled": false,

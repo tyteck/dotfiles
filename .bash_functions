@@ -42,6 +42,11 @@ gdelete() {
 	BRANCH_TO_DELETE=$1
 	if [ -z $BRANCH_TO_DELETE ]; then
 		error "To delete a branch we need a branch name ... don't you think so ?"
+		return 1
+	fi
+	if [ $BRANCH_TO_DELETE == "master" ];then
+		error "=========> ARE YOU FUCKING CRAZY ??????"
+		return 0
 	fi
 	git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE
 	if [ "$?" != 0 ]; then

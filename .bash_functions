@@ -41,15 +41,27 @@ gitown() {
 gdelete() {
 	BRANCH_TO_DELETE=$1
 	if [ -z $BRANCH_TO_DELETE ]; then
-		errorAndExit "To delete a branch we need a branch name ... don't you think so ?"
+		error "To delete a branch we need a branch name ... don't you think so ?"
+		return 1
+	fi
+	if [ $BRANCH_TO_DELETE == "master" ];then
+		error "=========> ARE YOU FUCKING CRAZY ??????"
+		return 0
+	fi
+	git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE
+	if [ "$?" != 0 ]; then
+		notice "this branch does not exists (already removed ?)"
+		return 0
 	fi
 	git branch -d $BRANCH_TO_DELETE
 	if [ "$?" != 0 ]; then
-		errorAndExit "Branch {$BRANCH_TO_DELETE} deletion has failed"
+		error "Branch {$BRANCH_TO_DELETE} deletion has failed"
+		return 1
 	fi
 	git push origin --delete $BRANCH_TO_DELETE
 	if [ "$?" != 0 ]; then
-		errorAndExit "Branch {$BRANCH_TO_DELETE} deletion has failed"
+		error "Branch {$BRANCH_TO_DELETE} deletion has failed"
+		return 1
 	fi
 }
 
@@ -82,6 +94,7 @@ gmit() {
 	git commit -m "$commitMessage" $commitFiles && git push
 	if [ "$?" != 0 ]; then
 		error "Commit has failed"
+		return 1
 	fi
 }
 
@@ -90,8 +103,10 @@ grestore() {
 	FILEPATH_TO_RESTORE=$1
 	git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
 	if [ "$?" != 0 ]; then
-		errorAndExit "Git restoring file $FILEPATH_TO_RESTORE has failed !"
+		error "Git restoring file $FILEPATH_TO_RESTORE has failed !"
+		return 1
 	fi
+	return 0
 }
 
 # it s mine
@@ -105,9 +120,11 @@ itsmine() {
 		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ]; then
 			sudo chown -R $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
 		else
-			errorAndExit "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
+			error "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
+			return 1
 		fi
 	done
+	return 0
 }
 
 # extract one value from .env file
@@ -135,11 +152,6 @@ title() {
 error() {
 	message=$1
 	showMessage "$message" $LEVEL_ERROR
-}
-
-errorAndExit() {
-	error "$1"
-	exit 1
 }
 
 warning() {

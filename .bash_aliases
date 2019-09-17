@@ -109,9 +109,13 @@ alias apacheStatus='sudo apache2ctl status'
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
 alias biggestFiles='du -Sh . | sort -rh | head -20'
 alias spaceleft='df -h'
+alias dirsize='du -sh'
 
 # some phpunit shortcuts
-alias testcore='dokexec core phpunit'
+alias testcore='docker run --network nginx-proxy --name core.pmt --rm \
+	--volume /home/www/core.podmytube.com/:/app \
+	--volume /var/log/pmt/error.log:/var/log/pmt/error.log \
+	core.pmt phpunit --colors always'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"

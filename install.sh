@@ -21,8 +21,10 @@ function createBackupFile() {
     verbose "backuping file ${fileToBeBackuped} => ${backupFile}"
     mv $fileToBeBackuped $backupFile
     if [ $? != 0 ]; then
-        errorAndExit "Creating backup file ${backupFile} from ${fileToBeBackuped} has failed"
+        error "Creating backup file ${backupFile} from ${fileToBeBackuped} has failed"
+        return 1
     fi
+    return 0
 }
 
 function removeExistingFile() {
@@ -39,7 +41,8 @@ function removeExistingFile() {
     verbose "Removing ${fileToRemoveType} ${fileToRemove}"
     unlink $fileToRemove
     if [ $? != 0 ]; then
-        errorAndExit "Removing ${fileToRemove} has failed"
+        error "Removing ${fileToRemove} has failed"
+        return 1
     fi
     return 0
 }
@@ -81,7 +84,8 @@ filesToReplaceWithSymlink="$HOME/.bashrc \
     "
 
 if [ -z $HOME ]; then
-    errorAndExit "Environment variable HOME not set, I prefer to stop !"
+    error "Environment variable HOME not set, I prefer to stop !"
+    return 1
 fi
 
 #
@@ -150,7 +154,8 @@ for fileToReplaceWithSymlink in $filesToReplaceWithSymlink; do
     verbose "Creating symlink ${fileToReplaceWithSymlink} => ${sourceFile}"
     ln -s ${sourceFile} ${fileToReplaceWithSymlink}
     if [ $? != 0 ]; then
-        errorAndExit "Creating symlink ${fileToReplaceWithSymlink} => ${sourceFile} has failed"
+        error "Creating symlink ${fileToReplaceWithSymlink} => ${sourceFile} has failed"
+        return 1
     fi
 done
 exit 0

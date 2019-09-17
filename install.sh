@@ -15,13 +15,13 @@ if [ -f .bash_functions ]; then
     . .bash_functions
 fi
 
-function createBackupFile() {
-    local fileToBeBackuped=$1
-    local backupFile=$2
-    verbose "backuping file ${fileToBeBackuped} => ${backupFile}"
-    mv $fileToBeBackuped $backupFile
+function backup(){
+    local itemToBackup=$1
+    local backupItem="${itemToBackup}.bak"
+    verbose "backuping item ${itemToBackup} => ${backupItem}"
+    mv $itemToBackup $backupItem
     if [ $? != 0 ]; then
-        error "Creating backup file ${backupFile} from ${fileToBeBackuped} has failed"
+        error "Backup from ${itemToBackup} to ${backupItem} has failed"
         return 1
     fi
     return 0
@@ -73,20 +73,23 @@ waitForUser() {
     done
 }
 
-#
-# Files I will replace with symlinks to their dotfiles equivalent.
-#
-filesToReplaceWithSymlink="$HOME/.bashrc \
-    $HOME/.bash_aliases \
-    $HOME/.vimrc \
-    $HOME/.config/Code/User/settings.json\
-    $HOME/.config/Code/User/keybindings.json\
-    "
-
 if [ -z $HOME ]; then
     error "Environment variable HOME not set, I prefer to stop !"
     return 1
 fi
+
+#
+# Files I will replace with symlinks to their dotfiles equivalent.
+#
+dotfiles="$HOME/dotfiles"
+declare -A itemsToReplace
+itemsToReplace["$HOME/.config/terminator"]="$dotfiles/terminator"
+itemsToReplace["$HOME/.bashrc"]="$dotfiles/.bashrc"
+itemsToReplace["$HOME/.bash_aliases"]="$dotfiles/.bash_aliases"
+itemsToReplace["$HOME/.vimrc"]="$dotfiles/.vimrc"
+itemsToReplace["$HOME/.config/Code/User/settings.json"]="$dotfiles/code/settings.json"
+itemsToReplace["$HOME/.config/Code/User/keybindings.json"]="$dotfiles/code/keybindings.json"
+itemsToReplace["$HOME/.config/Code/User/snippets"]="$dotfiles/code/snippets"
 
 #
 # Getting params
@@ -103,59 +106,29 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-#
-# Processing config files
-#
-for fileToReplaceWithSymlink in $filesToReplaceWithSymlink; do
-    fileNameToBeReplaced=$(basename $fileToReplaceWithSymlink)
-    directoryWhereIsLocatedTheFileToReplace=$(dirname $fileToReplaceWithSymlink)
 
-    sourceFile="$HOME/dotfiles/${fileNameToBeReplaced}"
-    backupFile="$fileToReplaceWithSymlink.back"
-
-    #echo "--$fileToReplaceWithSymlink--"
-    #continue
+for itemToReplace in "${!itemsToReplace[@]}"; do 
     #
-    # Creating target directory
+    # itemToReplace = the original item
+    # targetItem = the item in the git dotfiles
     #
-    if [ ! -d $directoryWhereIsLocatedTheFileToReplace ]; then
-        verbose "Creating directory ${directoryWhereIsLocatedTheFileToReplace}"
-        mkdir -p $directoryWhereIsLocatedTheFileToReplace
+    targetItem=${itemsToReplace[$itemToReplace]}
+    verbose "${itemToReplace} --- ${targetItem}" 
+    if [ -d ${itemToReplace} ]; then
+        backup ${itemToReplace}
+    elif [ -L ${itemToReplace} ]; then
+        verbose "$itemToReplace is already one symlink"
+        continue
+    elif [ -f ${itemToReplace} ]; then
+        backup ${itemToReplace}
     fi
 
-    if [ -L $backupFile ]; then
-        #
-        # if backup file already exists AND is one symlink => removing
-        #
-        verbose "backup file ${backupFile} is a symlink => removing"
-        removeExistingFile ${backupFile}
-    elif [ -f $backupFile ]; then
-        #
-        # if backup file already exists AND is one regular file => removing
-        # else => exit
-        #
-        verbose "backup file ${backupFile} is a regular file => asking what to do"
-        waitForUser "Backup file $backupFile already exists. Do you agree to overwrite it ? [y/N] : "
-        removeExistingFile ${backupFile}
-    fi
-
-    if [ -L $fileToReplaceWithSymlink ]; then
-        #
-        # if file to replace already exists AND is one symlink => removing
-        #
-        removeExistingFile ${fileToReplaceWithSymlink}
-    elif [ -f ${fileToReplaceWithSymlink} ]; then
-        #
-        # if file to replace already exists AND is one regulaar file => moving
-        #
-        createBackupFile "${fileToReplaceWithSymlink}" "${backupFile}"
-    fi
-
-    verbose "Creating symlink ${fileToReplaceWithSymlink} => ${sourceFile}"
-    ln -s ${sourceFile} ${fileToReplaceWithSymlink}
+    verbose "Creating symlink ${itemToReplace} => ${targetItem}"
+    ln -s ${targetItem} ${itemToReplace}
     if [ $? != 0 ]; then
-        error "Creating symlink ${fileToReplaceWithSymlink} => ${sourceFile} has failed"
+        error "Creating symlink ${itemToReplace} => ${targetItem} has failed"
         return 1
     fi
 done
+
 exit 0

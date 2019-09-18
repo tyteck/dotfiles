@@ -84,3 +84,25 @@ importVSCodeExtList() {
     fi
 }
 
+
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+#                               	DOCKER
+# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+
+# get the ip address for one container
+function dokip() {
+	CONTAINER_NAME=$1
+	docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+}
+
+function dokips() {
+	for CONTAINER_NAME in $(docker ps --format '{{.Names}}'); do
+		echo $CONTAINER_NAME --- $(dokip $CONTAINER_NAME)
+	done
+}
+
+function dokrmi() {
+	IMAGE_NAME=$1
+	docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
+}
+

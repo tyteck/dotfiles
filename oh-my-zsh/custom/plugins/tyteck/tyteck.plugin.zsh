@@ -1,6 +1,33 @@
 alias zrc='source ~/.zshrc'
 alias please='sudo'
 
+# docker & docker compose
+alias dokbuild="docker-compose build"
+alias dokconfig="docker-compose config"
+alias dokdown="docker-compose down"
+alias dokexec="docker exec -it"
+alias dokexecu="docker exec --user $(id -u):$(id -g) -it"
+alias doklog="docker logs"
+alias doknames="docker ps --format '{{.Names}}'"
+alias dokrm="docker container rm -f"
+alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
+alias dokrestart="docker-compose down && docker-compose up -d"
+alias dokrestartprod="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
+alias doktus="docker ps -a"
+alias dokup="docker-compose up -d"
+alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
+
+# Laravel
+alias artisan='docker exec -it dash php artisan'
+alias tinker='docker exec -it dash php artisan tinker'
+alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
+
+# biggest files
+alias biggestFolders='du -a . | sort -n -r | head -n 10'
+alias biggestFiles='du -Sh . | sort -rh | head -20'
+alias spaceleft='df -h'
+alias dirsize='du -sh'
+
 # apt
 alias fullapt='echo ==== APT-GET ==== && \
     sudo apt-get update -q -y && \
@@ -15,6 +42,30 @@ if hash ansible-playbook 2>/dev/null; then
         comment "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
     fi
 fi
+
+
+# some phpunit shortcuts
+alias testcore='docker run --network nginx-proxy --name core.pmt --rm \
+    --volume /home/www/core.podmytube.com/:/app \
+    --volume /var/log/pmt/error.log:/var/log/pmt/error.log \
+    core.pmt phpunit --colors always'
+
+# default pathes cd shortcuts
+alias cddash="cd /home/www/dashboard.podmytube.com/"
+alias cddot="cd $HOME/dotfiles/"
+alias cdreve="cd /home/www/reverse.podmytube.com/"
+alias cdcore="cd /home/www/core.podmytube.com/"
+alias cdplay="cd /home/docker/playlists.podmytube.com/"
+alias cdpods="cd /home/docker/podcasts.podmytube.com/"
+alias cdwww="cd /home/www/www.new.podmytube.com/"
+alias frpod='cd /home/www/fr.podmytube.com/'
+alias cdtyt='cd /home/www/www.tyteca.net/'
+alias cdval='cd /home/www/valentin.tyteca.net/'
+
+# default db shortcuts
+alias dbroot='mysql --login-path=root'
+alias dbpmt='mysql --login-path=pmt pmt'
+alias dbpmtests='mysql --login-path=pmtests pmtests'
 
 
 

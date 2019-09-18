@@ -46,9 +46,9 @@ fi
 
 # some phpunit shortcuts
 alias testcore='docker run --network nginx-proxy --name core.pmt --rm \
-    --volume /home/www/core.podmytube.com/:/app \
-    --volume /var/log/pmt/error.log:/var/log/pmt/error.log \
-    core.pmt phpunit --colors always'
+	--volume /home/www/core.podmytube.com/:/app \
+	--volume /var/log/pmt/error.log:/var/log/pmt/error.log \
+	core.pmt phpunit --colors=always'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"

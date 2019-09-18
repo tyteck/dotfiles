@@ -1,5 +1,6 @@
 alias db="docker exec -it mysqlmaster mysql -uroot -proot sfmi"
 alias microbin="cd /var/www/intranet/bin"
+alias micro="cd /var/www/intranet/web/webintra"
 alias intratools="cd /var/www/intranet/intratools"
 alias dokintra="docker exec -it intranetlocal.sfmi.lan"
 

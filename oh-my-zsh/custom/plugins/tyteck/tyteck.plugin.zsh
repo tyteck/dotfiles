@@ -73,6 +73,99 @@ alias dbpmtests='mysql --login-path=pmtests pmtests'
 #                               	COMMODITIES
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 
+# this function will display one title the way we can't miss it on term
+# function title() {
+# 	MESSAGE=$1
+# 	format="\e[1;100m"
+# 	echo -e "$format=== $MESSAGE ===\e[0m"
+# }
+# 
+# # Error (white on red) will precede the message
+# error() {
+# 	message=$1
+# 	showMessage "$message" $LEVEL_ERROR
+# }
+# 
+# warning() {
+# 	message="$1"
+# 	showMessage "$message" $LEVEL_WARNING
+# }
+# 
+# success() {
+# 	message="$1"
+# 	showMessage "$message" $LEVEL_SUCCESS
+# }
+# 
+# notice() {
+# 	message="$1"
+# 	showMessage "$message" $LEVEL_NOTICE
+# }
+# 
+# comment() {
+# 	message="$1"
+# 	showMessage "$message" $LEVEL_COMMENT
+# }
+# 
+# verbose() {
+# 	message="$1"
+# 	[ "${VERBOSE}" -eq "${TRUE}" ] && comment "$message"
+# }
+
+
+#
+# some colors
+#
+#darkgreen="\e[32m"
+#red="\e[31m"
+#notice="\e[44m"
+#success="\e[48;5;22m"
+#warning="\e[30;48;5;166m"
+#error="\e[41m"
+
+#
+# message level
+#
+LEVEL_INFO=0
+LEVEL_WARNING=1
+LEVEL_ERROR=2
+LEVEL_NOTICE=3
+LEVEL_SUCCESS=4
+LEVEL_COMMENT=5
+
+function showMessage() {
+    local message="$1"
+    if [ -z "$message" ]; then message="no comments"; fi
+    local level="$2"
+    local color=""
+    local levelMessage=""
+    case $level in
+#   $LEVEL_WARNING)
+#       color=$warning
+#       levelMessage="Warning"
+#       ;;
+#   $LEVEL_SUCCESS)
+#       color=$success
+#       levelMessage="Success"
+#       ;;
+#   $LEVEL_ERROR)
+#       color=$error
+#       levelMessage="Error"
+#       ;;
+#   $LEVEL_NOTICE)
+#       color=$notice
+#       levelMessage="Notice"
+#       ;;
+#   $LEVEL_COMMENT)
+#       color="\e[32m"
+#       levelMessage="Comment"
+#       ;;
+    *)
+        print -P '%B%F{green}Notice%f%b'
+        ;;
+    esac
+}
+
+
 # it s mine
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!

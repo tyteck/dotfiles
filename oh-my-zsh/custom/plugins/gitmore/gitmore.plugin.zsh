@@ -19,26 +19,30 @@ function gitown() {
 function gdelete() {
 	BRANCH_TO_DELETE=$1
 	if [ -z $BRANCH_TO_DELETE ]; then
-		error "To delete a branch we need a branch name ... don't you think so ?"
+		echo "To delete a branch we need a branch name ... don't you think so ?"
 		return 1
 	fi
-	if [ $BRANCH_TO_DELETE == "master" ];then
-		error "=========> ARE YOU FUCKING CRAZY ??????"
+	echo $BRANCH_TO_DELETE
+	if [ "$BRANCH_TO_DELETE" = "master" ];then
+		echo "ARE YOU CRAZY ??????"
 		return 0
 	fi
+	echo "git show ref"
 	git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE
 	if [ "$?" != 0 ]; then
-		notice "this branch does not exists (already removed ?)"
+		echo "this branch does not exists (already removed ?)"
 		return 0
 	fi
+	echo "git branch -d"
 	git branch -d $BRANCH_TO_DELETE
 	if [ "$?" != 0 ]; then
-		error "Branch {$BRANCH_TO_DELETE} deletion has failed"
+		echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
 		return 1
 	fi
+	echo "git push origin --delete"
 	git push origin --delete $BRANCH_TO_DELETE
 	if [ "$?" != 0 ]; then
-		error "Branch {$BRANCH_TO_DELETE} deletion has failed"
+		echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
 		return 1
 	fi
 }
@@ -71,7 +75,7 @@ function gmit() {
 	fi
 	git commit -m "$commitMessage" $commitFiles && git push
 	if [ "$?" != 0 ]; then
-		error "Commit has failed"
+		echo "Commit has failed"
 		return 1
 	fi
 }
@@ -81,7 +85,7 @@ function grestore() {
 	FILEPATH_TO_RESTORE=$1
 	git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
 	if [ "$?" != 0 ]; then
-		error "Git restoring file $FILEPATH_TO_RESTORE has failed !"
+		echo "Git restoring file $FILEPATH_TO_RESTORE has failed !"
 		return 1
 	fi
 	return 0

@@ -7,12 +7,11 @@
         "comments": false,
         "strings": true
     },
-    "editor.wordBasedSuggestions": true,
     "explorer.confirmDelete": false,
     "explorer.confirmDragAndDrop": false,
     "extensions.ignoreRecommendations": true,
     "files.autoSave": "afterDelay",
-    "php.suggest.basic": false,
+	"php.suggest.basic": false,
     "files.watcherExclude": {
         "**/vendor/**": true
     },

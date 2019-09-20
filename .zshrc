@@ -69,7 +69,7 @@ ZSH_CUSTOM=$HOME/dotfiles/oh-my-zsh/custom/
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(z tyteck gitmore micromania)
+plugins=(z tyteck gitmore)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -81,11 +81,7 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
-else
-  export EDITOR='mvim'
-fi
+export EDITOR='vim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -104,3 +100,11 @@ HISTSIZE=50000                     # Amount of history to save
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# ==================================================
+# micromania specific configuration
+micromania_conf=$HOME/.micromania.conf
+if [ -f $micromania_conf ]; then
+    # this file should not be versionned
+    . $micromania_conf
+fi

@@ -17,7 +17,7 @@ HISTCONTROL='erasedups:ignoreboth' # Erase duplicates
 HISTFILESIZE=50000                 # Max size of history file
 HISTIGNORE=?:??                    # Ignore one and two letter commands
 HISTSIZE=50000                     # Amount of history to save
-# Note, to immediately append to history file see 'prompt' function below.
+
 
 
 # Enable the useful Bash features:

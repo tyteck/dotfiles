@@ -15,7 +15,15 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
-	"printr pre encapsulate" :{
+	"simple public function": {
+		"scope": "php",
+		"prefix": "pf",
+		"body": [
+			"public function $1 ()\n{\n\t//code\n}"
+		],
+		"description": "simple public function declaration"
+	},
+	"printr pre encapsulate": {
 		"scope": "php",
 		"prefix": "pprintr",
 		"body": [
@@ -23,7 +31,7 @@
 		],
 		"description": "encapsulate printr with pre"
 	},
-	"die with __file__" :{
+	"die with __file__": {
 		"scope": "php",
 		"prefix": "die",
 		"body": [
@@ -31,7 +39,7 @@
 		],
 		"description": "Write a die with visible informations (to find it easily) in it"
 	},
-	"var_dump pre encapsulate" :{
+	"var_dump pre encapsulate": {
 		"scope": "php",
 		"prefix": "pvardump",
 		"body": [

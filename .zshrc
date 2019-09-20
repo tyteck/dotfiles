@@ -81,14 +81,20 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='mvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+
+# History settings.
+HISTCONTROL='erasedups:ignoreboth' # Erase duplicates
+HISTFILESIZE=50000                 # Max size of history file
+HISTIGNORE=?:??                    # Ignore one and two letter commands
+HISTSIZE=50000                     # Amount of history to save
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh

@@ -73,7 +73,8 @@ function gmit() {
 	if [[ -z ${commitFiles} ]]; then
 		commitFiles='.'
 	fi
-	git commit -m "$commitMessage" $commitFiles && git push
+	CMD="git commit -m \"$commitMessage\" $commitFiles && git push"
+	eval $CMD
 	if [ "$?" != 0 ]; then
 		echo "Commit has failed"
 		return 1

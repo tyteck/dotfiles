@@ -87,10 +87,12 @@ export EDITOR='vim'
 # export ARCHFLAGS="-arch x86_64"
 
 # History settings.
+HISTFILE=~/.zsh_history
 HISTCONTROL='erasedups:ignoreboth' # Erase duplicates
 HISTFILESIZE=50000                 # Max size of history file
 HISTIGNORE=?:??                    # Ignore one and two letter commands
 HISTSIZE=50000                     # Amount of history to save
+setopt appendhistory
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh

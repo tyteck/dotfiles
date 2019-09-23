@@ -1,12 +1,14 @@
 alias zrc='source ~/.zshrc'
 alias please='sudo'
 
+alias c='clear'
+alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc'
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
 alias dokdown="docker-compose down --remove-orphans"
 alias dokexec="docker exec -it"
-alias dokexecu="docker exec --user $(id -u):$(id -g) -it"
+alias dokexecu="dokexec --user $(id -u):$(id -g)"
 alias doklog="docker logs"
 alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"
@@ -18,8 +20,8 @@ alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # Laravel
-alias artisan='docker exec -it dash php artisan'
-alias tinker='docker exec -it dash php artisan tinker'
+alias artisan='dokexec dash php artisan'
+alias tinker='dokexec dash php artisan tinker'
 alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
 
 # biggest files

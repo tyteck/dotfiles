@@ -4,7 +4,7 @@ alias please='sudo'
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
-alias dokdown="docker-compose down"
+alias dokdown="docker-compose down --remove-orphans"
 alias dokexec="docker exec -it"
 alias dokexecu="docker exec --user $(id -u):$(id -g) -it"
 alias doklog="docker logs"

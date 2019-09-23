@@ -11,7 +11,7 @@ alias doklog="docker logs"
 alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"
 alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
-alias dokrestart="docker-compose down && docker-compose up -d"
+alias dokrestart="docker-compose down --remove-orphans && docker-compose up -d"
 alias dokrestartprod="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
@@ -63,9 +63,9 @@ alias cdtyt='cd /home/www/www.tyteca.net/'
 alias cdval='cd /home/www/valentin.tyteca.net/'
 
 # default db shortcuts
-alias dbroot='mysql --login-path=root'
-alias dbpmt='mysql --login-path=pmt pmt'
-alias dbpmtests='mysql --login-path=pmtests pmtests'
+alias dbroot='docker exec -it mysqlServer mysql --login-path=root'
+alias dbpmt='docker exec -it mysqlServer mysql --login-path=pmt pmt'
+alias dbpmtests='docker exec -it mysqlServer mysql --login-path=pmtests pmtests'
 
 
 

@@ -1,8 +1,8 @@
-alias zrc='source ~/.zshrc'
+alias zrc='source ~/.zshrc && echo "sourced !"'
 alias please='sudo'
 
 alias c='clear'
-alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc && echo "sourced !"'
+alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc'
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"

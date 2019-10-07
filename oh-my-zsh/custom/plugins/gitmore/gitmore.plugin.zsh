@@ -1,4 +1,4 @@
-# Git 
+# Git
 # some aliases
 alias gtus='git status'
 alias gdiff='git diff'
@@ -22,28 +22,33 @@ function gdelete() {
 		echo "To delete a branch we need a branch name ... don't you think so ?"
 		return 1
 	fi
-	echo $BRANCH_TO_DELETE
-	if [ "$BRANCH_TO_DELETE" = "master" ];then
+
+	# necessary to avoid
+	if [ "$BRANCH_TO_DELETE" = "master" ]; then
 		echo "ARE YOU CRAZY ??????"
 		return 0
 	fi
-	echo "git show ref"
+
 	git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE
-	if [ "$?" != 0 ]; then
-		echo "this branch does not exists (already removed ?)"
-		return 0
+	if [ $? -ne 0 ]; then
+		echo "The local branch {$BRANCH_TO_DELETE} does not exists."
+	else
+		git branch -d $BRANCH_TO_DELETE
+		if [ $? -ne 0 ]; then
+			echo "Local branch {$BRANCH_TO_DELETE} deletion has failed"
+			return 1
+		fi
 	fi
-	echo "git branch -d"
-	git branch -d $BRANCH_TO_DELETE
-	if [ "$?" != 0 ]; then
-		echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
-		return 1
-	fi
-	echo "git push origin --delete"
-	git push origin --delete $BRANCH_TO_DELETE
-	if [ "$?" != 0 ]; then
-		echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
-		return 1
+
+	git show-ref --verify --quiet refs/remotes/origin/$BRANCH_TO_DELETE
+	if [ $? -eq 0 ]; then
+		git push origin --delete $BRANCH_TO_DELETE
+		if [ $? -ne 0 ]; then
+			echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
+			return 1
+		fi
+	else
+		echo "The remote branch {$BRANCH_TO_DELETE} does not exists."
 	fi
 }
 
@@ -91,4 +96,3 @@ function grestore() {
 	fi
 	return 0
 }
-

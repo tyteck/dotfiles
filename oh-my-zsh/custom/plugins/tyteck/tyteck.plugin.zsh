@@ -6,6 +6,7 @@ alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh 
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
+alias dokcp="docker cp"
 alias dokdown="docker-compose down --remove-orphans"
 alias dokexec="docker exec -it"
 alias dokexecu="dokexec --user $(id -u):$(id -g)"
@@ -19,8 +20,11 @@ alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
+# Symfony
+alias sfc='php bin/console'
+
 # Laravel
-alias artisan='dokexec dash php artisan'
+alias artisan='dokexec --user $(id -u):$(id -g) dash php artisan'
 alias tinker='dokexec dash php artisan tinker'
 alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
 

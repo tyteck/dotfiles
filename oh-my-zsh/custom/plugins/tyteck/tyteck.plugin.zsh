@@ -24,9 +24,13 @@ alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml
 alias sfc='php bin/console'
 
 # Laravel
-alias artisan='dokexec --user $(id -u):$(id -g) dash php artisan'
-alias tinker='dokexec dash php artisan tinker'
-alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
+alias dashtisan='dokexec --user $(id -u):$(id -g) dash php artisan'
+alias dashtinker='dashtisan tinker'
+alias dashtinkertest="echo '--- env=testing ---' && dashtisan tinker --env=testing"
+
+alias shartisan='dokexec --user $(id -u):$(id -g) share php artisan'
+alias shartinker='shartisan tinker'
+alias shartinkertest="echo '--- env=testing ---' && shartisan tinker --env=testing"
 
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'

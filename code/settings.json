@@ -22,12 +22,17 @@
     "window.zoomLevel": 0,
     "editor.renderWhitespace": "boundary",
     "[php]": {
-        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "php.validate.enable": false,
     "yaml.schemas": {
         "file:///home/ftyteca/.vscode/extensions/docsmsft.docs-yaml-0.2.2/schemas/toc.schema.json": "/toc\\.yml/i"
     },
     "breadcrumbs.enabled": false,
-    "terminal.integrated.scrollback": 9000
+    "terminal.integrated.scrollback": 9000,
+    "blade.format.enable": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[twig]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

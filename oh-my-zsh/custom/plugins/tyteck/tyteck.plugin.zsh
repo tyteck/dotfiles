@@ -54,11 +54,9 @@ if hash ansible-playbook 2>/dev/null; then
 fi
 
 
-# some phpunit shortcuts
-alias testcore='docker run --network nginx-proxy --name core.pmt --rm \
-	--volume /home/www/core.podmytube.com/:/app \
-	--volume /var/log/pmt/error.log:/var/log/pmt/error.log \
-	core.pmt phpunit --colors=always'
+# some core shortcuts
+alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
+alias testcore='runcore phpunit --colors=always'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"

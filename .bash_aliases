@@ -69,6 +69,10 @@ alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
+# some core shortcuts
+alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
+alias testcore='runcore phpunit --colors=always'
+
 # Laravel
 alias artisan='docker exec -it dash php artisan'
 alias tinker='docker exec -it dash php artisan tinker'

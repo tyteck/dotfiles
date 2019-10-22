@@ -78,8 +78,6 @@ alias artisan='docker exec -it dash php artisan'
 alias tinker='docker exec -it dash php artisan tinker'
 alias tinkertest="echo '--- env=testing ---' && dokexec -it dash php artisan tinker --env=testing"
 
-alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core.podmytube.com/:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
-
 # Git
 alias gtus='git status'
 alias gdiff='git diff'

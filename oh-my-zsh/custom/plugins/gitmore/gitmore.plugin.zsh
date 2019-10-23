@@ -55,6 +55,10 @@ function gdelete() {
 # Git commit then push in one command
 # if no file is specified the . folder is commit then pushed
 function gmit() {
+
+	currentFolder=$(pwd)
+	echo $currentFolder;
+	read -p "Pres ctrl+c"
 	commitFiles=""
 	while [ $# -gt 0 ]; do
 		case $1 in

@@ -55,10 +55,13 @@ function gdelete() {
 # Git commit then push in one command
 # if no file is specified the . folder is commit then pushed
 function gmit() {
-
+	# if micromania project, commit must have a prefix (dumb but required)
 	currentFolder=$(pwd)
-	echo $currentFolder;
-	read -p "Pres ctrl+c"
+	commitPrefix=''
+	if [[ $currentFolder == *"intranet"* ]]; then
+		commitPrefix='cft/'		
+	fi
+	# files to commit
 	commitFiles=""
 	while [ $# -gt 0 ]; do
 		case $1 in
@@ -82,7 +85,7 @@ function gmit() {
 	if [[ -z ${commitFiles} ]]; then
 		commitFiles='.'
 	fi
-	CMD="git commit -m \"$commitMessage\" $commitFiles && git push"
+	CMD="git commit -m \"$commitPrefix$commitMessage\" $commitFiles && git push"
 	eval $CMD
 	if [ "$?" != 0 ]; then
 		echo "Commit has failed"

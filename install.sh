@@ -84,6 +84,7 @@ fi
 dotfiles="$HOME/dotfiles"
 declare -A itemsToReplace
 itemsToReplace["$HOME/.config/terminator"]="$dotfiles/terminator"
+itemsToReplace["$HOME/.docker/config.json"]="$dotfiles/docker/config.json"
 itemsToReplace["$HOME/.bashrc"]="$dotfiles/.bashrc"
 itemsToReplace["$HOME/.bash_aliases"]="$dotfiles/.bash_aliases"
 itemsToReplace["$HOME/.vimrc"]="$dotfiles/.vimrc"

@@ -23,6 +23,9 @@ alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml
 # Symfony
 alias sfc='php bin/console'
 
+# Php
+alias phpunit='./vendor/bin/phpunit --colors=always tests'
+
 # Laravel
 alias dashtisan='dokexec --user $(id -u):$(id -g) dash php artisan'
 alias dashtinker='dashtisan tinker'

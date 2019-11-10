@@ -69,7 +69,7 @@ ZSH_CUSTOM=$HOME/dotfiles/oh-my-zsh/custom/
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(z tyteck gitmore)
+plugins=(z tyteck gitmore laradocker)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -103,6 +103,19 @@ setopt appendhistory
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+# Disable globbing on the remote path.
+#alias scp='noglob scp_wrap'
+#function scp_wrap {
+#  local -a args
+#  local i
+#  for i in "$@"; do case $i in
+#	(*:*) args+=($i) ;;
+#	(*) args+=(${~i}) ;;
+#  esac; done
+#  command scp "${(@)args}"
+#}
+
 
 # ==================================================
 # micromania specific configuration

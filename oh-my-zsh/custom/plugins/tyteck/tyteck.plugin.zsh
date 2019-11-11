@@ -26,15 +26,6 @@ alias sfc='php bin/console'
 # Php
 alias phpunit='./vendor/bin/phpunit --colors=always tests'
 
-# Laravel
-alias dashtisan='dokexec --user $(id -u):$(id -g) dash php artisan'
-alias dashtinker='dashtisan tinker'
-alias dashtinkertest="echo '--- env=testing ---' && dashtisan tinker --env=testing"
-
-alias shartisan='dokexec --user $(id -u):$(id -g) share php artisan'
-alias shartinker='shartisan tinker'
-alias shartinkertest="echo '--- env=testing ---' && shartisan tinker --env=testing"
-
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
 alias biggestFiles='du -Sh . | sort -rh | head -20'

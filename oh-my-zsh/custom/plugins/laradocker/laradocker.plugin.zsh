@@ -1,5 +1,10 @@
 # LaraDocker
-
+# This plugin is useful for those who are running multiple laravel containers.
+# The purpose is being able to run artisan according to the project you are in
+# to use it properly you should respect some requirements.
+# - using container name 
+# - last part of the folder (where is stored artisan) should have the same name as your container
+#  		/path/../to/<containername>/artisan
 
 function artisan() {
 	# checking if artisan is there

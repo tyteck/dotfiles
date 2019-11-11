@@ -179,7 +179,7 @@ itsmine() {
 		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ]; then
 			sudo chown -R $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
 		else
-			error "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
+			echo "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
 			return 1
 		fi
 	done

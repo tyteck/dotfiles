@@ -168,19 +168,37 @@ function showMessage() {
 }
 
 
+function apacheperms(){
+    # giving to myself cause I'm still alone on my projects even in prodcuction mode
+    groupToAllow=$USER
+    for FILE in "$@"; do
+		if [ -f $FILE ]; then
+			sudo chown www-data:$groupToAllow $FILE
+            sudo chmod g+w $FILE
+		elif [ -d $FILE ]; then
+			sudo chown -R www-data:$groupToAllow $FILE
+            sudo chmod -R g+w $FILE
+		else
+			echo "{$FILE} is not a valid element to change permssions on."
+			continue
+		fi
+	done
+	return 0
+}
+
 # it s mine
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!
 # MUHAHAHAHAHAHAHAHAHA
 itsmine() {
-	for FILE_OR_FOLDER_THAT_IS_MINE in "$@"; do
-		if [ -f $FILE_OR_FOLDER_THAT_IS_MINE ]; then
-			sudo chown $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
-		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ]; then
-			sudo chown -R $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
+	for FILE in "$@"; do
+		if [ -f $FILE ]; then
+			sudo chown $USER:$USER $FILE
+		elif [ -d $FILE ]; then
+			sudo chown -R $USER:$USER $FILE
 		else
-			echo "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
-			return 1
+			echo "{$FILE} is not a valid element to chown "
+			continue
 		fi
 	done
 	return 0

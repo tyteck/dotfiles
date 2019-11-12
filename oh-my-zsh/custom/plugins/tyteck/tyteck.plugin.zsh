@@ -23,14 +23,8 @@ alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml
 # Symfony
 alias sfc='php bin/console'
 
-# Laravel
-alias dashtisan='dokexec --user $(id -u):$(id -g) dash php artisan'
-alias dashtinker='dashtisan tinker'
-alias dashtinkertest="echo '--- env=testing ---' && dashtisan tinker --env=testing"
-
-alias shartisan='dokexec --user $(id -u):$(id -g) share php artisan'
-alias shartinker='shartisan tinker'
-alias shartinkertest="echo '--- env=testing ---' && shartisan tinker --env=testing"
+# Php
+alias phpunit='./vendor/bin/phpunit --colors=always tests'
 
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
@@ -185,7 +179,7 @@ itsmine() {
 		elif [ -d $FILE_OR_FOLDER_THAT_IS_MINE ]; then
 			sudo chown -R $USER:$USER $FILE_OR_FOLDER_THAT_IS_MINE
 		else
-			error "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
+			echo "{$FILE_OR_FOLDER_THAT_IS_MINE} is not a valid element to chown "
 			return 1
 		fi
 	done

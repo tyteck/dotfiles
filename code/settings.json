@@ -1,35 +1,44 @@
 {
-    "editor.fontFamily": "'Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontLigatures": true,
-    "editor.minimap.enabled": false,
-    "editor.quickSuggestions": {
-        "other": true,
-        "comments": false,
-        "strings": true
-    },
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "extensions.ignoreRecommendations": true,
-    "files.autoSave": "afterDelay",
+	"editor.fontFamily": "'Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+	"editor.fontLigatures": true,
+	"editor.minimap.enabled": false,
+	"editor.quickSuggestions": {
+		"other": true,
+		"comments": false,
+		"strings": true
+	},
+	"explorer.confirmDelete": false,
+	"explorer.confirmDragAndDrop": false,
+	"extensions.ignoreRecommendations": true,
+	"files.autoSave": "afterDelay",
 	"php.suggest.basic": false,
-    "files.watcherExclude": {
-        "**/vendor/**": true
-    },
-    "workbench.activityBar.visible": false,
-    "workbench.iconTheme": "eq-material-theme-icons-darker",
-    "workbench.startupEditor": "newUntitledFile",
-    "workbench.statusBar.visible": true,
-    "window.zoomLevel": 0,
-    "editor.renderWhitespace": "boundary",
-    "php.validate.enable": false,
-    "yaml.schemas": {
-        "file:///home/ftyteca/.vscode/extensions/docsmsft.docs-yaml-0.2.2/schemas/toc.schema.json": "/toc\\.yml/i"
-    },
-    "breadcrumbs.enabled": false,
-    "terminal.integrated.scrollback": 9000,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "files.eol": "\n",
-    "[php]": {
-        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-    }
+	"files.watcherExclude": {
+		"**/vendor/**": true
+	},
+	"workbench.activityBar.visible": false,
+	"workbench.iconTheme": "eq-material-theme-icons-darker",
+	"workbench.startupEditor": "newUntitledFile",
+	"workbench.statusBar.visible": true,
+	"window.zoomLevel": 0,
+	"editor.renderWhitespace": "boundary",
+	"php.validate.enable": false,
+	"yaml.schemas": {
+		"file:///home/ftyteca/.vscode/extensions/docsmsft.docs-yaml-0.2.2/schemas/toc.schema.json": "/toc\\.yml/i"
+	},
+	"breadcrumbs.enabled": false,
+	"terminal.integrated.scrollback": 9000,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"files.eol": "\n",
+	"[javascript]": {
+		"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"files.associations": { 
+		".blade.php": "html"
+	},
+	"[php]": {
+		"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+	}
 }

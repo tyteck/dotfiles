@@ -15,13 +15,45 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+	"construct": {
+		"scope": "php",
+		"prefix": "construct",
+		"body": [
+			"class $1\n{\n\tpublic function __construct()\n\t{\n\t\t//code \n\t}\n}"
+		],
+		"description": "brand new php class file"
+	},
+	"create": {
+		"scope": "php",
+		"prefix": "create",
+		"body": [
+			"class $1\n{\n\tprivate function __construct()\n\t{\n\t\t//code \n\t}\n\n\tpublic function create()\n\t{\n\t\treturn new static();\n\t}\n}"
+		],
+		"description": "brand new php class file"
+	},
+	"try catch": {
+		"scope": "php",
+		"prefix": "trycatch",
+		"body": [
+			"try {\n\t//code\n} catch(\\Exception \\$exception){\n\t throw new \\Exception(\"bla\");\n}\n"
+		],
+		"description": "pre filled try"
+	},
 	"simple public function": {
 		"scope": "php",
-		"prefix": "pf",
+		"prefix": "pubfun",
 		"body": [
 			"public function $1 ()\n{\n\t//code\n}"
 		],
 		"description": "simple public function declaration"
+	},
+	"simple protected function": {
+		"scope": "php",
+		"prefix": "protfun",
+		"body": [
+			"protected function $1 ()\n{\n\t//code\n}"
+		],
+		"description": "simple protected function declaration"
 	},
 	"printr pre encapsulate": {
 		"scope": "php",

@@ -57,10 +57,6 @@ function gdelete() {
 function gmit() {
 	# if micromania project, commit must have a prefix (dumb but required)
 	currentFolder=$(pwd)
-	commitPrefix=''
-	if [[ $currentFolder == *"intranet"* ]]; then
-		commitPrefix='cft/'		
-	fi
 	# files to commit
 	commitFiles=""
 	while [ $# -gt 0 ]; do
@@ -85,7 +81,7 @@ function gmit() {
 	if [[ -z ${commitFiles} ]]; then
 		commitFiles='.'
 	fi
-	CMD="git commit -m \"$commitPrefix$commitMessage\" $commitFiles && git push"
+	CMD="git commit -m \"$commitMessage\" $commitFiles && git push"
 	eval $CMD
 	if [ "$?" != 0 ]; then
 		echo "Commit has failed"

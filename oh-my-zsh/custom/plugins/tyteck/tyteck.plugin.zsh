@@ -24,7 +24,7 @@ alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml
 alias sfc='php bin/console'
 
 # Php
-alias phpunit='./vendor/bin/phpunit --colors=always tests'
+alias phpunit='./vendor/bin/phpunit --colors=always'
 
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
@@ -47,7 +47,6 @@ if hash ansible-playbook 2>/dev/null; then
     fi
 fi
 
-
 # some core shortcuts
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
 alias testcore='runcore phpunit --colors=always'
@@ -69,60 +68,9 @@ alias dbroot='docker exec -it mysqlServer mysql --login-path=root'
 alias dbpmt='docker exec -it mysqlServer mysql --login-path=pmt pmt'
 alias dbpmtests='docker exec -it mysqlServer mysql --login-path=pmtests pmtests'
 
-
-
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	COMMODITIES
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-
-# this function will display one title the way we can't miss it on term
-# function title() {
-# 	MESSAGE=$1
-# 	format="\e[1;100m"
-# 	echo -e "$format=== $MESSAGE ===\e[0m"
-# }
-# 
-# # Error (white on red) will precede the message
-# error() {
-# 	message=$1
-# 	showMessage "$message" $LEVEL_ERROR
-# }
-# 
-# warning() {
-# 	message="$1"
-# 	showMessage "$message" $LEVEL_WARNING
-# }
-# 
-# success() {
-# 	message="$1"
-# 	showMessage "$message" $LEVEL_SUCCESS
-# }
-# 
-# notice() {
-# 	message="$1"
-# 	showMessage "$message" $LEVEL_NOTICE
-# }
-# 
-# comment() {
-# 	message="$1"
-# 	showMessage "$message" $LEVEL_COMMENT
-# }
-# 
-# verbose() {
-# 	message="$1"
-# 	[ "${VERBOSE}" -eq "${TRUE}" ] && comment "$message"
-# }
-
-
-#
-# some colors
-#
-#darkgreen="\e[32m"
-#red="\e[31m"
-#notice="\e[44m"
-#success="\e[48;5;22m"
-#warning="\e[30;48;5;166m"
-#error="\e[41m"
 
 #
 # message level
@@ -132,58 +80,69 @@ LEVEL_WARNING=1
 LEVEL_ERROR=2
 LEVEL_NOTICE=3
 LEVEL_SUCCESS=4
-LEVEL_COMMENT=5
 
 function showMessage() {
     local message="$1"
     if [ -z "$message" ]; then message="no comments"; fi
     local level="$2"
-    local color=""
+    local color=$FG[231]
     local levelMessage=""
     case $level in
-#   $LEVEL_WARNING)
-#       color=$warning
-#       levelMessage="Warning"
-#       ;;
-#   $LEVEL_SUCCESS)
-#       color=$success
-#       levelMessage="Success"
-#       ;;
-#   $LEVEL_ERROR)
-#       color=$error
-#       levelMessage="Error"
-#       ;;
-#   $LEVEL_NOTICE)
-#       color=$notice
-#       levelMessage="Notice"
-#       ;;
-#   $LEVEL_COMMENT)
-#       color="\e[32m"
-#       levelMessage="Comment"
-#       ;;
+    $LEVEL_WARNING)
+        color=$FG[011]
+        levelMessage="Warning "
+        ;;
+    $LEVEL_SUCCESS)
+        color=$FG[154]
+        levelMessage="Success "
+        ;;
+    $LEVEL_ERROR)
+        color=$FG[001]
+        levelMessage="Error "
+        ;;
+    $LEVEL_NOTICE)
+        color=$FG[002]
+        levelMessage="Notice "
+        ;;
+    $LEVEL_INFO)
+        color=$FG[004]
+        levelMessage="Comment "
+        ;;
     *)
-        print -P '%B%F{green}Notice%f%b'
+        levelMessage=''
         ;;
     esac
+    print -P ${color}${levelMessage}%{$reset_color%}- $message
 }
 
+function error() {
+    local message="$1"
+    showMessage "$message" $LEVEL_ERROR
+}
 
-function apacheperms(){
+function testShowMessage() {
+    for level in {0..4}; do
+        showMessage "test message" $level
+    done
+    error "Oops something went wrong <= this is a test message"
+}
+
+function apacheperms() {
     # giving to myself cause I'm still alone on my projects even in prodcuction mode
     groupToAllow=$USER
     for FILE in "$@"; do
-		if [ -f $FILE ]; then
-			sudo chown www-data:$groupToAllow $FILE
+        if [ -f $FILE ]; then
+            sudo chown www-data:$groupToAllow $FILE
             sudo chmod g+w $FILE
-		elif [ -d $FILE ]; then
-			sudo chown -R www-data:$groupToAllow $FILE
+        elif [ -d $FILE ]; then
+            sudo chown -R www-data:$groupToAllow $FILE
             sudo chmod -R g+w $FILE
-		else
-			echo "{$FILE} is not a valid element to change permssions on."
-			continue
-		fi
-	done
-	return 0
+        else
+            echo "{$FILE} is not a valid element to change permssions on."
+            continue
+        fi
+    done
+    return 0
 }
 
 # it s mine
@@ -191,39 +150,36 @@ function apacheperms(){
 # I need to OWN THEM ALL !!!!
 # MUHAHAHAHAHAHAHAHAHA
 itsmine() {
-	for FILE in "$@"; do
-		if [ -f $FILE ]; then
-			sudo chown $USER:$USER $FILE
-		elif [ -d $FILE ]; then
-			sudo chown -R $USER:$USER $FILE
-		else
-			echo "{$FILE} is not a valid element to chown "
-			continue
-		fi
-	done
-	return 0
+    for FILE in "$@"; do
+        if [ -f $FILE ]; then
+            sudo chown $USER:$USER $FILE
+        elif [ -d $FILE ]; then
+            sudo chown -R $USER:$USER $FILE
+        else
+            echo "{$FILE} is not a valid element to chown "
+            continue
+        fi
+    done
+    return 0
 }
 
 # extract one value from .env file
 # @param $1 variable name
 # @param $2 file where is set this variable (default .env)
 readVar() {
-	VAR_NAME=$1
-	FILE_NAME=$2
-	if [ -z $FILE_NAME ]; then
-		FILE_NAME='.env'
-	fi
-	VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
-	IFS="=" read -ra VAR <<<"$VAR"
-	echo ${VAR[1]}
+    VAR_NAME=$1
+    FILE_NAME=$2
+    if [ -z $FILE_NAME ]; then
+        FILE_NAME='.env'
+    fi
+    VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
+    IFS="=" read -ra VAR <<<"$VAR"
+    echo ${VAR[1]}
 }
-
-
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	VSCODE
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-
 
 # import/export extensions from vscode
 VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
@@ -248,25 +204,23 @@ importVSCodeExtList() {
     fi
 }
 
-
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	DOCKER
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 
 # get the ip address for one container
 function dokip() {
-	CONTAINER_NAME=$1
-	docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+    CONTAINER_NAME=$1
+    docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 }
 
 function dokips() {
-	for CONTAINER_NAME in $(docker ps --format '{{.Names}}'); do
-		echo $CONTAINER_NAME --- $(dokip $CONTAINER_NAME)
-	done
+    for CONTAINER_NAME in $(docker ps --format '{{.Names}}'); do
+        echo $CONTAINER_NAME --- $(dokip $CONTAINER_NAME)
+    done
 }
 
 function dokrmi() {
-	IMAGE_NAME=$1
-	docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
+    IMAGE_NAME=$1
+    docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
 }
-

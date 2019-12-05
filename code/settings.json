@@ -29,14 +29,12 @@
 	"terminal.integrated.scrollback": 9000,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"files.eol": "\n",
-	"[javascript]": {
-		"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-	},
-	"[html]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	"[shellscript]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
 	"files.associations": { 
-		".blade.php": "html"
+		".blade.php": "html",
+		".zsh": "shellscript"
 	},
 	"[php]": {
 		"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"

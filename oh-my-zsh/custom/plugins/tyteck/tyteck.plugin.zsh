@@ -50,6 +50,8 @@ fi
 # some core shortcuts
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
 alias testcore='runcore phpunit --colors=always'
+alias rundash='dokexec dashboard.podmytube.com'
+alias testdash='dokexec dashboard.podmytube.com phpunit --colors=always'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"

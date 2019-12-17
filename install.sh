@@ -78,8 +78,6 @@ if [ -z $HOME ]; then
     return 1
 fi
 
-verbose "CHATTE"
-
 #
 # Files I will replace with symlinks to their dotfiles equivalent.
 #

@@ -27,7 +27,7 @@
 		"scope": "php",
 		"prefix": "create",
 		"body": [
-			"class $1\n{\n\tprivate function __construct()\n\t{\n\t\t//code \n\t}\n\n\tpublic static function create(...$params)\n\t{\n\t\treturn new static();\n\t}\n}"
+			"class $1\n{\n\tprivate function __construct()\n\t{\n\t\t//code \n\t}\n\n\tpublic static function create(...\\$params)\n\t{\n\t\treturn new static(...\\$params);\n\t}\n}"
 		],
 		"description": "brand new php class file"
 	},

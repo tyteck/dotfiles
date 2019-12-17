@@ -11,6 +11,16 @@
 SCRIPT_DIR=$(dirname ${0})
 SCRIPT_NAME=$(basename ${0})
 
+#
+# Default values
+#
+TRUE=0
+FALSE=1
+VERBOSE=${FALSE}
+INFO=0
+WARNING=1
+ERROR=2
+
 if [ -f .bash_functions ]; then
     . .bash_functions
 fi
@@ -47,16 +57,6 @@ function removeExistingFile() {
     return 0
 }
 
-#
-# Default values
-#
-TRUE=0
-FALSE=1
-VERBOSE=${FALSE}
-INFO=0
-WARNING=1
-ERROR=2
-
 waitForUser() {
     message=$1
     while true; do
@@ -77,6 +77,8 @@ if [ -z $HOME ]; then
     error "Environment variable HOME not set, I prefer to stop !"
     return 1
 fi
+
+verbose "CHATTE"
 
 #
 # Files I will replace with symlinks to their dotfiles equivalent.
@@ -118,16 +120,27 @@ for itemToReplace in "${!itemsToReplace[@]}"; do
     if [ -d ${itemToReplace} ]; then
         backup ${itemToReplace}
     elif [ -L ${itemToReplace} ]; then
-        verbose "$itemToReplace is already one symlink"
+        verbose "$itemToReplace is already one symlink."
         continue
     elif [ -f ${itemToReplace} ]; then
         backup ${itemToReplace}
     fi
 
-    verbose "Creating symlink ${itemToReplace} => ${targetItem}"
+    #
+    # if itemToReplace folder does not exist => skip
+    #
+    if [ ! -d $(dirname $itemToReplace) ]; then
+        verbose "$(dirname $itemToReplace) does not exist."
+        continue
+    fi
+
+    #
+    # creating symlink
+    #
+    echo "Creating symlink ${itemToReplace} => ${targetItem}"
     ln -s ${targetItem} ${itemToReplace}
     if [ $? != 0 ]; then
-        error "Creating symlink ${itemToReplace} => ${targetItem} has failed"
+        error "Creating symlink ${itemToReplace} => ${targetItem} has failed."
         return 1
     fi
 done

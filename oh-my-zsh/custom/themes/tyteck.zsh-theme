@@ -5,7 +5,7 @@ function coloredHost() {
         echo %{$fg[green]%}Local%{$reset_color%}:
         ;;
     "vps256025")
-        echo %{$fg[yellow]%}Local%{$reset_color%}:
+        echo %{$fg[yellow]%}$host%{$reset_color%}:
         ;;
     *)
         echo %{$fg[red]%}$host%{$reset_color%}:

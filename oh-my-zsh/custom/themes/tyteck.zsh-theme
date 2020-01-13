@@ -1,10 +1,11 @@
 function coloredHost() {
-    case $(uname -n) in
+    host=$(uname -n)
+    case $host in
     "MSI-Laptop")
         echo %{$fg[green]%}Local%{$reset_color%}:
         ;;
     *)
-        echo %{$fg_bold[red]%}Remote%{$reset_color%}:
+        echo %{$fg_bold[red]%}$host%{$reset_color%}:
         ;;
     esac
     

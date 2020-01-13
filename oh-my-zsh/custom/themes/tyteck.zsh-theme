@@ -5,7 +5,7 @@ function coloredHost() {
         echo %{$fg[green]%}Local%{$reset_color%}:
         ;;
     *)
-        echo %{$fg_bold[red]%}$host%{$reset_color%}:
+        echo %{$fg[yellow]%}$host%{$reset_color%}:
         ;;
     esac
     

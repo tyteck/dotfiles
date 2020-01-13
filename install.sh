@@ -91,6 +91,7 @@ itemsToReplace["$HOME/.vimrc"]="$dotfiles/.vimrc"
 itemsToReplace["$HOME/.config/Code/User/settings.json"]="$dotfiles/code/settings.json"
 itemsToReplace["$HOME/.config/Code/User/keybindings.json"]="$dotfiles/code/keybindings.json"
 itemsToReplace["$HOME/.config/Code/User/snippets"]="$dotfiles/code/snippets"
+itemsToReplace["$HOME/.zshrc"]="$dotfiles/.zshrc"
 
 #
 # Getting params

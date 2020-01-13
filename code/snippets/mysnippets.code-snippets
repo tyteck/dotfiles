@@ -43,7 +43,7 @@
 		"scope": "php",
 		"prefix": "pubfun",
 		"body": [
-			"public function $1 ()\n{\n\t//code\n}"
+			"public function $1()\n{\n\t//code\n}"
 		],
 		"description": "simple public function declaration"
 	},
@@ -51,7 +51,7 @@
 		"scope": "php",
 		"prefix": "protfun",
 		"body": [
-			"protected function $1 ()\n{\n\t//code\n}"
+			"protected function $1()\n{\n\t//code\n}"
 		],
 		"description": "simple protected function declaration"
 	},
@@ -71,11 +71,19 @@
 		],
 		"description": "Write a die with visible informations (to find it easily) in it"
 	},
+	"error_log_verbose": {
+		"scope": "php",
+		"prefix": "perrorlog",
+		"body": [
+			"error_log(__FILE__.'::'.__FUNCTION__ .\" --- $1\");"
+		],
+		"description": "verbose error_log"
+	},
 	"var_dump pre encapsulate": {
 		"scope": "php",
 		"prefix": "pvardump",
 		"body": [
-			"echo '<pre>'; var_dump($1); echo '</pre>';"
+			"echo '<pre>'; var_dump(__FILE__.'::'.__FUNCTION__$1); echo '</pre>';"
 		],
 		"description": "encapsulate var_dump with pre"
 	}

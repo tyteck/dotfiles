@@ -10,7 +10,7 @@ alias dokcp="docker cp"
 alias dokdown="docker-compose down --remove-orphans"
 alias dokexec="docker exec -it"
 alias dokexecu="dokexec --user $(id -u):$(id -g)"
-alias doklog="docker logs"
+alias doklog="docker logs -f"
 alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"
 alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
@@ -130,7 +130,7 @@ function testShowMessage() {
 }
 
 function apacheperms() {
-    # giving to myself cause I'm still alone on my projects even in prodcuction mode
+    # giving to myself cause I'm still alone on my projects even in production mode
     groupToAllow=$USER
     for FILE in "$@"; do
         if [ -f $FILE ]; then

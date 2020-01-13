@@ -4,11 +4,14 @@ function coloredHost() {
     "MSI-Laptop")
         echo %{$fg[green]%}Local%{$reset_color%}:
         ;;
+    "vps256025")
+        echo %{$fg[yellow]%}Local%{$reset_color%}:
+        ;;
     *)
         echo %{$fg[red]%}$host%{$reset_color%}:
         ;;
     esac
-    
+
 }
 PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )"
 PROMPT+=' %{$reset_color%}$(coloredHost)%{$fg_bold[cyan]%}%c%{$reset_color%}$(git_prompt_info)'

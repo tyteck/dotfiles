@@ -1,6 +1,10 @@
 alias zrc='source ~/.zshrc && echo "sourced !"'
 alias please='sudo'
 
+export DASH_PATH="/home/www/dashboard.podmytube.com/"
+export REDUCBOX_PATH="$HOME/Projects/reducbox"
+
+
 alias c='clear'
 alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc'
 # docker & docker compose
@@ -15,10 +19,16 @@ alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"
 alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
 alias dokrestart="docker-compose down --remove-orphans && docker-compose up -d"
+alias dokrestartdev="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
 alias dokrestartprod="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
+
+alias dashup="cd $DASH_PATH && dokup && cd -"
+alias dashdown="cd $DASH_PATH && dokdown && cd -"
+alias reducup="cd $REDUCBOX_PATH && dokrestartdev && cd -"
+alias reducdown="cd $REDUCBOX_PATH && dokdown && cd -"
 
 # Symfony
 alias sfc='php bin/console'
@@ -43,15 +53,17 @@ if hash ansible-playbook 2>/dev/null; then
     if [ -d $HOME/ansible-playbooks/ ]; then
         alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
     else
-        comment "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
+        echo "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
     fi
 fi
+alias shutdown="fullapt && please shutdown -h now"
 
 # some core shortcuts
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
 alias testcore='runcore phpunit --colors=always'
 alias rundash='dokexec dashboard.podmytube.com'
 alias testdash='dokexec dashboard.podmytube.com phpunit --colors=always'
+alias testbox='dokexec reducbox phpunit --colors=always'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"
@@ -175,8 +187,10 @@ readVar() {
         FILE_NAME='.env'
     fi
     VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
-    IFS="=" read -ra VAR <<<"$VAR"
-    echo ${VAR[1]}
+    IFS="=" read -rA VAR <<<"$VAR"
+    # ${VAR[1]} is the key 
+    # ${VAR[2]} is the value
+    echo ${VAR[2]}
 }
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸

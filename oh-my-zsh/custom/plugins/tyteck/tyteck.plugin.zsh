@@ -3,6 +3,7 @@ alias please='sudo'
 
 export DASH_PATH="/home/www/dashboard.podmytube.com/"
 export REDUCBOX_PATH="$HOME/Projects/reducbox"
+export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 
 
 alias c='clear'
@@ -25,9 +26,12 @@ alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
-alias dashup="cd $DASH_PATH && dokup && cd -"
+# shortcut to start containers
+alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
+alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
+alias dashup="nginxup && cd $DASH_PATH && dokup && cd -"
 alias dashdown="cd $DASH_PATH && dokdown && cd -"
-alias reducup="cd $REDUCBOX_PATH && dokrestartdev && cd -"
+alias reducup="nginxup && cd $REDUCBOX_PATH && dokrestartdev && cd -"
 alias reducdown="cd $REDUCBOX_PATH && dokdown && cd -"
 
 # Symfony

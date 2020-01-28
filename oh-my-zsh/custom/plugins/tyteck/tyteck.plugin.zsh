@@ -1,5 +1,7 @@
 alias zrc='source ~/.zshrc && echo "sourced !"'
 alias please='sudo'
+alias restart='please shutdown -r now'
+alias reboot='restart'
 
 alias c='clear'
 alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc'

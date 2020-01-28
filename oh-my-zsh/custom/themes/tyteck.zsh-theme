@@ -1,10 +1,11 @@
 function coloredHost() {
     host=$(uname -n)
     case $host in
-    "MSI-Laptop")
+    "MSI-Laptop"|"engit")
         echo %{$fg[green]%}Local%{$reset_color%}:
         ;;
     "vps256025")
+        # vps1
         echo %{$fg[yellow]%}$host%{$reset_color%}:
         ;;
     *)

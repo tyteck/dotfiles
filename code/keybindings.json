@@ -46,5 +46,10 @@
     {
         "key": "ctrl+shift+q",
         "command": "merge-conflict.next"
+    },
+    {
+        "key": "ctrl+shift+i",
+        "command": "-workbench.action.toggleDevTools",
+        "when": "isDevelopment"
     }
 ]

@@ -6,6 +6,7 @@ alias reboot='restart'
 export DASH_PATH="/home/www/dashboard.podmytube.com/"
 export REDUCBOX_PATH="$HOME/Projects/reducbox"
 export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
+export MYSQL_SERVER_PATH="/home/docker/mysqlServer"
 
 
 alias c='clear'
@@ -29,12 +30,17 @@ alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # shortcut to start containers
+alias mysqlUp="cd $MYSQL_SERVER_PATH && dokup && cd -"
+alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
+
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
-alias dashup="nginxup && cd $DASH_PATH && dokup && cd -"
-alias dashdown="cd $DASH_PATH && dokdown && cd -"
-alias reducup="nginxup && cd $REDUCBOX_PATH && dokrestartdev && cd -"
+
 alias reducdown="cd $REDUCBOX_PATH && dokdown && cd -"
+alias dashdown="mysqlDown && cd $DASH_PATH && dokdown && cd -"
+
+alias dashup="reducdown && mysqlUp && cd $DASH_PATH && dokup && cd -"
+alias reducup="dashdown && cd $REDUCBOX_PATH && dokup && cd -"
 
 # Symfony
 alias sfc='php bin/console'

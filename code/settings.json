@@ -31,11 +31,15 @@
 	"[shellscript]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
+	"[xml]": {
+		"editor.defaultFormatter": "mikeburgh.xml-format"
+	},
 	"files.associations": { 
 		"*.blade.php": "php",
 		"*.zsh": "shellscript"
 	},
 	"[php]": {
 		"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-	}
+	},
+	"html.mirrorCursorOnMatchingTag": false
 }

@@ -15,7 +15,7 @@ function coloredHost() {
 
 }
 PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )"
-PROMPT+=' %{$reset_color%}$(coloredHost)%{$fg_bold[cyan]%}%c%{$reset_color%} $(git_prompt_info)'
+PROMPT+=' $(git_prompt_info)%{$reset_color%}$(coloredHost)%{$fg_bold[cyan]%}%0~%{$reset_color%} '
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}(%{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "

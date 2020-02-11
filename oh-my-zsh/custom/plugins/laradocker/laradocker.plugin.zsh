@@ -21,10 +21,14 @@ function artisan() {
 	# to be able running docker exec -it --user $(id -u):$(id -g)
 	containerName=$(basename $(pwd))
 	if [ ! "$(docker ps -a | grep $containerName)" ]; then
-		return 1
+		commandToRun="php artisan $@"	
+	else
+		# run the artisan command in the container
+		commandToRun="docker exec -it $containerName php artisan $@"	
 	fi
-
-	# run the artisan command in the container
-	commandToRun="docker exec -it $containerName php artisan $@"
 	eval $commandToRun
 }
+
+alias al="artisan list"
+alias amf="artisan migrate:fresh"
+alias amfs="artisan migrate:fresh --seed"

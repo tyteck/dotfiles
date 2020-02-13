@@ -30,7 +30,8 @@ function artisan() {
 }
 
 alias al="artisan list"
-alias tinker="artisan tinker"
+alias arl="artisan route:list"
 alias ams="artisan migrate:status"
 alias amf="artisan migrate:fresh"
 alias amfs="artisan migrate:fresh --seed"
+alias tinker="artisan tinker"

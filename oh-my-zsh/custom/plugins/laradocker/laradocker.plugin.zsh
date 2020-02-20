@@ -31,6 +31,8 @@ function artisan() {
 
 alias al="artisan list"
 alias arl="artisan route:list"
+alias am="artisan migrate"
+alias amr="artisan migrate:rollback"
 alias ams="artisan migrate:status"
 alias amf="artisan migrate:fresh"
 alias amfs="artisan migrate:fresh --seed"

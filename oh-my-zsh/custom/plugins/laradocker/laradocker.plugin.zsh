@@ -19,7 +19,7 @@ function artisan() {
 	# /path/to/containerName
 	#				| artisan
 	# to be able running docker exec -it --user $(id -u):$(id -g)
-	containerName=$(basename $(pwd))
+	containerName=$(getLastFolder)
 	if [ ! "$(docker ps -a | grep $containerName)" ]; then
 		commandToRun="php artisan $@"	
 	else
@@ -27,6 +27,18 @@ function artisan() {
 		commandToRun="docker exec -it $containerName php artisan $@"	
 	fi
 	eval $commandToRun
+}
+
+function getLastFolder(){
+	echo $(basename $(pwd))
+}
+
+function isContainerName(){
+	containerName=$1
+	if [ "$(docker ps -a | grep $containerName)" ]; then
+		return 0
+	fi
+	return 1
 }
 
 alias al="artisan list"

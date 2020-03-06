@@ -13,6 +13,13 @@ function artisan() {
 		return 1
 	fi
 
+	# 1 mean not installed in shell script universe
+	dockerIsInstalled=1
+	if [ -x "$(command -v docker)" ]; then
+		# 0 mean docker is there
+		dockerIsInstalled=0
+	fi
+
 	# get the container name
 	# container should have the same name than the last part of the path
 	# tree structure
@@ -20,20 +27,21 @@ function artisan() {
 	#				| artisan
 	# to be able running docker exec -it --user $(id -u):$(id -g)
 	containerName=$(getLastFolder)
-	if [ ! "$(docker ps -a | grep $containerName)" ]; then
-		commandToRun="php artisan $@"	
+	if [[ ! "$(docker ps -a | grep $containerName)" || $dockerIsInstalled -eq 1 ]]; then
+		commandToRun="php artisan $@"
 	else
 		# run the artisan command in the container
-		commandToRun="docker exec -it $containerName php artisan $@"	
+		commandToRun="docker exec -it $containerName php artisan $@"
 	fi
+	#echo $commandToRun
 	eval $commandToRun
 }
 
-function getLastFolder(){
+function getLastFolder() {
 	echo $(basename $(pwd))
 }
 
-function isContainerName(){
+function isContainerName() {
 	containerName=$1
 	if [ "$(docker ps -a | grep $containerName)" ]; then
 		return 0
@@ -41,11 +49,13 @@ function isContainerName(){
 	return 1
 }
 
+alias aig="artisan ide-helper:generate"
+alias aie="artisan ide-helper:eloquent"
 alias al="artisan list"
 alias arl="artisan route:list"
 alias am="artisan migrate"
-alias amr="artisan migrate:rollback"
-alias ams="artisan migrate:status"
 alias amf="artisan migrate:fresh"
 alias amfs="artisan migrate:fresh --seed"
+alias amr="artisan migrate:rollback"
+alias ams="artisan migrate:status"
 alias tinker="artisan tinker"

@@ -8,7 +8,6 @@ export REDUCBOX_PATH="$HOME/Projects/reducbox"
 export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 export MYSQL_SERVER_PATH="/home/docker/mysqlServer"
 
-
 alias c='clear'
 alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc'
 # docker & docker compose
@@ -66,7 +65,15 @@ if hash ansible-playbook 2>/dev/null; then
         echo "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
     fi
 fi
-alias shutdown="fullapt && please shutdown -h now"
+
+case $(uname -n) in
+"MSI-Laptop")
+    alias shutdown="fullapt && please shutdown -h now"
+    ;;
+*)
+    alias shutdown="please shutdown -h now"
+    ;;
+esac
 
 # some core shortcuts
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
@@ -198,7 +205,7 @@ readVar() {
     fi
     VAR=$(grep $VAR_NAME $FILE_NAME | xargs)
     IFS="=" read -rA VAR <<<"$VAR"
-    # ${VAR[1]} is the key 
+    # ${VAR[1]} is the key
     # ${VAR[2]} is the value
     echo ${VAR[2]}
 }

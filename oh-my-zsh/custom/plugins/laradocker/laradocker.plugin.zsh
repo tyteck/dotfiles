@@ -5,6 +5,8 @@
 # - using container name
 # - last part of the folder (where is stored artisan) should have the same name as your container
 #  		/path/../to/<containername>/artisan
+false=1
+true=0
 
 function artisan() {
 	# checking if artisan is there
@@ -13,11 +15,9 @@ function artisan() {
 		return 1
 	fi
 
-	# 1 mean not installed in shell script universe
-	dockerIsInstalled=1
+	dockerIsInstalled=$false
 	if [ -x "$(command -v docker)" ]; then
-		# 0 mean docker is there
-		dockerIsInstalled=0
+		dockerIsInstalled=$true
 	fi
 
 	# get the container name
@@ -27,11 +27,12 @@ function artisan() {
 	#				| artisan
 	# to be able running docker exec -it --user $(id -u):$(id -g)
 	containerName=$(getLastFolder)
-	if [[ ! "$(docker ps -a | grep $containerName)" || $dockerIsInstalled -eq 1 ]]; then
-		commandToRun="php artisan $@"
-	else
+	if [[ $dockerIsInstalled -eq $true && "$(docker ps -a | grep $containerName)" ]];then
 		# run the artisan command in the container
 		commandToRun="docker exec -it $containerName php artisan $@"
+	else
+		# run the artisan command line
+		commandToRun="php artisan $@"
 	fi
 	#echo $commandToRun
 	eval $commandToRun

@@ -92,6 +92,7 @@ itemsToReplace["$HOME/.config/Code/User/settings.json"]="$dotfiles/code/settings
 itemsToReplace["$HOME/.config/Code/User/keybindings.json"]="$dotfiles/code/keybindings.json"
 itemsToReplace["$HOME/.config/Code/User/snippets"]="$dotfiles/code/snippets"
 itemsToReplace["$HOME/.zshrc"]="$dotfiles/.zshrc"
+itemsToReplace["$HOME/.gitconfig"]="$dotfiles/.gitconfig"
 
 #
 # Getting params

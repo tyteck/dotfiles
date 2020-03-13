@@ -1,0 +1,7 @@
+[user]
+	email = frederick@tyteca.net
+	name = Frederick Tyteca
+[pager]
+	branch = false
+[core]
+	pager = less -FRSX

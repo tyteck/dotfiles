@@ -42,7 +42,7 @@ function tests() {
 		# run the artisan command in the container
 		prefix="docker exec -it $containerName "
 	fi
-	commandToRun="${prefix}${phpunitPath} --color=always"
+	commandToRun="${prefix}${phpunitPath} --color=always $@"
 	#echo $commandToRun
 	eval $commandToRun
 }

@@ -5,49 +5,82 @@
 # - using container name
 # - last part of the folder (where is stored artisan) should have the same name as your container
 #  		/path/../to/<containername>/artisan
-false=1
-true=0
 
 function artisan() {
 	# checking if artisan is there
-	if [ ! -f artisan ]; then
-		echo "not a laravel path"
+	if ! fileExists "artisan" 
+	then
+		echo "You are not in a laravel path."
 		return 1
 	fi
 
-	dockerIsInstalled=$false
-	if [ -x "$(command -v docker)" ]; then
-		dockerIsInstalled=$true
-	fi
-
 	# get the container name
-	# container should have the same name than the last part of the path
-	# tree structure
-	# /path/to/containerName
-	#				| artisan
-	# to be able running docker exec -it --user $(id -u):$(id -g)
 	containerName=$(getLastFolder)
-	if [[ $dockerIsInstalled -eq $true && "$(docker ps -a | grep $containerName)" ]];then
+	if isInstalled "docker" && containerExists $containerName
+	then
 		# run the artisan command in the container
-		commandToRun="docker exec -it $containerName php artisan $@"
-	else
-		# run the artisan command line
-		commandToRun="php artisan $@"
+		prefix="docker exec -it $containerName "
 	fi
+	commandToRun="${prefix}php artisan $@"
 	#echo $commandToRun
 	eval $commandToRun
 }
 
+function tests() {
+	phpunitPath="vendor/bin/phpunit"
+	# checking if artisan is there
+	if ! fileExists $phpunitPath 
+	then
+		echo "phpunit is not available in vendor path ($phpunitPath)."
+		return 1
+	fi
+
+	# get the container name
+	containerName=$(getLastFolder)
+	if isInstalled "docker" && containerExists $containerName
+	then
+		# run the artisan command in the container
+		prefix="docker exec -it $containerName "
+	fi
+	commandToRun="${prefix}${phpunitPath} --color=always"
+	#echo $commandToRun
+	eval $commandToRun
+}
+
+# grab the last part of path
+# /path/to/folder => folder
 function getLastFolder() {
 	echo $(basename $(pwd))
 }
 
-function isContainerName() {
+# check if containerName is up and running
+function containerExists() {
 	containerName=$1
 	if [ "$(docker ps -a | grep $containerName)" ]; then
-		return 0
+		true
+	else
+		false
 	fi
-	return 1
+}
+
+# check if filename exists and is executable
+function fileExists() {
+	fileName=$1
+	if [ -x $fileName ]; then
+		true
+	else
+		false
+	fi
+}
+
+# check if one program is installed on this computer
+function isInstalled(){
+	programName=$1
+	if [ -x "$(command -v $programName)" ]; then
+		true
+	else
+		false
+	fi
 }
 
 alias aig="artisan ide-helper:generate"

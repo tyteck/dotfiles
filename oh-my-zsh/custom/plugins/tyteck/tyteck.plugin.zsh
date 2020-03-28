@@ -81,6 +81,7 @@ alias testcore='runcore phpunit --colors=always'
 alias rundash='dokexec dashboard.podmytube.com'
 alias testdash='dokexec dashboard.podmytube.com phpunit --colors=always'
 alias testbox='dokexec reducbox phpunit --colors=always'
+alias ngrokdash='ngrok http -subdomain=dashpod -region eu 80'
 
 # default pathes cd shortcuts
 alias cddash="cd /home/www/dashboard.podmytube.com/"

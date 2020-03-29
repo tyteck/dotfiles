@@ -7,7 +7,7 @@
 #  		/path/../to/<containername>/artisan
 
 function artisan() {
-	# checking if artisan is there
+	# checking if executable is there
 	if ! fileExists "artisan" 
 	then
 		echo "You are not in a laravel path."
@@ -19,7 +19,7 @@ function artisan() {
 	if isInstalled "docker" && containerExists $containerName
 	then
 		# run the artisan command in the container
-		prefix="docker exec -it $containerName "
+		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
 	commandToRun="${prefix}php artisan $@"
 	#echo $commandToRun
@@ -27,11 +27,11 @@ function artisan() {
 }
 
 function tests() {
-	phpunitPath="vendor/bin/phpunit"
-	# checking if artisan is there
-	if ! fileExists $phpunitPath 
+	executablePath="vendor/bin/phpunit"
+	# checking if executable is there
+	if ! fileExists $executablePath 
 	then
-		echo "phpunit is not available in vendor path ($phpunitPath)."
+		echo "phpunit is not available in path ($executablePath)."
 		return 1
 	fi
 
@@ -40,9 +40,30 @@ function tests() {
 	if isInstalled "docker" && containerExists $containerName
 	then
 		# run the artisan command in the container
-		prefix="docker exec -it $containerName "
+		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
-	commandToRun="${prefix}${phpunitPath} --color=always $@"
+	commandToRun="${prefix}${executablePath} --color=always $@"
+	#echo $commandToRun
+	eval $commandToRun
+}
+
+function composer() {
+	executablePath="vendor/bin/composer"
+	# checking if executable is there
+	if ! fileExists $executablePath 
+	then
+		echo "coomposer is not available in path ($executablePath)."
+		return 1
+	fi
+
+	# get the container name
+	containerName=$(getLastFolder)
+	if isInstalled "docker" && containerExists $containerName
+	then
+		# run the artisan command in the container
+		prefix="docker exec -it --user $USER_ID $containerName "
+	fi
+	commandToRun="${prefix}${executablePath} $@"
 	#echo $commandToRun
 	eval $commandToRun
 }

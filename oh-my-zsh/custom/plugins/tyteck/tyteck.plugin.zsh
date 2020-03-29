@@ -8,6 +8,14 @@ export REDUCBOX_PATH="$HOME/Projects/reducbox"
 export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 export MYSQL_SERVER_PATH="/home/docker/mysqlServer"
 
+# these 2 variables are used during docker container building.
+# one user (dockeruser) is created using my UID and GID
+# so when I'm doing an action into the container with this user
+# perms IN container are dockeruser
+# perms IN host are mine
+export USER_ID=$(id -u) 
+export GROUP_ID=$(id -g)
+
 alias c='clear'
 alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc'
 # docker & docker compose
@@ -15,8 +23,8 @@ alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
 alias dokcp="docker cp"
 alias dokdown="docker-compose down --remove-orphans"
-alias dokexec="docker exec -it"
-alias dokexecu="dokexec --user $(id -u):$(id -g)"
+alias dokexec="docker exec -it --user $USER_ID"
+alias dokexecroot="docker exec -it"
 alias doklog="docker logs -f"
 alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"

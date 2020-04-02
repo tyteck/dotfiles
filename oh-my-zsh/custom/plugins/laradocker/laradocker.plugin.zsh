@@ -8,16 +8,14 @@
 
 function artisan() {
 	# checking if executable is there
-	if ! fileExists "artisan" 
-	then
+	if ! fileExists "artisan"; then
 		echo "You are not in a laravel path."
 		return 1
 	fi
 
 	# get the container name
 	containerName=$(getLastFolder)
-	if isInstalled "docker" && containerExists $containerName
-	then
+	if isInstalled "docker" && containerExists $containerName; then
 		# run the artisan command in the container
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
@@ -29,16 +27,14 @@ function artisan() {
 function tests() {
 	executablePath="vendor/bin/phpunit"
 	# checking if executable is there
-	if ! fileExists $executablePath 
-	then
+	if ! fileExists $executablePath; then
 		echo "phpunit is not available in path ($executablePath)."
 		return 1
 	fi
 
 	# get the container name
 	containerName=$(getLastFolder)
-	if isInstalled "docker" && containerExists $containerName
-	then
+	if isInstalled "docker" && containerExists $containerName; then
 		# run the artisan command in the container
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
@@ -48,18 +44,23 @@ function tests() {
 }
 
 function composer() {
-	executablePath="vendor/bin/composer"
-	# checking if executable is there
-	if ! fileExists $executablePath 
-	then
-		echo "coomposer is not available in path ($executablePath)."
+	found=false
+	for executablePath in vendor/bin/composer /usr/local/bin/composer; do
+		# checking if executable is there
+		if fileExists $executablePath; then
+			found=true
+			break
+		fi
+	done
+
+	if false; then
+		echo "composer seems to be not installed on these path."
 		return 1
 	fi
-
+	
 	# get the container name
 	containerName=$(getLastFolder)
-	if isInstalled "docker" && containerExists $containerName
-	then
+	if isInstalled "docker" && containerExists $containerName; then
 		# run the artisan command in the container
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
@@ -95,7 +96,7 @@ function fileExists() {
 }
 
 # check if one program is installed on this computer
-function isInstalled(){
+function isInstalled() {
 	programName=$1
 	if [ -x "$(command -v $programName)" ]; then
 		true

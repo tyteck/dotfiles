@@ -119,9 +119,9 @@ setopt appendhistory
 
 
 # ==================================================
-# micromania specific configuration
-micromania_conf=$HOME/.micromania.conf
-if [ -f $micromania_conf ]; then
+# local specific configuration
+localConf=$HOME/.local.conf
+if [ -f $localConf ]; then
     # this file should not be versionned
-    . $micromania_conf
+    . $localConf
 fi

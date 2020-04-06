@@ -13,7 +13,7 @@ export MYSQL_SERVER_PATH="/home/docker/mysqlServer"
 # so when I'm doing an action into the container with this user
 # perms IN container are dockeruser
 # perms IN host are mine
-export USER_ID=$(id -u) 
+export USER_ID=$(id -u)
 export GROUP_ID=$(id -g)
 
 alias c='clear'
@@ -57,7 +57,7 @@ alias phpunit='./vendor/bin/phpunit --colors=always'
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
 alias biggestFiles='du -Sh . | sort -rh | head -20'
-alias dir='du -sh * 2>&1 | grep -v "cannot"'
+alias dir='du -sh * 2>&1 | sort -h | grep -v "cannot"'
 
 # apt
 alias fullapt='echo ==== APT-GET ==== && \
@@ -85,23 +85,7 @@ esac
 
 # some core shortcuts
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
-alias testcore='runcore phpunit --colors=always'
-alias rundash='dokexec dashboard.podmytube.com'
-alias testdash='dokexec dashboard.podmytube.com phpunit --colors=always'
-alias testbox='dokexec reducbox phpunit --colors=always'
 alias ngrokdash='ngrok http -subdomain=dashpod -region eu 80'
-
-# default pathes cd shortcuts
-alias cddash="cd /home/www/dashboard.podmytube.com/"
-alias cddot="cd $HOME/dotfiles/"
-alias cdreve="cd /home/www/reverse.podmytube.com/"
-alias cdcore="cd /home/www/core.podmytube.com/"
-alias cdplay="cd /home/docker/playlists.podmytube.com/"
-alias cdpods="cd /home/docker/podcasts.podmytube.com/"
-alias cdwww="cd /home/www/www.new.podmytube.com/"
-alias frpod='cd /home/www/fr.podmytube.com/'
-alias cdtyt='cd /home/www/www.tyteca.net/'
-alias cdval='cd /home/www/valentin.tyteca.net/'
 
 # default db shortcuts
 alias dbroot='docker exec -it mysqlServer mysql --login-path=root'

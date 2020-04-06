@@ -15,7 +15,7 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
-	"construct": {
+	"construct class": {
 		"scope": "php",
 		"prefix": "construct",
 		"body": [
@@ -23,7 +23,23 @@
 		],
 		"description": "brand new php class file"
 	},
-	"create": {
+	"dump prologue": {
+		"scope": "php",
+		"prefix": "dcf",
+		"body": [
+			"dump(__CLASS__ . \"-\" . __FUNCTION__);"
+		],
+		"description": "couple __CLASS__ and __FUNCTION__"
+	},
+	"__class__ __function__": {
+		"scope": "php",
+		"prefix": "__cf",
+		"body": [
+			"__CLASS__.\"-\".__FUNCTION__"
+		],
+		"description": "couple __CLASS__ and __FUNCTION__"
+	},
+	"create class": {
 		"scope": "php",
 		"prefix": "create",
 		"body": [

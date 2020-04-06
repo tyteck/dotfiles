@@ -38,7 +38,7 @@ function tests() {
 		# run the artisan command in the container
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
-	commandToRun="${prefix}${executablePath} --color=always $@"
+	commandToRun="${prefix}${executablePath} --color=always --order-by=defects --stop-on-defect $@"
 	#echo $commandToRun
 	eval $commandToRun
 }
@@ -57,7 +57,7 @@ function composer() {
 		echo "composer seems to be not installed on these path."
 		return 1
 	fi
-	
+
 	# get the container name
 	containerName=$(getLastFolder)
 	if isInstalled "docker" && containerExists $containerName; then

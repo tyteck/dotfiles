@@ -31,6 +31,9 @@
 	"[shellscript]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
+	"[php]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
 	"[xml]": {
 		"editor.defaultFormatter": "mikeburgh.xml-format"
 	},
@@ -38,9 +41,10 @@
 		"*.blade.php": "php",
 		"*.zsh": "shellscript"
 	},
-	"[php]": {
-		"editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
-	},
 	"html.mirrorCursorOnMatchingTag": false,
-	"files.autoSaveDelay": 1500
+	"files.autoSaveDelay": 1500,
+	"sonarlint.ls.javaHome": "/usr/lib/jvm/java-8-openjdk-amd64/jre",
+	"editor.formatOnSave": true,
+	"prettier.tabWidth": 4,
+	"editor.lineHeight": 25
 }

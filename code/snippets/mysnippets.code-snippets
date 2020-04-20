@@ -35,7 +35,7 @@
 		"scope": "php",
 		"prefix": "__cf",
 		"body": [
-			"__CLASS__.\"-\".__FUNCTION__"
+			"__CLASS__ . \"-\" . __FUNCTION__"
 		],
 		"description": "couple __CLASS__ and __FUNCTION__"
 	},

@@ -6,6 +6,16 @@
 # - last part of the folder (where is stored artisan) should have the same name as your container
 #  		/path/../to/<containername>/artisan
 
+# this function prevent to run composer locally while it should be run in a docker
+function php() {
+	if [[ $1 == "artisan" ]]; then
+		commandToRun="$@"
+	else
+		commandToRun="php $@"
+	fi
+	eval $commandToRun
+}
+
 function artisan() {
 	# checking if executable is there
 	if ! fileExists "artisan"; then
@@ -38,7 +48,7 @@ function tests() {
 		# run the artisan command in the container
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
-	commandToRun="${prefix}${executablePath} --color=always --order-by=defects --stop-on-defect $@"
+	commandToRun="${prefix}${executablePath} --color=always --order-by=defects $@"
 	#echo $commandToRun
 	eval $commandToRun
 }
@@ -105,6 +115,7 @@ function isInstalled() {
 	fi
 }
 
+alias ads="artisan db:seed"
 alias aig="artisan ide-helper:generate"
 alias aie="artisan ide-helper:eloquent"
 alias al="artisan list"

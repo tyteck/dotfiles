@@ -46,5 +46,6 @@
 	"sonarlint.ls.javaHome": "/usr/lib/jvm/java-8-openjdk-amd64/jre",
 	"editor.formatOnSave": true,
 	"prettier.tabWidth": 4,
-	"editor.lineHeight": 25
+	"editor.lineHeight": 25,
+	"prettier.singleQuote": true
 }

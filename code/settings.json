@@ -10,7 +10,7 @@
 	"explorer.confirmDelete": false,
 	"explorer.confirmDragAndDrop": false,
 	"extensions.ignoreRecommendations": true,
-	"files.autoSave": "afterDelay",
+	"files.autoSave": "off",
 	"php.suggest.basic": false,
 	"files.watcherExclude": {
 		"**/vendor/**": true

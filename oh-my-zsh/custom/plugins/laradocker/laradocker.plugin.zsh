@@ -16,9 +16,29 @@ function php() {
 	eval $commandToRun
 }
 
+function isLaravelPath() {
+	if fileExists "artisan"; then
+		true
+	else
+		false
+	fi
+}
+
+function laravelFirstRun() {
+	if ! isLaravelPath; then
+		echo "You are not in a laravel path."
+		return 1
+	fi
+
+	mkdir -p storage/framework/cache
+	mkdir -p storage/framework/sessions
+	mkdir -p storage/framework/testing
+	mkdir -p storage/framework/views
+}
+
 function artisan() {
 	# checking if executable is there
-	if ! fileExists "artisan"; then
+	if ! isLaravelPath; then
 		echo "You are not in a laravel path."
 		return 1
 	fi
@@ -49,32 +69,6 @@ function tests() {
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
 	commandToRun="${prefix}${executablePath} --color=always --order-by=defects $@"
-	#echo $commandToRun
-	eval $commandToRun
-}
-
-function composer() {
-	found=false
-	for executablePath in vendor/bin/composer /usr/local/bin/composer; do
-		# checking if executable is there
-		if fileExists $executablePath; then
-			found=true
-			break
-		fi
-	done
-
-	if false; then
-		echo "composer seems to be not installed on these path."
-		return 1
-	fi
-
-	# get the container name
-	containerName=$(getLastFolder)
-	if isInstalled "docker" && containerExists $containerName; then
-		# run the artisan command in the container
-		prefix="docker exec -it --user $USER_ID $containerName "
-	fi
-	commandToRun="${prefix}${executablePath} $@"
 	#echo $commandToRun
 	eval $commandToRun
 }

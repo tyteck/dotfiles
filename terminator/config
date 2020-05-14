@@ -14,4 +14,6 @@
     background_darkness = 0.75
     background_type = transparent
     cursor_color = "#aaaaaa"
+    icon_bell = False
     scrollback_lines = 90000
+    visible_bell = True

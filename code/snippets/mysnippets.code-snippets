@@ -23,21 +23,21 @@
 		],
 		"description": "brand new php class file"
 	},
-	"dump prologue": {
+	"dump __file__ __function__": {
 		"scope": "php",
-		"prefix": "dcf",
+		"prefix": "df",
 		"body": [
-			"dump(__CLASS__ . \"-\" . __FUNCTION__);"
+			"dump($1, __FILE__ . \"-\" . __FUNCTION__);"
 		],
-		"description": "couple __CLASS__ and __FUNCTION__"
+		"description": "dump __FILE__ and __FUNCTION__"
 	},
-	"__class__ __function__": {
+	"dd __file__ __function__": {
 		"scope": "php",
-		"prefix": "__cf",
+		"prefix": "ddf",
 		"body": [
-			"__CLASS__ . \"-\" . __FUNCTION__"
+			"dd($1, __FILE__ . \"-\" . __FUNCTION__);"
 		],
-		"description": "couple __CLASS__ and __FUNCTION__"
+		"description": "dump & die __FILE__ and __FUNCTION__"
 	},
 	"create class": {
 		"scope": "php",

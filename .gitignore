@@ -1,1 +1,2 @@
-.creds
+onedrive/*
+!onedrive/sync_list

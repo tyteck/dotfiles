@@ -3,10 +3,10 @@ alias please='sudo'
 alias restart='please shutdown -r now'
 alias reboot='restart'
 
-export DASH_PATH="/home/www/dashboard.podmytube.com/"
+export DASH_PATH="$HOME/Projects/dashboard.podmytube.com"
 export REDUCBOX_PATH="$HOME/Projects/reducbox"
 export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
-export MYSQL_SERVER_PATH="/home/docker/mysqlServer"
+export MYSQL_SERVER_PATH="$HOME/Projects/mysqlserver"
 
 # these 2 variables are used during docker container building.
 # one user (dockeruser) is created using my UID and GID
@@ -75,7 +75,7 @@ if hash ansible-playbook 2>/dev/null; then
 fi
 
 case $(uname -n) in
-"MSI-Laptop")
+"msi-laptop")
     alias shutdown="fullapt && please shutdown -h now"
     ;;
 *)
@@ -90,7 +90,6 @@ alias ngrokdash='ngrok http -subdomain=dashpod -region eu 80'
 # default db shortcuts
 alias dbroot='docker exec -it mysqlServer mysql --login-path=root'
 alias dbpmt='docker exec -it mysqlServer mysql --login-path=pmt pmt'
-alias dbpmtests='docker exec -it mysqlServer mysql --login-path=pmtests pmtests'
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	COMMODITIES
@@ -157,10 +156,10 @@ function apacheperms() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
             sudo chown www-data:$groupToAllow $FILE
-            sudo chmod g+w $FILE
+            sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then
             sudo chown -R www-data:$groupToAllow $FILE
-            sudo chmod -R g+w $FILE
+            sudo chmod -R g+rw $FILE
         else
             echo "{$FILE} is not a valid element to change permssions on."
             continue

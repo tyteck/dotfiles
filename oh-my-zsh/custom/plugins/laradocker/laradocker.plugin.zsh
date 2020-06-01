@@ -7,14 +7,16 @@
 #  		/path/../to/<containername>/artisan
 
 # this function prevent to run composer locally while it should be run in a docker
-function php() {
-	if [[ $1 == "artisan" ]]; then
-		commandToRun="$@"
-	else
-		commandToRun="php $@"
-	fi
-	eval $commandToRun
-}
+#function php() {
+#	if [[ $1 == "artisan" ]]; then
+#		commandToRun="$@"
+#	else
+#		commandToRun="php $@"
+#	fi
+#	echo $commandToRun
+#
+#	eval $commandToRun
+#}
 
 function isLaravelPath() {
 	if fileExists "artisan"; then
@@ -109,6 +111,7 @@ function isInstalled() {
 	fi
 }
 
+alias acc="artisan cache:clear"
 alias ads="artisan db:seed"
 alias aig="artisan ide-helper:generate"
 alias aie="artisan ide-helper:eloquent"
@@ -119,4 +122,5 @@ alias amf="artisan migrate:fresh"
 alias amfs="artisan migrate:fresh --seed"
 alias amr="artisan migrate:rollback"
 alias ams="artisan migrate:status"
+alias aoc="artisan optimize:clear"
 alias tinker="artisan tinker"

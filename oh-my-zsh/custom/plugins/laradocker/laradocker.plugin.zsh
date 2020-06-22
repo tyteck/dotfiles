@@ -47,6 +47,7 @@ function artisan() {
 
 	# get the container name
 	containerName=$(getLastFolder)
+	prefix=''
 	if isInstalled "docker" && containerExists $containerName; then
 		# run the artisan command in the container
 		prefix="docker exec -it --user $USER_ID $containerName "
@@ -66,12 +67,13 @@ function tests() {
 
 	# get the container name
 	containerName=$(getLastFolder)
+	prefix=''
 	if isInstalled "docker" && containerExists $containerName; then
 		# run the artisan command in the container
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
 	commandToRun="${prefix}${executablePath} --color=always --order-by=defects $@"
-	#echo $commandToRun
+	echo $commandToRun
 	eval $commandToRun
 }
 

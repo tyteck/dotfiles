@@ -1,56 +1,51 @@
 {
-    "editor.fontFamily": "'Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontLigatures": true,
-    "editor.minimap.enabled": false,
-    "editor.quickSuggestions": {
-        "other": true,
-        "comments": false,
-        "strings": true
-    },
-    "explorer.confirmDelete": false,
-    "explorer.confirmDragAndDrop": false,
-    "extensions.ignoreRecommendations": true,
-    "files.autoSave": "afterDelay",
-    "php.suggest.basic": false,
-    "files.watcherExclude": {
-        "**/vendor/**": true
-    },
-    "workbench.activityBar.visible": false,
-    "workbench.startupEditor": "newUntitledFile",
-    "workbench.statusBar.visible": true,
-    "window.zoomLevel": 0,
-    "editor.renderWhitespace": "boundary",
-    "php.validate.enable": false,
-    "yaml.schemas": {
-        "file:///home/ftyteca/.vscode/extensions/docsmsft.docs-yaml-0.2.2/schemas/toc.schema.json": "/toc\\.yml/i"
-    },
-    "breadcrumbs.enabled": false,
-    "terminal.integrated.scrollback": 9000,
+  "editor.fontFamily": "'Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+  "editor.fontLigatures": true,
+  "editor.minimap.enabled": false,
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": true,
+    "strings": true
+  },
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "extensions.ignoreRecommendations": true,
+  "files.autoSave": "afterDelay",
+  "php.suggest.basic": false,
+  "files.watcherExclude": {
+    "**/vendor/**": true
+  },
+  "workbench.activityBar.visible": false,
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.statusBar.visible": true,
+  "window.zoomLevel": 0,
+  "editor.renderWhitespace": "boundary",
+  "php.validate.enable": false,
+  "yaml.schemas": {
+    "file:///home/ftyteca/.vscode/extensions/docsmsft.docs-yaml-0.2.2/schemas/toc.schema.json": "/toc\\.yml/i"
+  },
+  "breadcrumbs.enabled": false,
+  "terminal.integrated.scrollback": 9000,
+  "files.eol": "\n",
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "mikeburgh.xml-format"
+  },
+  "files.associations": {
+    "*.zsh": "shellscript",
+    "*.php_cs": "php"
+  },
+  "html.mirrorCursorOnMatchingTag": false,
+  "files.autoSaveDelay": 1500,
+  "editor.formatOnSave": true,
+  "editor.lineHeight": 25,
+  "[php]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "files.eol": "\n",
-    "[shellscript]": {
-        "editor.defaultFormatter": "foxundermoon.shell-format"
-    },
-    "[php]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-	"[blade]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[xml]": {
-        "editor.defaultFormatter": "mikeburgh.xml-format"
-    },
-    "files.associations": {
-        "*.blade.php": "html",
-        "*.tpl": "html",
-        "*.zsh": "shellscript"
-    },
-    "html.mirrorCursorOnMatchingTag": false,
-    "files.autoSaveDelay": 1500,
-    "sonarlint.ls.javaHome": "/usr/lib/jvm/java-8-openjdk-amd64/jre",
-    "editor.formatOnSave": true,
-    "prettier.tabWidth": 4,
-    "editor.lineHeight": 25,
-    "prettier.singleQuote": true,
-    "blade.format.enable": true
+    "editor.formatOnSave": true
+  },
+  "php-cs-fixer.rules": "@PhpCsFixer",
+  "prettier.singleQuote": true,
+  "prettier.tabWidth": 4
 }

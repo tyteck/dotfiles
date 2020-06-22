@@ -57,7 +57,7 @@ alias phpunit='./vendor/bin/phpunit --colors=always'
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
 alias biggestFiles='du -Sh . | sort -rh | head -20'
-alias dir='du -sh * 2>&1 | sort -h | grep -v "cannot"'
+alias dir='du -hs * | sort -h'
 
 # apt
 alias fullapt='echo ==== APT-GET ==== && \

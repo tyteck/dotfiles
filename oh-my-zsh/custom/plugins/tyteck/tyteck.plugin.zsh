@@ -85,7 +85,7 @@ esac
 
 # some core shortcuts
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /usr/local/bin/youtube-dl:/usr/local/bin/youtube-dl --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
-alias ngrokdash='ngrok http -subdomain=dashpod -region eu 80'
+alias ngrokdash='screen -d -m ngrok http -subdomain=dashpod -region eu 80'
 
 # default db shortcuts
 alias dbroot='docker exec -it mysqlServer mysql --login-path=root'

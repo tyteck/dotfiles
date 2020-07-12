@@ -6,18 +6,6 @@
 # - last part of the folder (where is stored artisan) should have the same name as your container
 #  		/path/../to/<containername>/artisan
 
-# this function prevent to run composer locally while it should be run in a docker
-#function php() {
-#	if [[ $1 == "artisan" ]]; then
-#		commandToRun="$@"
-#	else
-#		commandToRun="php $@"
-#	fi
-#	echo $commandToRun
-#
-#	eval $commandToRun
-#}
-
 function isLaravelPath() {
 	if fileExists "artisan"; then
 		true
@@ -73,7 +61,7 @@ function tests() {
 		prefix="docker exec -it --user $USER_ID $containerName "
 	fi
 	commandToRun="${prefix}${executablePath} --color=always --order-by=defects $@"
-	echo $commandToRun
+	#echo $commandToRun
 	eval $commandToRun
 }
 

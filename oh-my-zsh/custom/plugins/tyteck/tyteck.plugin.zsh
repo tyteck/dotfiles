@@ -60,8 +60,7 @@ alias biggestFiles='du -Sh . | sort -rh | head -20'
 alias dir='du -hs * | sort -h'
 
 # apt
-alias fullapt='echo ==== APT-GET ==== && \
-    sudo apt-get update -q -y && \
+alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get upgrade -q -y && \
     sudo apt-get autoclean -q -y && \
     sudo apt-get autoremove -q -y'

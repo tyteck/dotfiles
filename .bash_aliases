@@ -87,8 +87,7 @@ alias gbr='git branch'
 alias gco='git checkout'
 
 # apt
-alias fullapt='echo ==== APT-GET ==== && \
-	sudo apt-get update -q -y && \
+alias fullapt='sudo apt-get update -q -y && \
 	sudo apt-get upgrade -q -y && \
 	sudo apt-get autoclean -q -y && \
 	sudo apt-get autoremove -q -y'

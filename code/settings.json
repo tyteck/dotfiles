@@ -38,12 +38,13 @@
     "editor.formatOnSave": true,
     "editor.lineHeight": 25,
     "[php]": {
-        "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.formatOnSave": true
     },
     "prettier.singleQuote": true,
     "prettier.tabWidth": 4,
     "[javascript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
-    }
+    },
+    "intelephense.format.enable": false
 }

@@ -7,6 +7,7 @@ export DASH_PATH="$HOME/Projects/dashboard.podmytube.com"
 export REDUCBOX_PATH="$HOME/Projects/reducbox"
 export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 export MYSQL_SERVER_PATH="$HOME/Projects/mysqlserver"
+export PHPMYADMIN_PATH="$HOME/Projects/phpmyadmin"
 
 # these 2 variables are used during docker container building.
 # one user (dockeruser) is created using my UID and GID
@@ -28,7 +29,7 @@ alias dokexecroot="docker exec -it"
 alias doklog="docker logs -f"
 alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"
-alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
+alias dokprune="docker system prune -f"
 alias dokrestart="docker-compose down --remove-orphans && docker-compose up -d"
 alias dokrestartdev="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
 alias doktus="docker ps -a"
@@ -39,13 +40,16 @@ alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml
 alias mysqlUp="cd $MYSQL_SERVER_PATH && dokup && cd -"
 alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 
+alias phpmyadminUp="cd $PHPMYADMIN_PATH && dokup && cd -"
+alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
+
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
 alias reducdown="cd $REDUCBOX_PATH && dokdown && cd -"
-alias dashdown="mysqlDown && cd $DASH_PATH && dokdown && cd -"
+alias dashdown="mysqlDown && phpmyadminDown && cd $DASH_PATH && dokdown && cd -"
 
-alias dashup="reducdown && mysqlUp && cd $DASH_PATH && dokup && cd -"
+alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && cd -"
 alias reducup="dashdown && cd $REDUCBOX_PATH && dokup && cd -"
 
 # Symfony

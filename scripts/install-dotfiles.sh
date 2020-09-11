@@ -1,6 +1,6 @@
 #!/bin/bash
 # Maintainer : frederick tyteca <frederick@tyteca.net>
-# This script only goal is to prepare my dev environment
+# This script's only goal is to prepare my dev environment
 # It is copying some bash configuration files
 # - .bashrc
 # - .bash_aliases

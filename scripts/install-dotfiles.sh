@@ -1,6 +1,6 @@
 #!/bin/bash
 # Maintainer : frederick tyteca <frederick@tyteca.net>
-# This script only goal is to prepare my dev environment
+# This script's only goal is to prepare my dev environment
 # It is copying some bash configuration files
 # - .bashrc
 # - .bash_aliases
@@ -88,9 +88,6 @@ itemsToReplace["$HOME/.docker/config.json"]="$dotfiles/docker/config.json"
 itemsToReplace["$HOME/.bashrc"]="$dotfiles/.bashrc"
 itemsToReplace["$HOME/.bash_aliases"]="$dotfiles/.bash_aliases"
 itemsToReplace["$HOME/.vimrc"]="$dotfiles/.vimrc"
-itemsToReplace["$HOME/.config/Code/User/settings.json"]="$dotfiles/code/settings.json"
-itemsToReplace["$HOME/.config/Code/User/keybindings.json"]="$dotfiles/code/keybindings.json"
-itemsToReplace["$HOME/.config/Code/User/snippets"]="$dotfiles/code/snippets"
 itemsToReplace["$HOME/.zshrc"]="$dotfiles/.zshrc"
 itemsToReplace["$HOME/.gitconfig"]="$dotfiles/.gitconfig"
 

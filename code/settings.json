@@ -22,29 +22,34 @@
     "breadcrumbs.enabled": false,
     "terminal.integrated.scrollback": 9000,
     "files.eol": "\n",
+    "files.associations": {
+        ".zsh": "shellscript",
+        /* ".blade.php": "html",
+        ".tpl": "html", */
+        ".php_cs": "php"
+    },
+    "files.autoSaveDelay": 1500,
+    "editor.formatOnSave": true,
+    "editor.lineHeight": 25,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[dockerfile]": {
+        "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+    },
     "[shellscript]": {
         "editor.defaultFormatter": "foxundermoon.shell-format"
     },
     "[xml]": {
         "editor.defaultFormatter": "mikeburgh.xml-format"
     },
-    "files.associations": {
-        ".zsh": "shellscript",
-        ".blade.php": "html",
-        ".tpl": "html",
-        ".php_cs": "php"
-    },
-    "files.autoSaveDelay": 1500,
-    "editor.formatOnSave": true,
-    "editor.lineHeight": 25,
-    "[php]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.formatOnSave": true
-    },
-    "prettier.singleQuote": true,
-    "prettier.tabWidth": 4,
     "[javascript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
-    "intelephense.format.enable": false
+    "prettier.singleQuote": true,
+    "prettier.tabWidth": 4,
+    /* ==================== PHP ==================== */
+    "intelephense.format.enable": false,
+    "[php]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    }
 }

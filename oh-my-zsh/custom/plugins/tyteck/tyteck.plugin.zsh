@@ -50,8 +50,8 @@ alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 alias reducdown="cd $REDUCBOX_PATH && dokdown && cd -"
 alias dashdown="mysqlDown && phpmyadminDown && nginxdown && cd $DASH_PATH && dokdown && cd -"
 
-alias dashup="reducdown && nginxup && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && cd -"
-alias reducup="dashdown && cd $REDUCBOX_PATH && dokup && cd -"
+alias dashup="reducdown && nginxup && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
+alias reducup="dashdown && cd $REDUCBOX_PATH && dokup && code ."
 
 # Symfony
 alias sfc='php bin/console'
@@ -155,14 +155,12 @@ function testShowMessage() {
 }
 
 function apacheperms() {
-    # giving to myself cause I'm still alone on my projects even in production mode
-    groupToAllow=$USER
     for FILE in "$@"; do
         if [ -f $FILE ]; then
-            sudo chown www-data:$groupToAllow $FILE
+            sudo chown www-data:www-data $FILE
             sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then
-            sudo chown -R www-data:$groupToAllow $FILE
+            sudo chown -R www-data:www-data $FILE
             sudo chmod -R g+rw $FILE
         else
             echo "{$FILE} is not a valid element to change permssions on."

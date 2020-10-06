@@ -69,18 +69,18 @@ alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get upgrade -q -y && \
     sudo apt-get autoclean -q -y && \
     sudo apt-get autoremove -q -y'
-if hash ansible-playbook 2>/dev/null; then
-    ansiblePlaybooksDirectory=$HOME/ansible-playbooks
-    if [ -d $HOME/ansible-playbooks/ ]; then
-        alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
-    else
-        echo "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
-    fi
-fi
 
 case $(uname -n) in
 "msi-laptop")
     alias shutdown="fullapt && please shutdown -h now"
+    if hash ansible-playbook 2>/dev/null; then
+        ansiblePlaybooksDirectory=$HOME/ansible-playbooks
+        if [ -d $HOME/ansible-playbooks/ ]; then
+            alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
+        else
+            echo "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
+        fi
+    fi
     ;;
 *)
     alias shutdown="please shutdown -h now"

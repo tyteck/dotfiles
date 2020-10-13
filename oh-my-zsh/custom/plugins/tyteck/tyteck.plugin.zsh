@@ -32,6 +32,7 @@ alias dokrm="docker container rm -f"
 alias dokprune="docker system prune -f"
 alias dokrestart="docker-compose down --remove-orphans && docker-compose up -d"
 alias dokrestartdev="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
+alias dokrestartfred="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.fred.yml up -d"
 alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
@@ -68,18 +69,18 @@ alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get upgrade -q -y && \
     sudo apt-get autoclean -q -y && \
     sudo apt-get autoremove -q -y'
-if hash ansible-playbook 2>/dev/null; then
-    ansiblePlaybooksDirectory=$HOME/ansible-playbooks
-    if [ -d $HOME/ansible-playbooks/ ]; then
-        alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
-    else
-        echo "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
-    fi
-fi
 
 case $(uname -n) in
 "msi-laptop")
     alias shutdown="fullapt && please shutdown -h now"
+    if hash ansible-playbook 2>/dev/null; then
+        ansiblePlaybooksDirectory=$HOME/ansible-playbooks
+        if [ -d $HOME/ansible-playbooks/ ]; then
+            alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
+        else
+            echo "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
+        fi
+    fi
     ;;
 *)
     alias shutdown="please shutdown -h now"

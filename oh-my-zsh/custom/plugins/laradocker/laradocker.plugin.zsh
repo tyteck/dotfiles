@@ -27,20 +27,25 @@ function laravelFirstRun() {
 }
 
 function artisan() {
-	# checking if executable is there
-	if ! isLaravelPath; then
+
+	if ! fileExists "artisan"; then
 		echo "You are not in a laravel path."
 		return 1
 	fi
 
+	phpPrefix=''
+	if ! isFileExecutable "artisan"; then
+		phpPrefix='php '
+	fi
+
 	# get the container name
 	containerName=$(getLastFolder)
-	prefix=''
+	dockerPrefix=''
 	if isInstalled "docker" && containerExists $containerName; then
 		# run the artisan command in the container
-		prefix="docker exec -it --user $USER_ID $containerName "
+		dockerPrefix="docker exec -it --user $USER_ID $containerName "
 	fi
-	commandToRun="${prefix}php artisan $@"
+	commandToRun="${dockerPrefix}${phpPrefix}artisan $@"
 	#echo $commandToRun
 	eval $commandToRun
 }
@@ -81,8 +86,18 @@ function containerExists() {
 	fi
 }
 
-# check if filename exists and is executable
+# check if filename exists
 function fileExists() {
+	fileName=$1
+	if [ -f $fileName ]; then
+		true
+	else
+		false
+	fi
+}
+
+# check if filename is executable
+function isFileExecutable() {
 	fileName=$1
 	if [ -x $fileName ]; then
 		true

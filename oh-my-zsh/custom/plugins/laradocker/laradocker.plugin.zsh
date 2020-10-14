@@ -33,11 +33,6 @@ function artisan() {
 		return 1
 	fi
 
-	phpPrefix=''
-	if ! isFileExecutable "artisan"; then
-		phpPrefix='php '
-	fi
-
 	# get the container name
 	containerName=$(getLastFolder)
 	dockerPrefix=''
@@ -45,7 +40,7 @@ function artisan() {
 		# run the artisan command in the container
 		dockerPrefix="docker exec -it --user $USER_ID $containerName "
 	fi
-	commandToRun="${dockerPrefix}${phpPrefix}artisan $@"
+	commandToRun="${dockerPrefix} php artisan $@"
 	#echo $commandToRun
 	eval $commandToRun
 }

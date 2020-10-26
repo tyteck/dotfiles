@@ -65,6 +65,26 @@ function tests() {
 	eval $commandToRun
 }
 
+function reductests() {
+	executablePath="vendor/bin/phpunit"
+	# checking if executable is there
+	if ! fileExists $executablePath; then
+		echo "phpunit is not available in path ($executablePath)."
+		return 1
+	fi
+
+	# get the container name
+	containerName=$(getLastFolder)
+	prefix=''
+	if isInstalled "docker" && containerExists $containerName; then
+		# run the artisan command in the container
+		prefix="docker exec -it --user www-data $containerName "
+	fi
+	commandToRun="${prefix}${executablePath} --color=always --order-by=defects $@"
+	#echo $commandToRun
+	eval $commandToRun
+}
+
 # grab the last part of path
 # /path/to/folder => folder
 function getLastFolder() {

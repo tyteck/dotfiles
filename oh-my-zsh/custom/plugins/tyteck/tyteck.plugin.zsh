@@ -26,6 +26,7 @@ alias dokcp="docker cp"
 alias dokdown="docker-compose down --remove-orphans"
 alias dokexec="docker exec -it --user $USER_ID"
 alias dokexecroot="docker exec -it"
+alias dokwdata="docker exec -it --user www-data"
 alias doklog="docker logs -f"
 alias doknames="docker ps --format '{{.Names}}'"
 alias dokrm="docker container rm -f"
@@ -47,11 +48,13 @@ alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias reducdown="cd $REDUCBOX_PATH && dokdown && cd -"
+alias reducdown="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && cd -"
 alias dashdown="mysqlDown && phpmyadminDown && nginxdown && cd $DASH_PATH && dokdown && cd -"
 
 alias dashup="reducdown && nginxup && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
-alias reducup="dashdown && cd $REDUCBOX_PATH && dokup && code ."
+alias reducup="dashdown && nginxup && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."
+alias reducrestart="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && docker-compose -f docker-compose.fred.yml up -d"
+alias restartreduc="reducrestart"
 
 # Symfony
 alias sfc='php bin/console'

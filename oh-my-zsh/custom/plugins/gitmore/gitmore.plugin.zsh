@@ -6,6 +6,7 @@ alias gpush='git push'
 alias gpull='git pull'
 alias gbr='git branch'
 alias gco='git checkout'
+alias gme='git merge'
 
 # some functions
 function gitown() {

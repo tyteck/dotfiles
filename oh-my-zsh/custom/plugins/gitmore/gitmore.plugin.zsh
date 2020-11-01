@@ -76,12 +76,13 @@ function gmit() {
 		esac
 		shift
 	done
+
 	if [[ -z ${commitFiles} ]]; then
 		commitFiles='.'
 	fi
 
 	git commit -m "$commitMessage" $commitFiles
-	if ["$?" != 0]; then
+	if [ $? -ne 0 ]; then
 		echo "Commit has failed"
 		return 1
 	fi
@@ -93,7 +94,7 @@ function gmit() {
 		CMD="git push"
 	fi
 	eval $CMD
-	if ["$?" != 0]; then
+	if [ $? -ne 0 ]; then
 		echo "Pushing on remote branch $currentBranchName has failed"
 		return 1
 	fi

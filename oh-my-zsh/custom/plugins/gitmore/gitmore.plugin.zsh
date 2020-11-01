@@ -80,7 +80,7 @@ function gmit() {
 		commitFiles='.'
 	fi
 
-	git commit -m \"$commitMessage\" $commitFiles
+	git commit -m "$commitMessage" $commitFiles
 	if ["$?" != 0]; then
 		echo "Commit has failed"
 		return 1
@@ -122,15 +122,4 @@ function remoteBranchExists() {
 
 function getCurrentBranchName() {
 	echo $(git rev-parse --abbrev-ref HEAD)
-}
-
-function testtt() {
-	currentBranchName=$(getCurrentBranchName)
-	if ! remoteBranchExists $currentBranchName; then
-		git push --set-upstream origin $currentBranchName
-		if ["$?" != 0]; then
-			echo "Remote branch $currentBranchName creation has failed"
-			return 1
-		fi
-	fi
 }

@@ -4,7 +4,7 @@
 # 							  	FUNCTIONS
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 if [ -f ~/dotfiles/.bash_functions ]; then
-	. ~/dotfiles/.bash_functions
+    . ~/dotfiles/.bash_functions
 fi
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
@@ -12,13 +12,13 @@ fi
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 export NODE_NAME=$(hostname)
 if [ -f ~/dotfiles/.bash_prompt ]; then
-	. ~/dotfiles/.bash_prompt
+    . ~/dotfiles/.bash_prompt
 fi
 
 export EDITOR=$(which vim)
 
 if [ -d ~/sbin ]; then
-	PATH="${PATH}:~/sbin"
+    PATH="${PATH}:~/sbin"
 fi
 
 # history tricks
@@ -67,6 +67,7 @@ alias dokrestart="docker-compose down && docker-compose up -d"
 alias dokrestartprod="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 alias doktus="docker ps -a"
 alias dokup="docker-compose up -d"
+alias dokupfred="docker-compose -f docker-compose.fred.yml up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # some core shortcuts
@@ -92,12 +93,12 @@ alias fullapt='sudo apt-get update -q -y && \
 	sudo apt-get autoclean -q -y && \
 	sudo apt-get autoremove -q -y'
 if hash ansible-playbook 2>/dev/null; then
-	ansiblePlaybooksDirectory=$HOME/ansible-playbooks
-	if [ -d $HOME/ansible-playbooks/ ]; then
-		alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
-	else
-		comment "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
-	fi
+    ansiblePlaybooksDirectory=$HOME/ansible-playbooks
+    if [ -d $HOME/ansible-playbooks/ ]; then
+        alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
+    else
+        comment "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
+    fi
 fi
 alias aptinstall="sudo apt-get install -y"
 
@@ -140,44 +141,44 @@ alias dbpmtests='mysql --login-path=pmtests pmtests'
 # common aliases
 case $NODE_NAME in
 frsopdreg3)
-	export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
-	export SFMI_CONTAINER_NAME="mysqlmaster"
-	# Aliases that are used on micromania
-	alias micro="cd /var/www/intranet/web/webintra && clear && ls -lsa sfmi/docs"
-	alias cdcore="cd /home/www/core"
-	alias cdreve="cd /home/www/reve"
-	alias cddash="cd /home/www/dash"
-	alias cdwww="cd /home/www/web/www"
-	alias cdplay="cd /home/www/play"
-	alias cdpods="cd /home/www/pods"
-	;;
+    export INTRA_CONTAINER_NAME="intranetlocal.sfmi.lan"
+    export SFMI_CONTAINER_NAME="mysqlmaster"
+    # Aliases that are used on micromania
+    alias micro="cd /var/www/intranet/web/webintra && clear && ls -lsa sfmi/docs"
+    alias cdcore="cd /home/www/core"
+    alias cdreve="cd /home/www/reve"
+    alias cddash="cd /home/www/dash"
+    alias cdwww="cd /home/www/web/www"
+    alias cdplay="cd /home/www/play"
+    alias cdpods="cd /home/www/pods"
+    ;;
 intranetpreprod)
-	# Aliases that are used on micromania
-	alias db="mysql --login-path=sfmiread sfmi"
-	alias micro="cd /usr/local/web"
-	;;
+    # Aliases that are used on micromania
+    alias db="mysql --login-path=sfmiread sfmi"
+    alias micro="cd /usr/local/web"
+    ;;
 FRSOPGIT)
-	export INTRA_CONTAINER_NAME="intranetrec.sfmi.lan"
-	export SFMI_CONTAINER_NAME="mysql"
-	;;
+    export INTRA_CONTAINER_NAME="intranetrec.sfmi.lan"
+    export SFMI_CONTAINER_NAME="mysql"
+    ;;
 ns3071385)
-	alias cdmp3="cd /home/www/mp3.podmytube.com/www"
-	alias cdpod="cd /home/www/podcasts.podmytube.com/www"
-	alias cdplay="cd /home/www/playlists.podmytube.com/www"
-	alias cdthumbs="cd /home/www/thumbs.podmytube.com/www"
-	alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
-	;;
+    alias cdmp3="cd /home/www/mp3.podmytube.com/www"
+    alias cdpod="cd /home/www/podcasts.podmytube.com/www"
+    alias cdplay="cd /home/www/playlists.podmytube.com/www"
+    alias cdthumbs="cd /home/www/thumbs.podmytube.com/www"
+    alias devmp3="cd /home/www/mp3.dev.podmytube.com/www"
+    ;;
 MSI-Laptop)
-	# Aliases that are used elsewhere
-	alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
-	# database access
-	alias dbtyt='mysql --login-path=tyt tytecadotnet'
-	alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
-	alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
-	alias dbdevpod='mysql --login-path=devpod devPodmytube'
-	alias dbval='mysql --login-path=valentin valentin'
-	alias dbreve="mysql --login-path=reve $REV_DB"
-	alias cdwww="cd /home/www/www.podmytube.com/"
-	;;
+    # Aliases that are used elsewhere
+    alias myadmin='cd /home/www/phpmyadmin.tyteca.net'
+    # database access
+    alias dbtyt='mysql --login-path=tyt tytecadotnet'
+    alias dbpmtblog='mysql --login-path=pmtblog podmytubeFR'
+    alias dbilec='mysql --login-path=lyceeIlec lyceeIlec'
+    alias dbdevpod='mysql --login-path=devpod devPodmytube'
+    alias dbval='mysql --login-path=valentin valentin'
+    alias dbreve="mysql --login-path=reve $REV_DB"
+    alias cdwww="cd /home/www/www.podmytube.com/"
+    ;;
 esac
 alias getTables="docker exec $SFMI_CONTAINER_NAME /var/opt/getTables.sh"

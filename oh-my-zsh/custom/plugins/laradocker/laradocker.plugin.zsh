@@ -38,7 +38,7 @@ function artisan() {
 	dockerPrefix=''
 	if isInstalled "docker" && containerExists $containerName; then
 		# run the artisan command in the container
-		dockerPrefix="docker exec -it --user $USER_ID $containerName "
+		dockerPrefix="docker exec -it --user www-data $containerName "
 	fi
 	commandToRun="${dockerPrefix} php artisan $@"
 	#echo $commandToRun
@@ -46,26 +46,6 @@ function artisan() {
 }
 
 function tests() {
-	executablePath="vendor/bin/phpunit"
-	# checking if executable is there
-	if ! fileExists $executablePath; then
-		echo "phpunit is not available in path ($executablePath)."
-		return 1
-	fi
-
-	# get the container name
-	containerName=$(getLastFolder)
-	prefix=''
-	if isInstalled "docker" && containerExists $containerName; then
-		# run the artisan command in the container
-		prefix="docker exec -it --user $USER_ID $containerName "
-	fi
-	commandToRun="${prefix}${executablePath} --color=always --order-by=defects $@"
-	#echo $commandToRun
-	eval $commandToRun
-}
-
-function reductests() {
 	executablePath="vendor/bin/phpunit"
 	# checking if executable is there
 	if ! fileExists $executablePath; then
@@ -144,3 +124,5 @@ alias amr="artisan migrate:rollback"
 alias ams="artisan migrate:status"
 alias aoc="artisan optimize:clear"
 alias tinker="artisan tinker"
+
+alias composer='docker run --rm -v $(pwd):/app composer:2.0 --ignore-platform-reqs '

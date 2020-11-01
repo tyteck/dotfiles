@@ -56,6 +56,8 @@ alias reducup="dashdown && nginxup && cd $REDUCBOX_PATH && docker-compose -f doc
 alias reducrestart="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && docker-compose -f docker-compose.fred.yml up -d"
 alias restartreduc="reducrestart"
 
+alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
+
 # Symfony
 alias sfc='php bin/console'
 

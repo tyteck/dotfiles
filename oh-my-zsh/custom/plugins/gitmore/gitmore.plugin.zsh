@@ -41,8 +41,7 @@ function gdelete() {
 		fi
 	fi
 
-	git show-ref --verify --quiet refs/remotes/origin/$BRANCH_TO_DELETE
-	if [ $? -eq 0 ]; then
+	if remoteBranchExists $BRANCH_TO_DELETE; then
 		git push origin --delete $BRANCH_TO_DELETE
 		if [ $? -ne 0 ]; then
 			echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
@@ -80,10 +79,22 @@ function gmit() {
 	if [[ -z ${commitFiles} ]]; then
 		commitFiles='.'
 	fi
-	CMD="git commit -m \"$commitMessage\" $commitFiles && git push"
-	eval $CMD
-	if [ "$?" != 0 ]; then
+
+	git commit -m \"$commitMessage\" $commitFiles
+	if ["$?" != 0]; then
 		echo "Commit has failed"
+		return 1
+	fi
+
+	currentBranchName=$(getCurrentBranchName)
+	if ! remoteBranchExists $currentBranchName; then
+		CMD="git push --set-upstream origin $currentBranchName"
+	else
+		CMD="git push"
+	fi
+	eval $CMD
+	if ["$?" != 0]; then
+		echo "Pushing on remote branch $currentBranchName has failed"
 		return 1
 	fi
 }
@@ -97,4 +108,29 @@ function grestore() {
 		return 1
 	fi
 	return 0
+}
+
+function remoteBranchExists() {
+	remoteBranchName=$1
+	git show-ref --verify --quiet refs/remotes/origin/$remoteBranchName
+	if [ $? -eq 0 ]; then
+		true
+	else
+		false
+	fi
+}
+
+function getCurrentBranchName() {
+	echo $(git rev-parse --abbrev-ref HEAD)
+}
+
+function testtt() {
+	currentBranchName=$(getCurrentBranchName)
+	if ! remoteBranchExists $currentBranchName; then
+		git push --set-upstream origin $currentBranchName
+		if ["$?" != 0]; then
+			echo "Remote branch $currentBranchName creation has failed"
+			return 1
+		fi
+	fi
 }

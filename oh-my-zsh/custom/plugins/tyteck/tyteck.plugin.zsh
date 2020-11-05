@@ -162,6 +162,22 @@ function testShowMessage() {
 function apacheperms() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
+            sudo chown $USER:www-data $FILE
+            sudo chmod g+rw $FILE
+        elif [ -d $FILE ]; then
+            sudo chown -R $USER:www-data $FILE
+            sudo chmod -R g+rw $FILE
+        else
+            echo "{$FILE} is not a valid element to change permssions on."
+            continue
+        fi
+    done
+    return 0
+}
+
+function fullapacheperms() {
+    for FILE in "$@"; do
+        if [ -f $FILE ]; then
             sudo chown www-data:www-data $FILE
             sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then

@@ -125,4 +125,4 @@ alias ams="artisan migrate:status"
 alias aoc="artisan optimize:clear"
 alias tinker="artisan tinker"
 
-alias composer='docker run --rm -v $(pwd):/app composer:2.0 --ignore-platform-reqs '
+alias composer='docker run --rm -v $(pwd):/app composer:latest --ignore-platform-reqs '

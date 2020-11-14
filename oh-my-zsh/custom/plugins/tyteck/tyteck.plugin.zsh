@@ -159,13 +159,29 @@ function testShowMessage() {
     error "Oops something went wrong <= this is a test message"
 }
 
-function apacheperms() {
+function apacheonly() {
+    for ITEM in "$@"; do
+        if [ -f $ITEM ]; then
+            sudo chown www-data:www-data $ITEM
+            sudo chmod g+rw $ITEM
+        elif [ -d $ITEM ]; then
+            sudo chown -R www-data:www-data $ITEM
+            sudo chmod -R g+rw $ITEM
+        else
+            echo "{$ITEM} is not a valid element to change permssions on."
+            continue
+        fi
+    done
+    return 0
+}
+
+function apacheandme() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
-            sudo chown www-data:www-data $FILE
+            sudo chown $USER:www-data $FILE
             sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then
-            sudo chown -R www-data:www-data $FILE
+            sudo chown -R $USER:www-data $FILE
             sudo chmod -R g+rw $FILE
         else
             echo "{$FILE} is not a valid element to change permssions on."

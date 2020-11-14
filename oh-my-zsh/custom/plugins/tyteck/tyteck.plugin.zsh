@@ -191,6 +191,22 @@ function apacheandme() {
     return 0
 }
 
+function fullapacheperms() {
+    for FILE in "$@"; do
+        if [ -f $FILE ]; then
+            sudo chown www-data:www-data $FILE
+            sudo chmod g+rw $FILE
+        elif [ -d $FILE ]; then
+            sudo chown -R $USER:www-data $FILE
+            sudo chmod -R g+rw $FILE
+        else
+            echo "{$FILE} is not a valid element to change permssions on."
+            continue
+        fi
+    done
+    return 0
+}
+
 # it s mine
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!

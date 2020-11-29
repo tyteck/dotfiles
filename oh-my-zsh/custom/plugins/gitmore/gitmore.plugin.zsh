@@ -57,7 +57,7 @@ function mergeCurrentWith() {
         echo "you should give the branch name you want to merge with"
         return 1
     fi
-    currentBranch=$(getCurrentBranch)
+    currentBranch=$(getCurrentBranchName)
     branchNameToMergeWith=$1
 
     #
@@ -111,6 +111,10 @@ function gmit() {
         *)
             if [ ! -f $1 ] && [ ! -d $1 ]; then
                 echo "file/folder $1 doesn't exists"
+                exit 1
+            fi
+            if [ -z $commitFiles ]; then
+                commitFiles="$1"
             else
                 commitFiles="$commitFiles $1"
             fi
@@ -118,8 +122,9 @@ function gmit() {
         esac
         shift
     done
+    echo "commit files |$commitFiles|"
 
-    if [[ -z ${commitFiles} ]]; then
+    if [ -z ${commitFiles} ]; then
         commitFiles='.'
     fi
 

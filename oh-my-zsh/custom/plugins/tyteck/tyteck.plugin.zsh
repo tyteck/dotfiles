@@ -51,11 +51,8 @@ alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 alias reducdown="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && cd -"
 alias dashdown="mysqlDown && phpmyadminDown && nginxdown && cd $DASH_PATH && dokdown && cd -"
 
-alias dashup="reducdown && nginxup && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
-alias reducup="dashdown && nginxup && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."
-alias reducrestart="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && docker-compose -f docker-compose.fred.yml up -d"
-alias restartreduc="reducrestart"
-
+alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
+alias reducup="dashdown && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 
 # Symfony

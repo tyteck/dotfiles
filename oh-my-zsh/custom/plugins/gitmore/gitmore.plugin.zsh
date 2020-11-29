@@ -122,7 +122,6 @@ function gmit() {
         esac
         shift
     done
-    echo "commit files |$commitFiles|"
 
     if [ -z ${commitFiles} ]; then
         commitFiles='.'

@@ -123,6 +123,7 @@ alias amfs="artisan migrate:fresh --seed"
 alias amr="artisan migrate:rollback"
 alias ams="artisan migrate:status"
 alias aoc="artisan optimize:clear"
+alias aqr="artisan queue:restart"
 alias tinker="artisan tinker"
 
 alias composer='docker run --rm -v $(pwd):/app composer:latest --ignore-platform-reqs '

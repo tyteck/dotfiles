@@ -110,6 +110,17 @@ LEVEL_ERROR=2
 LEVEL_NOTICE=3
 LEVEL_SUCCESS=4
 
+function emptyFile() {
+    fileToEmpty=$1
+    if [ -z $fileToEmpty ]; then
+        echo "You should specify the file path you want to empty"
+        return 1
+    fi
+    : >$fileToEmpty
+    echo "$fileToEmpty is now empty"
+    return 0
+}
+
 function showMessage() {
     local message="$1"
     if [ -z "$message" ]; then message="no comments"; fi

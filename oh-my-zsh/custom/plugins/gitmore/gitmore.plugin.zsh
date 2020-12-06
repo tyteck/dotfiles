@@ -27,7 +27,7 @@ function gdelete() {
     # necessary to avoid
     if [ "$BRANCH_TO_DELETE" = "master" ]; then
         echo "ARE YOU CRAZY ??????"
-        return 0
+        return 1
     fi
 
     git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE

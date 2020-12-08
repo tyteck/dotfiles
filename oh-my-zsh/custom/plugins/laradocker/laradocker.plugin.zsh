@@ -126,4 +126,4 @@ alias aoc="artisan optimize:clear"
 alias aqr="artisan queue:restart"
 alias tinker="artisan tinker"
 
-alias composer='docker run --rm -v $(pwd):/app composer:latest --ignore-platform-reqs '
+alias composer='docker run --rm -v $(pwd):/app composer:latest '

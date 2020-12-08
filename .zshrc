@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/bin:/usr/local/go/bin:$PATH
+export PATH=$HOME/bin:$HOME/.config/composer/vendor/bin:/usr/local/bin:/usr/local/go/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -70,7 +70,7 @@ ZSH_CUSTOM=$HOME/dotfiles/oh-my-zsh/custom/
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(z tyteck gitmore laradocker composer)
+plugins=(z tyteck gitmore laradocker)
 
 source $ZSH/oh-my-zsh.sh
 

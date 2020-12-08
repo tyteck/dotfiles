@@ -9,16 +9,7 @@ export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 export MYSQL_SERVER_PATH="$HOME/Projects/mysqlserver"
 export PHPMYADMIN_PATH="$HOME/Projects/phpmyadmin"
 
-# these 2 variables are used during docker container building.
-# one user (dockeruser) is created using my UID and GID
-# so when I'm doing an action into the container with this user
-# perms IN container are dockeruser
-# perms IN host are mine
-export USER_ID=$(id -u)
-export GROUP_ID=$(id -g)
-
 alias c='clear'
-alias vtyteck='vim ~/dotfiles/oh-my-zsh/custom/plugins/tyteck/tyteck.plugin.zsh && zrc'
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
@@ -93,67 +84,19 @@ esac
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /usr/local/bin/youtube-dl:/usr/local/bin/youtube-dl --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
 alias ngrokdash='screen -d -m ngrok http -subdomain=dashpod -region eu 80'
 
-# default db shortcuts
-alias dbroot='docker exec -it mysqlServer mysql --login-path=root'
-alias dbpmt='docker exec -it mysqlServer mysql --login-path=pmt pmt'
-
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	COMMODITIES
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 
-#
-# message level
-#
-LEVEL_INFO=0
-LEVEL_WARNING=1
-LEVEL_ERROR=2
-LEVEL_NOTICE=3
-LEVEL_SUCCESS=4
-
-function showMessage() {
-    local message="$1"
-    if [ -z "$message" ]; then message="no comments"; fi
-    local level="$2"
-    local color=$FG[231]
-    local levelMessage=""
-    case $level in
-    $LEVEL_WARNING)
-        color=$FG[011]
-        levelMessage="Warning "
-        ;;
-    $LEVEL_SUCCESS)
-        color=$FG[154]
-        levelMessage="Success "
-        ;;
-    $LEVEL_ERROR)
-        color=$FG[001]
-        levelMessage="Error "
-        ;;
-    $LEVEL_NOTICE)
-        color=$FG[002]
-        levelMessage="Notice "
-        ;;
-    $LEVEL_INFO)
-        color=$FG[004]
-        levelMessage="Comment "
-        ;;
-    *)
-        levelMessage=''
-        ;;
-    esac
-    print -P ${color}${levelMessage}%{$reset_color%}- $message
-}
-
-function error() {
-    local message="$1"
-    showMessage "$message" $LEVEL_ERROR
-}
-
-function testShowMessage() {
-    for level in {0..4}; do
-        showMessage "test message" $level
-    done
-    error "Oops something went wrong <= this is a test message"
+function emptyFile() {
+    fileToEmpty=$1
+    if [ -z $fileToEmpty ]; then
+        echo "You should specify the file path you want to empty"
+        return 1
+    fi
+    : >$fileToEmpty
+    echo "$fileToEmpty is now empty"
+    return 0
 }
 
 function apacheonly() {
@@ -175,29 +118,15 @@ function apacheonly() {
 function apacheandme() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
-            sudo chown $USER:www-data $FILE
+            # a file
+            sudo chown www-data:$USER $FILE
             sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then
-            sudo chown -R $USER:www-data $FILE
+            # for a folder
+            sudo chown -R www-data:$USER $FILE
             sudo chmod -R g+rw $FILE
         else
-            echo "{$FILE} is not a valid element to change permssions on."
-            continue
-        fi
-    done
-    return 0
-}
-
-function fullapacheperms() {
-    for FILE in "$@"; do
-        if [ -f $FILE ]; then
-            sudo chown www-data:www-data $FILE
-            sudo chmod g+rw $FILE
-        elif [ -d $FILE ]; then
-            sudo chown -R $USER:www-data $FILE
-            sudo chmod -R g+rw $FILE
-        else
-            echo "{$FILE} is not a valid element to change permssions on."
+            echo "{$FILE} is not a valid element to change permissions on."
             continue
         fi
     done
@@ -236,33 +165,6 @@ readVar() {
     # ${VAR[1]} is the key
     # ${VAR[2]} is the value
     echo ${VAR[2]}
-}
-
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-#                               	VSCODE
-# °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
-
-# import/export extensions from vscode
-VSCodeExtFile="$HOME/dotfiles/vscode_extensions"
-
-# this function is exporting list of installed VSCode extensions
-exportVSCodeExtList() {
-    echo $(code --list-extensions) >${VSCodeExtFile}
-}
-
-# this function is installing VSCode extensions according to one prefious export
-importVSCodeExtList() {
-    if [ -f $VSCodeExtFile ]; then
-        echo "cleaning existing extensions"
-        rm -rf $HOME/.vscode/extensions/*
-        while read line; do
-            for extensionToInstall in $line; do
-                code --install-extension $extensionToInstall
-            done
-        done <"$VSCodeExtFile"
-    else
-        error "Le fichier contenant la liste des extensions est absent."
-    fi
 }
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸

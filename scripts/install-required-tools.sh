@@ -4,7 +4,7 @@
 ## PHP 7.4 and all required tools
 sudo add-apt-repository ppa:ondrej/php -y &&
     sudo apt update &&
-    sudo apt-get install -y ansible curl wget htop fonts-firacode gnome-tweaks php7.4 php-xml php-mbstring screen terminator tree vim chrome-gnome-shell &&
+    sudo apt-get install -y ansible curl wget mlocate htop fonts-firacode gnome-tweaks php7.4 php-xml php-mbstring screen terminator tree vim chrome-gnome-shell &&
     sudo apt-get remove -y apache2 libreoffice-base-core thunderbird
 
 # installing composer

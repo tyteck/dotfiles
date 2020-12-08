@@ -49,7 +49,7 @@ alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
 alias reducdown="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && cd -"
-alias dashdown="mysqlDown && phpmyadminDown && nginxdown && cd $DASH_PATH && dokdown && cd -"
+alias dashdown="mysqlDown && phpmyadminDown && cd $DASH_PATH && dokdown && cd -"
 
 alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
 alias reducup="dashdown && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."

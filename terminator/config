@@ -10,6 +10,7 @@
     background_type = transparent
     cursor_color = "#aaaaaa"
     scrollback_lines = 90000
+    copy_on_selection = True
 [layouts]
   [[default]]
     [[[child1]]]
@@ -20,13 +21,3 @@
       parent = ""
       type = Window
 [plugins]
-[profiles]
-  [[default]]
-    background_darkness = 0.75
-    background_type = transparent
-    cursor_color = "#aaaaaa"
-    font = Ubuntu Mono 12
-    icon_bell = False
-    scrollback_lines = 90000
-    use_system_font = False
-    visible_bell = True

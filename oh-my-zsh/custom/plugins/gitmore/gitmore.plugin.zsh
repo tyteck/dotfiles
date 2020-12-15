@@ -109,6 +109,7 @@ function gmit() {
             shift
             ;;
         *)
+            echo "arg $1"
             if [ ! -f $1 ] && [ ! -d $1 ]; then
                 echo "file/folder $1 doesn't exists"
                 exit 1
@@ -127,9 +128,11 @@ function gmit() {
         commitFiles='.'
     fi
 
-    git commit -m "$commitMessage" $commitFiles
+    CMD="git commit -m \"$commitMessage\" $commitFiles"
+    #echo $CMD
+    eval $CMD
     if [ $? -ne 0 ]; then
-        echo "Commit has failed"
+        echo "Commit has failed with command ($CMD)"
         return 1
     fi
 
@@ -141,7 +144,7 @@ function gmit() {
     fi
     eval $CMD
     if [ $? -ne 0 ]; then
-        echo "Pushing on remote branch $currentBranchName has failed"
+        echo "Pushing on remote branch $currentBranchName has failed with command ($CMD)"
         return 1
     fi
 }

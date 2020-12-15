@@ -25,8 +25,8 @@ function gdelete() {
     fi
 
     # necessary to avoid
-    if [ "$BRANCH_TO_DELETE" = "master" ]; then
-        echo "ARE YOU CRAZY ??????"
+    if [ "$BRANCH_TO_DELETE" = "master" ] || [ "$BRANCH_TO_DELETE" = "main" ]; then
+        echo "ARE YOU CRAZY ? you shouldn't delete \"$BRANCH_TO_DELETE\""
         return 1
     fi
 
@@ -109,7 +109,6 @@ function gmit() {
             shift
             ;;
         *)
-            echo "arg $1"
             if [ ! -f $1 ] && [ ! -d $1 ]; then
                 echo "file/folder $1 doesn't exists"
                 exit 1

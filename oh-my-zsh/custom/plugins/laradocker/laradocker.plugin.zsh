@@ -60,7 +60,7 @@ function tests() {
 		# run the artisan command in the container
 		prefix="docker exec -it --user www-data $containerName "
 	fi
-	commandToRun="${prefix}${executablePath} --color=always --order-by=defects $@"
+	commandToRun="${prefix}${executablePath} $@"
 	#echo $commandToRun
 	eval $commandToRun
 }
@@ -124,6 +124,7 @@ alias amr="artisan migrate:rollback"
 alias ams="artisan migrate:status"
 alias aoc="artisan optimize:clear"
 alias aqr="artisan queue:restart"
+alias arall="artisan queue:restart && artisan optimize:clear"
 alias tinker="artisan tinker"
 
 alias composer='docker run --rm -v $(pwd):/app composer:latest '

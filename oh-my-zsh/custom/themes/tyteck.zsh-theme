@@ -1,15 +1,15 @@
 function coloredHost() {
     host=$(uname -n)
     case $host in
-    "msi-laptop" | "engit" | "macbookair")
-        echo %{$fg[green]%}${host}%{$reset_color%}:
+    "msi-laptop" | "engit" | "MacBookAir")
+        echo "%{$fg[green]%}${host}%{$reset_color%} "
         ;;
     *)
-        echo %{$fg[red]%}$host%{$reset_color%}:
+        echo "%{$fg[red]%}$host%{$reset_color%} "
         ;;
     esac
-
 }
+
 PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )"
 PROMPT+=' $(git_prompt_info)%{$reset_color%}$(coloredHost)%{$fg_bold[cyan]%}%0~%{$reset_color%} '
 

@@ -128,3 +128,5 @@ alias arall="artisan queue:restart && artisan optimize:clear"
 alias tinker="artisan tinker"
 
 alias composer='docker run --rm -v $(pwd):/app composer:latest '
+alias composer1='/usr/local/bin/composer'
+alias "composer install"="composer --ignore-platform-reqs"

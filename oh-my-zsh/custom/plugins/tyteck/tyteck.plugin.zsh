@@ -49,6 +49,7 @@ alias sfc='php bin/console'
 
 # Php
 alias phpunit='./vendor/bin/phpunit --colors=always'
+alias cdu='composer dumpautoload'
 
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'

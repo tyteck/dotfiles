@@ -1,2 +1,3 @@
 onedrive/*
 !onedrive/sync_list
+.php_cs.cache

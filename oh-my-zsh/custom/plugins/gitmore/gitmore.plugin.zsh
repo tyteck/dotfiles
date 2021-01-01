@@ -68,24 +68,28 @@ function mergeCurrentWith() {
         return 1
     fi
 
+    echo "checkout with $branchNameToMergeWith"
     git checkout $branchNameToMergeWith
     if [ $? -ne 0 ]; then
         echo "Checkout for the branch $branchNameToMergeWith has failed."
         return 1
     fi
 
+    echo "pulling $branchNameToMergeWith"
     git pull
     if [ $? -ne 0 ]; then
         echo "Pull of branch $branchNameToMergeWith has failed."
         return 1
     fi
 
+    echo "merging current $branchNameToMergeWith with $currentBranch"
     git merge $currentBranch
     if [ $? -ne 0 ]; then
         echo "Merging the branch $currentBranch with $branchNameToMergeWith has failed."
         return 1
     fi
 
+    echo "pushing result"
     git push
     if [ $? -ne 0 ]; then
         echo "Pushing the branch has failed."

@@ -7,7 +7,6 @@
     visible_bell = True
     icon_bell = False
     background_darkness = 0.75
-    background_type = transparent
     cursor_color = "#aaaaaa"
     scrollback_lines = 90000
     copy_on_selection = True

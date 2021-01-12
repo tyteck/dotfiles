@@ -3,11 +3,13 @@ alias please='sudo'
 alias restart='please shutdown -r now'
 alias reboot='restart'
 
-export DASH_PATH="$HOME/Projects/dashboard.podmytube.com"
-export REDUCBOX_PATH="$HOME/Projects/reducbox"
-export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
-export MYSQL_SERVER_PATH="$HOME/Projects/mysqlserver"
-export PHPMYADMIN_PATH="$HOME/Projects/phpmyadmin"
+PROJECTS_PATH="$HOME/Projects"
+DASH_PATH="$PROJECTS_PATH/dashboard.podmytube.com"
+REDUCBOX_PATH="$PROJECTS_PATH/reducbox"
+WEPADEL_PATH="$PROJECTS_PATH/wepadel"
+NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
+MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
+PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
 
 alias c='clear'
 # docker & docker compose
@@ -34,14 +36,17 @@ alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 alias phpmyadminUp="cd $PHPMYADMIN_PATH && dokup && cd -"
 alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 
+alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && dokup && cd -"
+alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
+
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
 alias reducdown="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && cd -"
 alias dashdown="mysqlDown && phpmyadminDown && cd $DASH_PATH && dokdown && cd -"
 
-alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
-alias reducup="dashdown && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."
+alias dashup="padeldown && reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
+alias reducup="padeldown && dashdown && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 
 # Symfony

@@ -11,6 +11,13 @@ NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
 
+APACHE_USER=www-data
+APACHE_GROUP=www-data
+if [ isMacos ]; then
+    APACHE_USER=_www
+    APACHE_GROUP=_www
+fi
+
 alias c='clear'
 # docker & docker compose
 alias dokbuild="docker-compose build"
@@ -54,7 +61,11 @@ alias sfc='php bin/console'
 
 # Php
 alias phpunit='./vendor/bin/phpunit --colors=always'
+
+# Composer
 alias cdu='composer dumpautoload'
+alias cu='composer update'
+alias ci="composer install --ignore-platform-reqs"
 
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
@@ -92,6 +103,14 @@ alias ngrokdash='screen -d -m ngrok http -subdomain=dashpod -region eu 80'
 #                               	COMMODITIES
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 
+function isMacos() {
+    if [ $(uname -s) = 'Darwin' ]; then
+        true
+    else
+        false
+    fi
+}
+
 function emptyFile() {
     fileToEmpty=$1
     if [ -z $fileToEmpty ]; then
@@ -113,6 +132,24 @@ function apacheonly() {
             sudo chmod -R g+rw $ITEM
         else
             echo "{$ITEM} is not a valid element to change permssions on."
+            continue
+        fi
+    done
+    return 0
+}
+
+function apacheanddocker() {
+    for FILE in "$@"; do
+        if [ -f $FILE ]; then
+            # a file
+            sudo chown www-data:docker $FILE
+            sudo chmod g+rw $FILE
+        elif [ -d $FILE ]; then
+            # for a folder
+            sudo chown -R www-data:docker $FILE
+            sudo chmod -R g+rw $FILE
+        else
+            echo "{$FILE} is not a valid element to change permissions on."
             continue
         fi
     done
@@ -141,12 +178,15 @@ function apacheandme() {
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!
 # MUHAHAHAHAHAHAHAHAHA
+if [ -z $GROUP ]; then
+    export GROUP=staff
+fi
 itsmine() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
-            sudo chown $USER:$USER $FILE
+            sudo chown $USER:$GROUP $FILE
         elif [ -d $FILE ]; then
-            sudo chown -R $USER:$USER $FILE
+            sudo chown -R $USER:$GROUP $FILE
         else
             echo "{$FILE} is not a valid element to chown "
             continue

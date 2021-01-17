@@ -49,11 +49,11 @@ alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias reducdown="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && cd -"
+alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
 alias dashdown="mysqlDown && phpmyadminDown && cd $DASH_PATH && dokdown && cd -"
 
 alias dashup="wepadeldown && reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
-alias reducup="wepadeldown && dashdown && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."
+alias reducup="wepadeldown && dashdown && cd $REDUCBOX_PATH && docker-compose up -d && code ."
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 
 # Symfony
@@ -132,24 +132,6 @@ function apacheonly() {
             sudo chmod -R g+rw $ITEM
         else
             echo "{$ITEM} is not a valid element to change permssions on."
-            continue
-        fi
-    done
-    return 0
-}
-
-function apacheanddocker() {
-    for FILE in "$@"; do
-        if [ -f $FILE ]; then
-            # a file
-            sudo chown www-data:docker $FILE
-            sudo chmod g+rw $FILE
-        elif [ -d $FILE ]; then
-            # for a folder
-            sudo chown -R www-data:docker $FILE
-            sudo chmod -R g+rw $FILE
-        else
-            echo "{$FILE} is not a valid element to change permissions on."
             continue
         fi
     done

@@ -3,11 +3,20 @@ alias please='sudo'
 alias restart='please shutdown -r now'
 alias reboot='restart'
 
-export DASH_PATH="$HOME/Projects/dashboard.podmytube.com"
-export REDUCBOX_PATH="$HOME/Projects/reducbox"
-export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
-export MYSQL_SERVER_PATH="$HOME/Projects/mysqlserver"
-export PHPMYADMIN_PATH="$HOME/Projects/phpmyadmin"
+PROJECTS_PATH="$HOME/Projects"
+DASH_PATH="$PROJECTS_PATH/dashboard.podmytube.com"
+REDUCBOX_PATH="$PROJECTS_PATH/reducbox"
+WEPADEL_PATH="$PROJECTS_PATH/wepadel"
+NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
+MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
+PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
+
+APACHE_USER=www-data
+APACHE_GROUP=www-data
+if [ isMacos ]; then
+    APACHE_USER=_www
+    APACHE_GROUP=_www
+fi
 
 alias c='clear'
 # docker & docker compose
@@ -34,14 +43,17 @@ alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 alias phpmyadminUp="cd $PHPMYADMIN_PATH && dokup && cd -"
 alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 
+alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && dokup && cd -"
+alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
+
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias reducdown="cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml down && cd -"
+alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
 alias dashdown="mysqlDown && phpmyadminDown && cd $DASH_PATH && dokdown && cd -"
 
-alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
-alias reducup="dashdown && cd $REDUCBOX_PATH && docker-compose -f docker-compose.fred.yml up -d && code ."
+alias dashup="wepadeldown && reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
+alias reducup="wepadeldown && dashdown && cd $REDUCBOX_PATH && docker-compose up -d && code ."
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 
 # Symfony
@@ -49,7 +61,11 @@ alias sfc='php bin/console'
 
 # Php
 alias phpunit='./vendor/bin/phpunit --colors=always'
+
+# Composer
 alias cdu='composer dumpautoload'
+alias cu='composer update'
+alias ci="composer install --ignore-platform-reqs"
 
 # biggest files
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
@@ -86,6 +102,14 @@ alias ngrokdash='screen -d -m ngrok http -subdomain=dashpod -region eu 80'
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	COMMODITIES
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+
+function isMacos() {
+    if [ $(uname -s) = 'Darwin' ]; then
+        true
+    else
+        false
+    fi
+}
 
 function emptyFile() {
     fileToEmpty=$1
@@ -136,12 +160,15 @@ function apacheandme() {
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!
 # MUHAHAHAHAHAHAHAHAHA
+if [ -z $GROUP ]; then
+    export GROUP=staff
+fi
 itsmine() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
-            sudo chown $USER:$USER $FILE
+            sudo chown $USER:$GROUP $FILE
         elif [ -d $FILE ]; then
-            sudo chown -R $USER:$USER $FILE
+            sudo chown -R $USER:$GROUP $FILE
         else
             echo "{$FILE} is not a valid element to chown "
             continue

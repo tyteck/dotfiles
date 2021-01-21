@@ -43,7 +43,7 @@ alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 alias phpmyadminUp="cd $PHPMYADMIN_PATH && dokup && cd -"
 alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 
-alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && dokup && cd -"
+alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && dokup && code ."
 alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"

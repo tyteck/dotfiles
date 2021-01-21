@@ -8,6 +8,10 @@ alias gbr='git branch'
 alias gco='git checkout'
 alias gme='git merge'
 
+# avoiding to save and git vim for default
+# merge message when I'm making a git merge
+export GIT_MERGE_AUTOEDIT=no
+
 # some functions
 function gitown() {
     if [ -d ".git" ]; then
@@ -68,28 +72,28 @@ function mergeCurrentWith() {
         return 1
     fi
 
-    echo "checkout with $branchNameToMergeWith"
+    echo "-- checkout $branchNameToMergeWith --"
     git checkout $branchNameToMergeWith
     if [ $? -ne 0 ]; then
         echo "Checkout for the branch $branchNameToMergeWith has failed."
         return 1
     fi
 
-    echo "pulling $branchNameToMergeWith"
+    echo "-- pulling $branchNameToMergeWith --"
     git pull
     if [ $? -ne 0 ]; then
         echo "Pull of branch $branchNameToMergeWith has failed."
         return 1
     fi
 
-    echo "merging current $branchNameToMergeWith with $currentBranch"
+    echo "-- merging current $branchNameToMergeWith with $currentBranch --"
     git merge $currentBranch
     if [ $? -ne 0 ]; then
         echo "Merging the branch $currentBranch with $branchNameToMergeWith has failed."
         return 1
     fi
 
-    echo "pushing result"
+    echo "-- pushing result --"
     git push
     if [ $? -ne 0 ]; then
         echo "Pushing the branch has failed."

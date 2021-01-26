@@ -7,108 +7,131 @@
 #  		/path/../to/<containername>/artisan
 
 function isLaravelPath() {
-	if fileExists "artisan"; then
-		true
-	else
-		false
-	fi
+    if fileExists "artisan"; then
+        true
+    else
+        false
+    fi
 }
 
 function laravelFirstRun() {
-	if ! isLaravelPath; then
-		echo "You are not in a laravel path."
-		return 1
-	fi
+    if ! isLaravelPath; then
+        echo "You are not in a laravel path."
+        return 1
+    fi
 
-	mkdir -p storage/framework/cache
-	mkdir -p storage/framework/sessions
-	mkdir -p storage/framework/testing
-	mkdir -p storage/framework/views
+    mkdir -p storage/framework/cache
+    mkdir -p storage/framework/sessions
+    mkdir -p storage/framework/testing
+    mkdir -p storage/framework/views
 }
 
 function artisan() {
 
-	if ! fileExists "artisan"; then
-		echo "You are not in a laravel path."
-		return 1
-	fi
+    if ! fileExists "artisan"; then
+        echo "You are not in a laravel path."
+        return 1
+    fi
 
-	# get the container name
-	containerName=$(getLastFolder)
-	dockerPrefix=''
-	if isInstalled "docker" && containerExists $containerName; then
-		# run the artisan command in the container
-		dockerPrefix="docker exec -it --user www-data $containerName "
-	fi
-	commandToRun="${dockerPrefix} php artisan $@"
-	#echo $commandToRun
-	eval $commandToRun
+    # get the container name
+    containerName=$(getLastFolder)
+    dockerPrefix=''
+    if isInstalled "docker" && containerExists $containerName; then
+        # run the artisan command in the container
+        dockerPrefix="docker exec -it --user www-data $containerName "
+    fi
+    commandToRun="${dockerPrefix} php artisan $@"
+    #echo $commandToRun
+    eval $commandToRun
 }
 
 function tests() {
-	executablePath="vendor/bin/phpunit"
-	# checking if executable is there
-	if ! fileExists $executablePath; then
-		echo "phpunit is not available in path ($executablePath)."
-		return 1
-	fi
+    executablePath="vendor/bin/phpunit"
+    # checking if executable is there
+    if ! fileExists $executablePath; then
+        echo "phpunit is not available in path ($executablePath)."
+        return 1
+    fi
 
-	# get the container name
-	containerName=$(getLastFolder)
-	prefix=''
-	if isInstalled "docker" && containerExists $containerName; then
-		# run the artisan command in the container
-		prefix="docker exec -it --user www-data $containerName "
-	fi
-	commandToRun="${prefix}${executablePath} $@"
-	#echo $commandToRun
-	eval $commandToRun
+    # get the container name
+    containerName=$(getLastFolder)
+    prefix=''
+    if isInstalled "docker" && containerExists $containerName; then
+        # run the artisan command in the container
+        prefix="docker exec -it --user www-data $containerName "
+    fi
+    commandToRun="${prefix}${executablePath} $@"
+    #echo $commandToRun
+    eval $commandToRun
 }
 
 # grab the last part of path
 # /path/to/folder => folder
 function getLastFolder() {
-	echo $(basename $(pwd))
+    echo $(basename $(pwd))
 }
 
 # check if containerName is up and running
 function containerExists() {
-	containerName=$1
-	if [ "$(docker ps -a | grep $containerName)" ]; then
-		true
-	else
-		false
-	fi
+    containerName=$1
+    if [ "$(docker ps -a | grep $containerName)" ]; then
+        true
+    else
+        false
+    fi
 }
 
 # check if filename exists
 function fileExists() {
-	fileName=$1
-	if [ -f $fileName ]; then
-		true
-	else
-		false
-	fi
+    fileName=$1
+    if [ -f $fileName ]; then
+        true
+    else
+        false
+    fi
 }
 
 # check if filename is executable
 function isFileExecutable() {
-	fileName=$1
-	if [ -x $fileName ]; then
-		true
-	else
-		false
-	fi
+    fileName=$1
+    if [ -x $fileName ]; then
+        true
+    else
+        false
+    fi
 }
 
 # check if one program is installed on this computer
 function isInstalled() {
-	programName=$1
-	if [ -x "$(command -v $programName)" ]; then
-		true
-	else
-		false
-	fi
+    programName=$1
+    if [ -x "$(command -v $programName)" ]; then
+        true
+    else
+        false
+    fi
+}
+
+function tailLastLog() {
+    if ! isLaravelPath; then
+        echo "You are not in a laravel path."
+        return 1
+    fi
+
+    logPath='storage/logs'
+    # search for classic laravel.log first
+    fileToTail="$logPath/laravel.log"
+    if [ -f $fileToTail ]; then
+        tail -f $fileToTail -n 200
+        return 0
+    fi
+
+    # search for daily log first
+    fileToTail=$(find storage/logs/ -name 'laravel*.log' | sort -r | head -1)
+    if [ ! -z $fileToTail ]; then
+        tail -f $fileToTail -n 200
+        return 0
+    fi
+    echo "No laravel logs file by there. Are you sure you are in the right place ?"
 }
 
 alias acc="artisan cache:clear"

@@ -4,7 +4,7 @@ function coloredHost() {
     "MacBookAir.local")
         echo "%{$fg[green]%}MacBookAir%{$reset_color%}"
         ;;
-    "msi-laptop" | "engit")
+    "msi-laptop" | "engit" | "mini-forum")
         echo "%{$fg[green]%}${host}%{$reset_color%}"
         ;;
     *)

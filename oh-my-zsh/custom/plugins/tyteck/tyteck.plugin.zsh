@@ -49,10 +49,10 @@ alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
+alias dashup="wepadeldown && reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
 alias dashdown="mysqlDown && phpmyadminDown && cd $DASH_PATH && dokdown && cd -"
 
-alias dashup="wepadeldown && reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
+alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
 alias reducup="wepadeldown && dashdown && cd $REDUCBOX_PATH && docker-compose up -d && code ."
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 

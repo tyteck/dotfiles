@@ -62,12 +62,16 @@ alias sfc='php bin/console'
 # Php
 alias phpunit='./vendor/bin/phpunit --colors=always'
 
+# npm
+alias upgradeNpm='sudo npm install -g npm'
+
 # Composer
 alias cdu='composer dumpautoload'
 alias cu='composer update'
 alias ci="composer install --ignore-platform-reqs"
 
-# biggest files
+# linux
+alias editHosts='sudo vim /etc/hosts'
 alias biggestFolders='du -a . | sort -n -r | head -n 10'
 alias biggestFiles='du -Sh . | sort -rh | head -20'
 alias dir='du -hs * | sort -h'

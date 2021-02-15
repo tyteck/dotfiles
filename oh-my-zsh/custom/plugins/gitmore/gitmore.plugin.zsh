@@ -53,6 +53,7 @@ function gdelete() {
         fi
     else
         echo "The remote branch {$BRANCH_TO_DELETE} does not exists."
+        return 0
     fi
 }
 

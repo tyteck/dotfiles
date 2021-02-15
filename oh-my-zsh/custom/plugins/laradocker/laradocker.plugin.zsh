@@ -27,7 +27,6 @@ function laravelFirstRun() {
 }
 
 function artisan() {
-
     if ! fileExists "artisan"; then
         echo "You are not in a laravel path."
         return 1
@@ -40,9 +39,9 @@ function artisan() {
         # run the artisan command in the container
         dockerPrefix="docker exec -it --user www-data $containerName "
     fi
-    commandToRun="${dockerPrefix} php artisan $@"
-    #echo $commandToRun
+    commandToRun="${dockerPrefix}php artisan $@"
     eval $commandToRun
+    #echo $commandToRun
 }
 
 function tests() {

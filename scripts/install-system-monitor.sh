@@ -8,7 +8,7 @@ sudo sensors-detect
 echo "======================================================="
 echo "install gnome system monitor and freon"
 echo "click https://extensions.gnome.org/extension/120/system-monitor/"
-echo "click https://extensions.gnome.org/extension/1180/freon/"
+echo "click https://extensions.gnome.org/extension/841/freon/"
 echo "click https://extensions.gnome.org/extension/1015/gravatar/"
 echo "click https://extensions.gnome.org/extension/16/auto-move-windows/"
 echo "click https://extensions.gnome.org/extension/1262/bing-wallpaper-changer/"

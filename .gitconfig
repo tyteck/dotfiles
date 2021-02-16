@@ -4,4 +4,4 @@
 [pager]
 	branch = false
 [core]
-	pager = less -FRSX
+	pager = cat

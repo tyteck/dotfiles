@@ -7,6 +7,7 @@ PROJECTS_PATH="$HOME/Projects"
 DASH_PATH="$PROJECTS_PATH/dashboard.podmytube.com"
 REDUCBOX_PATH="$PROJECTS_PATH/reducbox"
 WEPADEL_PATH="$PROJECTS_PATH/wepadel"
+GPU_PATH="$PROJECTS_PATH/gpudispo"
 NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
@@ -49,11 +50,14 @@ alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
+alias gpuup="reducdown && dashdown && mysqlUp && phpmyadminUp && cd $GPU_PATH && dokup && code ."
+alias gpudown="cd $GPU_PATH && dokdown && cd -"
+
 alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
-alias dashdown="mysqlDown && phpmyadminDown && cd $DASH_PATH && dokdown && cd -"
+alias dashdown="cd $DASH_PATH && dokdown && cd -"
 
 alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
-alias reducup="dashdown && cd $REDUCBOX_PATH && docker-compose up -d && code ."
+alias reducup="dashdown && mysqlDown && phpmyadminDown && cd $REDUCBOX_PATH && docker-compose up -d && code ."
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 
 # Symfony

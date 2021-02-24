@@ -38,26 +38,26 @@ alias dokup="docker-compose up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
 
 # shortcut to start containers
-alias mysqlUp="cd $MYSQL_SERVER_PATH && dokup && cd -"
+alias mysqlUp="cd $MYSQL_SERVER_PATH && gpull && dokup && cd -"
 alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 
-alias phpmyadminUp="cd $PHPMYADMIN_PATH && dokup && cd -"
+alias phpmyadminUp="cd $PHPMYADMIN_PATH && gpull && dokup && cd -"
 alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 
-alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && dokup && code ."
+alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && gpull && dokup && code ."
 alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 
-alias nginxup="cd $NGINX_PROXY_PATH && dokup && cd -"
+alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias gpuup="reducdown && dashdown && mysqlUp && phpmyadminUp && cd $GPU_PATH && dokup && code ."
+alias gpup="reducdown && dashdown && mysqlUp && phpmyadminUp && cd $GPU_PATH && gpull && dokup && code ."
 alias gpudown="cd $GPU_PATH && dokdown && cd -"
 
-alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && dokup && code ."
+alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && gpull && dokup && code ."
 alias dashdown="cd $DASH_PATH && dokdown && cd -"
 
 alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
-alias reducup="dashdown && mysqlDown && phpmyadminDown && cd $REDUCBOX_PATH && docker-compose up -d && code ."
+alias reducup="dashdown && mysqlDown && phpmyadminDown && cd $REDUCBOX_PATH && gpull && dokup && code ."
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 
 # Symfony
@@ -71,7 +71,7 @@ alias upgradeNpm='sudo npm install -g npm'
 
 # Composer
 alias cdu='composer dumpautoload'
-alias cu='composer update'
+alias cu='composer update --ignore-platform-reqs'
 alias ci="composer install --ignore-platform-reqs"
 
 # linux

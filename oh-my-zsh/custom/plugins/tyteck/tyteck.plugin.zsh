@@ -50,7 +50,7 @@ alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias gpup="reducdown && dashdown && mysqlUp && phpmyadminUp && cd $GPU_PATH && gpull && dokup && code ."
+alias gpuup="reducdown && dashdown && mysqlUp && phpmyadminUp && cd $GPU_PATH && gpull && dokup && code ."
 alias gpudown="cd $GPU_PATH && dokdown && cd -"
 
 alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && gpull && dokup && code ."

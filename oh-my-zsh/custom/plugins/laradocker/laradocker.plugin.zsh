@@ -149,6 +149,7 @@ alias aqf="artisan queue:flush"
 alias aqr="artisan queue:restart"
 alias arall="artisan queue:restart && artisan optimize:clear"
 alias tinker="artisan tinker"
+alias insights="artisan insights --no-interaction --verbose"
 
 alias composer='docker run --rm -v $(pwd):/app composer:latest '
 alias cdu='composer dump-autoload'

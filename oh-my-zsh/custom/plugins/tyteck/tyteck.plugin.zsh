@@ -8,6 +8,7 @@ DASH_PATH="$PROJECTS_PATH/dashboard.podmytube.com"
 REDUCBOX_PATH="$PROJECTS_PATH/reducbox"
 WEPADEL_PATH="$PROJECTS_PATH/wepadel"
 GPU_PATH="$PROJECTS_PATH/gpudispo"
+MAILHOG_PATH="/var/opt/docker/mailhog"
 NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
@@ -43,6 +44,9 @@ alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 
 alias phpmyadminUp="cd $PHPMYADMIN_PATH && gpull && dokup && cd -"
 alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
+
+alias mailUp="cd $MAILHOG_PATH && dokup && cd -"
+alias mailDown="cd $MAILHOG_PATH && dokdown && cd -"
 
 alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && gpull && dokup && code ."
 alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"

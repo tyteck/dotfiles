@@ -22,3 +22,11 @@
       parent = ""
       type = Window
 [plugins]
+[profiles]
+  [[default]]
+    background_darkness = 0.85
+    copy_on_selection = True
+    cursor_color = "#aaaaaa"
+    icon_bell = False
+    scrollback_lines = 90000
+    visible_bell = True

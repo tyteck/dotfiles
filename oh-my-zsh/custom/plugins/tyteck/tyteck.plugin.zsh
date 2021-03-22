@@ -44,7 +44,7 @@ alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 alias phpmyadminUp="cd $PHPMYADMIN_PATH && gpull && dokup && cd -"
 alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 
-alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && gpull && dokup && code ."
+alias wepadelup="reducdown && dashdown && mysqlDown && phpmyadminDown && cd $WEPADEL_PATH && gpull && dokup && code ."
 alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
@@ -71,8 +71,10 @@ alias upgradeNpm='sudo npm install -g npm'
 
 # Composer
 alias cdu='composer dumpautoload'
-alias cu='composer update --ignore-platform-reqs'
-alias ci="composer install --ignore-platform-reqs"
+alias compoUpdate='composer update --ignore-platform-reqs'
+alias compoInstall="composer install --ignore-platform-reqs"
+alias compoRequire="composer require --ignore-platform-reqs"
+alias compoRemove="composer remove --ignore-platform-reqs"
 
 # linux
 alias editHosts='sudo vim /etc/hosts'

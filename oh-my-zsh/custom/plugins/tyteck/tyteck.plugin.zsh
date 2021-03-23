@@ -152,6 +152,31 @@ function apacheonly() {
     return 0
 }
 
+function apachewith() {
+    SOME_USER=$1
+    if ! userExists $SOME_USER; then
+        echo "User ($SOME_USER) does not exists. I need one real user to go with apache(www-data)"
+        echo "usage : apachewith REAL_USER <FILE>|<FOLDER> ..."
+        return 1
+    fi
+    shift
+    for FILE in "$@"; do
+        if [ -f $FILE ]; then
+            # a file
+            sudo chown www-data:$SOME_USER $FILE
+            sudo chmod g+rw $FILE
+        elif [ -d $FILE ]; then
+            # for a folder
+            sudo chown -R www-data:$SOME_USER $FILE
+            sudo chmod -R g+rw $FILE
+        else
+            echo "{$FILE} is not a valid element to change permissions on."
+            continue
+        fi
+    done
+    return 0
+}
+
 function apacheandme() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
@@ -170,6 +195,10 @@ function apacheandme() {
     return 0
 }
 
+function userExists() {
+    id "$1" &>/dev/null
+}
+
 # it s mine
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!
@@ -177,6 +206,7 @@ function apacheandme() {
 if [ -z $GROUP ]; then
     export GROUP=staff
 fi
+
 itsmine() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then

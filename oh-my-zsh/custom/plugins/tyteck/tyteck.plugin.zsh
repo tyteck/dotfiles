@@ -178,20 +178,7 @@ function apachewith() {
 }
 
 function apacheandme() {
-    for FILE in "$@"; do
-        if [ -f $FILE ]; then
-            # a file
-            sudo chown www-data:$USER $FILE
-            sudo chmod g+rw $FILE
-        elif [ -d $FILE ]; then
-            # for a folder
-            sudo chown -R www-data:$USER $FILE
-            sudo chmod -R g+rw $FILE
-        else
-            echo "{$FILE} is not a valid element to change permissions on."
-            continue
-        fi
-    done
+    apachewith $USER "$@"
     return 0
 }
 

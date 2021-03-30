@@ -75,10 +75,10 @@ alias upgradeNpm='sudo npm install -g npm'
 
 # Composer
 alias cdu='composer dumpautoload'
-alias compoUpdate='composer update --ignore-platform-reqs'
-alias compoInstall="composer install --ignore-platform-reqs"
-alias compoRequire="composer require --ignore-platform-reqs"
-alias compoRemove="composer remove --ignore-platform-reqs"
+alias compUpdate='composer update --ignore-platform-reqs'
+alias compInstall="composer install --ignore-platform-reqs"
+alias compRequire="composer require --ignore-platform-reqs"
+alias compRemove="composer remove --ignore-platform-reqs"
 
 # linux
 alias editHosts='sudo vim /etc/hosts'

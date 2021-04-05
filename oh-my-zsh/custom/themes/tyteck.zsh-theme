@@ -1,14 +1,11 @@
 function coloredHost() {
     host=$(uname -n)
     case $host in
-    "MacBookAir.local")
-        echo "%{$fg[green]%}MacBookAir%{$reset_color%}"
-        ;;
-    "msi-laptop" | "engit" | "mini-forum")
+    "msi-laptop" | "engit" | "mini-forum" | "gigabyte")
         echo "%{$fg[green]%}${host}%{$reset_color%}"
         ;;
     *)
-        echo "%{$fg[red]%}$host%{$reset_color%}"
+        echo "/!\ ====> %{$fg[red]%}$host%{$reset_color%} <==== /!\ "
         ;;
     esac
 }

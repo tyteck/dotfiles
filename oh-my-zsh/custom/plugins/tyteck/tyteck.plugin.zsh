@@ -8,6 +8,7 @@ DASH_PATH="$PROJECTS_PATH/dashboard.podmytube.com"
 REDUCBOX_PATH="$PROJECTS_PATH/reducbox"
 WEPADEL_PATH="$PROJECTS_PATH/wepadel"
 GPU_PATH="$PROJECTS_PATH/gpudispo"
+MAILHOG_PATH="/var/opt/docker/mailhog"
 NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
@@ -44,6 +45,9 @@ alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 alias phpmyadminUp="cd $PHPMYADMIN_PATH && gpull && dokup && cd -"
 alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 
+alias mailup="cd $MAILHOG_PATH && dokup && cd -"
+alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
+
 alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && gpull && dokup && code ."
 alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 
@@ -71,8 +75,10 @@ alias upgradeNpm='sudo npm install -g npm'
 
 # Composer
 alias cdu='composer dumpautoload'
-alias cu='composer update --ignore-platform-reqs'
-alias ci="composer install --ignore-platform-reqs"
+alias compUpdate='composer update --ignore-platform-reqs'
+alias compInstall="composer install --ignore-platform-reqs"
+alias compRequire="composer require --ignore-platform-reqs"
+alias compRemove="composer remove --ignore-platform-reqs"
 
 # linux
 alias editHosts='sudo vim /etc/hosts'
@@ -146,15 +152,22 @@ function apacheonly() {
     return 0
 }
 
-function apacheandme() {
+function apachewith() {
+    SOME_USER=$1
+    if ! userExists $SOME_USER; then
+        echo "User ($SOME_USER) does not exists. I need one real user to go with apache(www-data)"
+        echo "usage : apachewith REAL_USER <FILE>|<FOLDER> ..."
+        return 1
+    fi
+    shift
     for FILE in "$@"; do
         if [ -f $FILE ]; then
             # a file
-            sudo chown www-data:$USER $FILE
+            sudo chown www-data:$SOME_USER $FILE
             sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then
             # for a folder
-            sudo chown -R www-data:$USER $FILE
+            sudo chown -R www-data:$SOME_USER $FILE
             sudo chmod -R g+rw $FILE
         else
             echo "{$FILE} is not a valid element to change permissions on."
@@ -164,6 +177,15 @@ function apacheandme() {
     return 0
 }
 
+function apacheandme() {
+    apachewith $USER "$@"
+    return 0
+}
+
+function userExists() {
+    id "$1" &>/dev/null
+}
+
 # it s mine
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!
@@ -171,6 +193,7 @@ function apacheandme() {
 if [ -z $GROUP ]; then
     export GROUP=staff
 fi
+
 itsmine() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then

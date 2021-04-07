@@ -76,6 +76,7 @@ alias upgradeNpm='sudo npm install -g npm'
 # Composer
 alias cdu='composer dumpautoload'
 alias compUpdate='composer update --ignore-platform-reqs'
+alias compUpgrade="composer upgrade --ignore-platform-reqs"
 alias compInstall="composer install --ignore-platform-reqs"
 alias compRequire="composer require --ignore-platform-reqs"
 alias compRemove="composer remove --ignore-platform-reqs"

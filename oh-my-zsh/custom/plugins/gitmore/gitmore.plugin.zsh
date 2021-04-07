@@ -22,39 +22,43 @@ function gitown() {
 }
 
 function gdelete() {
-    BRANCH_TO_DELETE=$1
-    if [ -z $BRANCH_TO_DELETE ]; then
-        echo "To delete a branch we need a branch name ... don't you think so ?"
+    if [ -z $1 ]; then
+        echo "Usage : gdelete <BRANCH_TO_DELETE>"
+        echo "This function will delete a branch locally AND remotely."
         return 1
     fi
 
-    # necessary to avoid
-    if [ "$BRANCH_TO_DELETE" = "master" ] || [ "$BRANCH_TO_DELETE" = "main" ]; then
-        echo "ARE YOU CRAZY ? you shouldn't delete \"$BRANCH_TO_DELETE\""
-        return 1
-    fi
+    for BRANCH_TO_DELETE in $@; do
+        echo "Branch to be deleted : $BRANCH_TO_DELETE"
 
-    git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE
-    if [ $? -ne 0 ]; then
-        echo "The local branch {$BRANCH_TO_DELETE} does not exists."
-    else
-        git branch -d $BRANCH_TO_DELETE
-        if [ $? -ne 0 ]; then
-            echo "Local branch {$BRANCH_TO_DELETE} deletion has failed"
+        # necessary to avoid
+        if [ "$BRANCH_TO_DELETE" = "master" ] || [ "$BRANCH_TO_DELETE" = "main" ] || [ "$BRANCH_TO_DELETE" = "dev" ]; then
+            echo "ARE YOU CRAZY ? you shouldn't delete \"$BRANCH_TO_DELETE\""
             return 1
         fi
-    fi
 
-    if remoteBranchExists $BRANCH_TO_DELETE; then
-        git push origin --delete $BRANCH_TO_DELETE
+        git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE
         if [ $? -ne 0 ]; then
-            echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
-            return 1
+            echo "The local branch {$BRANCH_TO_DELETE} does not exists."
+        else
+            git branch -d $BRANCH_TO_DELETE
+            if [ $? -ne 0 ]; then
+                echo "Local branch {$BRANCH_TO_DELETE} deletion has failed"
+                return 1
+            fi
         fi
-    else
-        echo "The remote branch {$BRANCH_TO_DELETE} does not exists."
-        return 0
-    fi
+
+        if remoteBranchExists $BRANCH_TO_DELETE; then
+            git push origin --delete $BRANCH_TO_DELETE
+            if [ $? -ne 0 ]; then
+                echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
+                return 1
+            fi
+        else
+            echo "The remote branch {$BRANCH_TO_DELETE} does not exists."
+        fi
+    done
+    return 0
 }
 
 function mergeCurrentWith() {

@@ -78,10 +78,11 @@ alias upgradeNpm='sudo npm install -g npm'
 
 # Composer
 alias cdu='composer dumpautoload'
-alias compoUpdate='composer update --ignore-platform-reqs'
-alias compoInstall="composer install --ignore-platform-reqs"
-alias compoRequire="composer require --ignore-platform-reqs"
-alias compoRemove="composer remove --ignore-platform-reqs"
+alias compUpdate='composer update --ignore-platform-reqs'
+alias compUpgrade="composer upgrade --ignore-platform-reqs"
+alias compInstall="composer install --ignore-platform-reqs"
+alias compRequire="composer require --ignore-platform-reqs"
+alias compRemove="composer remove --ignore-platform-reqs"
 
 # linux
 alias editHosts='sudo vim /etc/hosts'
@@ -155,15 +156,22 @@ function apacheonly() {
     return 0
 }
 
-function apacheandme() {
+function apachewith() {
+    SOME_USER=$1
+    if ! userExists $SOME_USER; then
+        echo "User ($SOME_USER) does not exists. I need one real user to go with apache(www-data)"
+        echo "usage : apachewith REAL_USER <FILE>|<FOLDER> ..."
+        return 1
+    fi
+    shift
     for FILE in "$@"; do
         if [ -f $FILE ]; then
             # a file
-            sudo chown www-data:$USER $FILE
+            sudo chown www-data:$SOME_USER $FILE
             sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then
             # for a folder
-            sudo chown -R www-data:$USER $FILE
+            sudo chown -R www-data:$SOME_USER $FILE
             sudo chmod -R g+rw $FILE
         else
             echo "{$FILE} is not a valid element to change permissions on."
@@ -173,6 +181,15 @@ function apacheandme() {
     return 0
 }
 
+function apacheandme() {
+    apachewith $USER "$@"
+    return 0
+}
+
+function userExists() {
+    id "$1" &>/dev/null
+}
+
 # it s mine
 # chowning files or folders to be mine.
 # I need to OWN THEM ALL !!!!
@@ -180,6 +197,7 @@ function apacheandme() {
 if [ -z $GROUP ]; then
     export GROUP=staff
 fi
+
 itsmine() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then

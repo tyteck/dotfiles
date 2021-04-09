@@ -20,6 +20,9 @@ if [ isMacos ]; then
     APACHE_GROUP=_www
 fi
 
+# default db shortcuts
+alias dbpmtprod='mysql --login-path=pmt pmt'
+
 alias c='clear'
 # docker & docker compose
 alias dokbuild="docker-compose build"

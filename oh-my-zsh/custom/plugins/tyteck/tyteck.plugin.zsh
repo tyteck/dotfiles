@@ -20,6 +20,9 @@ if [ isMacos ]; then
     APACHE_GROUP=_www
 fi
 
+# monit
+alias monitRestart='sudo monit -t && sudo monit reload'
+
 # default db shortcuts
 alias dbpmtprod='mysql --login-path=pmt pmt'
 

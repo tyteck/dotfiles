@@ -107,6 +107,16 @@ function mergeCurrentWith() {
     return 0
 }
 
+function cleanLocalOldBranches() {
+    # get remote branches marked as gone
+    goneBranches=$(git for-each-ref --format '%(refname) %(upstream:track)' refs/heads | awk '$2 == "[gone]" {sub("refs/heads/", "", $1); print $1}')
+    echo $goneBranches
+    #git fetch -p && for branch in $goneBranches;
+    #do
+    #    git branch -D $branch;
+    #    done
+}
+
 # Git commit then push in one command
 # if no file is specified the . folder is commit then pushed
 function gmit() {

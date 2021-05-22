@@ -45,12 +45,7 @@ function artisan() {
 }
 
 function tests() {
-    executablePath="vendor/bin/phpunit"
-    # checking if executable is there
-    if ! fileExists $executablePath; then
-        echo "phpunit is not available in path ($executablePath)."
-        return 1
-    fi
+    executablePath="php artisan test --parallel"
 
     # get the container name
     containerName=$(getLastFolder)

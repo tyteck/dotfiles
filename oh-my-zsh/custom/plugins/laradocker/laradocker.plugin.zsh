@@ -45,7 +45,12 @@ function artisan() {
 }
 
 function tests() {
-    executablePath="php artisan test --parallel"
+    executablePath="vendor/bin/phpunit"
+    # checking if executable is there
+    if ! fileExists $executablePath; then
+        echo "phpunit is not available in path ($executablePath)."
+        return 1
+    fi
 
     # get the container name
     containerName=$(getLastFolder)
@@ -143,6 +148,7 @@ alias aoc="artisan optimize:clear"
 alias aqf="artisan queue:flush"
 alias aqr="artisan queue:restart"
 alias arall="artisan queue:restart && artisan optimize:clear"
+alias atest="artisan test --parallel"
 alias tinker="artisan tinker"
 alias insights="artisan insights --no-interaction --verbose"
 

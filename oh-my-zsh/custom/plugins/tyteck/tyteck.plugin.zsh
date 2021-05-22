@@ -20,6 +20,12 @@ if [ isMacos ]; then
     APACHE_GROUP=_www
 fi
 
+# monit
+alias monitRestart='sudo monit -t && sudo monit reload'
+
+# default db shortcuts
+alias dbpmtprod='mysql --login-path=pmt pmt'
+
 alias c='clear'
 # docker & docker compose
 alias dokbuild="docker-compose build"

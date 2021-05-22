@@ -44,7 +44,6 @@ function gdelete() {
             git branch -d $BRANCH_TO_DELETE
             if [ $? -ne 0 ]; then
                 echo "Local branch {$BRANCH_TO_DELETE} deletion has failed"
-                return 1
             fi
         fi
 
@@ -52,7 +51,6 @@ function gdelete() {
             git push origin --delete $BRANCH_TO_DELETE
             if [ $? -ne 0 ]; then
                 echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
-                return 1
             fi
         else
             echo "The remote branch {$BRANCH_TO_DELETE} does not exists."

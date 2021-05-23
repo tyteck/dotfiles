@@ -151,8 +151,3 @@ alias arall="artisan queue:restart && artisan optimize:clear"
 alias atest="artisan test --parallel"
 alias tinker="artisan tinker"
 alias insights="artisan insights --no-interaction --verbose"
-
-alias composer='docker run --rm -v $(pwd):/app composer:latest '
-alias cdu='composer dump-autoload'
-alias composer1='/usr/local/bin/composer'
-alias "composer install"="composer --ignore-platform-reqs"

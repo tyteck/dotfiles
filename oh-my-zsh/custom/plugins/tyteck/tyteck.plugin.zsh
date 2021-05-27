@@ -68,6 +68,7 @@ alias dashdown="cd $DASH_PATH && dokdown && cd -"
 
 alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
 alias reducup="dashdown && mysqlDown && phpmyadminDown && cd $REDUCBOX_PATH && gpull && dokup && code ."
+alias reducrestart="cd $REDUCBOX_PATH && docker-compose restart reducbox"
 alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
 
 # Symfony
@@ -100,7 +101,7 @@ alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get autoremove -q -y'
 
 case $(uname -n) in
-"msi-laptop")
+"msi-laptop" | "mini-forum")
     alias shutdown="fullapt && please shutdown -h now"
     if hash ansible-playbook 2>/dev/null; then
         ansiblePlaybooksDirectory=$HOME/ansible-playbooks
@@ -118,7 +119,7 @@ esac
 
 # some core shortcuts
 alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /usr/local/bin/youtube-dl:/usr/local/bin/youtube-dl --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
-alias ngrokdash='screen -d -m ngrok http -subdomain=dashpod -region eu 80'
+alias ngrok='screen -d -m ngrok http -region eu 80'
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	COMMODITIES

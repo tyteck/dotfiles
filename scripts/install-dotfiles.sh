@@ -25,7 +25,7 @@ if [ -f .bash_functions ]; then
     . .bash_functions
 fi
 
-function backup(){
+function backup() {
     local itemToBackup=$1
     local backupItem="${itemToBackup}.bak"
     verbose "backuping item ${itemToBackup} => ${backupItem}"
@@ -106,14 +106,13 @@ while [ $# -gt 0 ]; do
     shift
 done
 
-
-for itemToReplace in "${!itemsToReplace[@]}"; do 
+for itemToReplace in "${!itemsToReplace[@]}"; do
     #
     # itemToReplace = the original item
     # targetItem = the item in the git dotfiles
     #
     targetItem=${itemsToReplace[$itemToReplace]}
-    verbose "${itemToReplace} --- ${targetItem}" 
+    verbose "${itemToReplace} --- ${targetItem}"
     if [ -d ${itemToReplace} ]; then
         backup ${itemToReplace}
     elif [ -L ${itemToReplace} ]; then

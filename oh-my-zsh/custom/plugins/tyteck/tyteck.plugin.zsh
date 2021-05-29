@@ -102,7 +102,7 @@ alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get autoremove -q -y'
 
 case $(uname -n) in
-"msi-laptop" | "mini-forum")
+"msi-laptop" | "mini-forum" | "debian")
     alias shutdown="fullapt && please shutdown -h now"
     if hash ansible-playbook 2>/dev/null; then
         ansiblePlaybooksDirectory=$HOME/ansible-playbooks

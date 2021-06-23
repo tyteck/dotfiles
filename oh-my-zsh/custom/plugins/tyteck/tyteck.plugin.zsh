@@ -118,10 +118,6 @@ case $(uname -n) in
     ;;
 esac
 
-# some core shortcuts
-alias runcore='docker run --network nginx-proxy --name core.pmt --rm --volume /usr/local/bin/youtube-dl:/usr/local/bin/youtube-dl --volume /home/www/core.podmytube.com:/app --volume /var/log/pmt/error.log:/var/log/pmt/error.log core.pmt'
-alias ngrok='screen -d -m ngrok http -region eu 80'
-
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	COMMODITIES
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸

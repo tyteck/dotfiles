@@ -40,8 +40,8 @@ function artisan() {
         dockerPrefix="docker exec -it --user www-data $containerName "
     fi
     commandToRun="${dockerPrefix}php artisan $@"
-    eval $commandToRun
     #echo $commandToRun
+    eval $commandToRun
 }
 
 function tests() {

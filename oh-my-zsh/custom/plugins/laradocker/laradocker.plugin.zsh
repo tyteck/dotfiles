@@ -59,7 +59,7 @@ function tests() {
         # run the artisan command in the container
         prefix="docker exec -it --user www-data $containerName "
     fi
-    commandToRun="${prefix}${executablePath} $@"
+    commandToRun="${prefix}${executablePath} --stop-on-defect $@"
     #echo $commandToRun
     eval $commandToRun
 }

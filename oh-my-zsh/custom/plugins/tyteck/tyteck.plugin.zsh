@@ -81,7 +81,7 @@ alias phpunit='./vendor/bin/phpunit --colors=always'
 alias upgradeNpm='sudo npm install -g npm'
 
 # Composer
-alias composer="docker run --rm -v $(pwd):/app composer:latest "
+alias composer='docker run --rm -v $(pwd):/app composer:latest '
 alias cdu='composer dump-autoload --ignore-platform-reqs'
 alias compUpdate='composer update --ignore-platform-reqs'
 alias compUpgrade="composer upgrade --ignore-platform-reqs"

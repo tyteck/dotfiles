@@ -1,7 +1,7 @@
 function coloredHost() {
     host=$(uname -n)
     case $host in
-    "msi-laptop" | "engit" | "mini-forum" | "gigabyte")
+    "msi-laptop" | "engit" | "mini-forum" | "XPS-13")
         echo "%{$fg[green]%}${host}%{$reset_color%} "
         ;;
     *)

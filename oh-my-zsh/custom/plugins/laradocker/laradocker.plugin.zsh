@@ -7,7 +7,7 @@
 #  		/path/../to/<containername>/artisan
 
 function isLaravelPath() {
-    if fileExists "artisan"; then
+    if fileExists "artisan" || fileExists "laravel/artisan"; then
         true
     else
         false
@@ -27,40 +27,44 @@ function laravelFirstRun() {
 }
 
 function artisan() {
-    if ! fileExists "artisan"; then
+    if ! isLaravelPath; then
         echo "You are not in a laravel path."
         return 1
     fi
 
     # get the container name
-    containerName=$(getLastFolder)
-    dockerPrefix=''
-    if isInstalled "docker" && containerExists $containerName; then
-        # run the artisan command in the container
-        dockerPrefix="docker exec -it --user www-data $containerName "
-    fi
+    dockerPrefix=$(getDockerPrefix)
+
+    # run artisan
     commandToRun="${dockerPrefix}php artisan $@"
     #echo $commandToRun
     eval $commandToRun
 }
 
+function getDockerPrefix() {
+    containerName=$(getLastFolder)
+    dockerPrefix=''
+    if [[ "$containerName" = "lucie" ]]; then
+        dockerPrefix="docker-compose -f docker/docker-compose.yml -p actual exec php-nginx "
+    elif isInstalled "docker" && containerExists $containerName; then
+        dockerPrefix="docker exec -it --user www-data $containerName "
+    fi
+    echo $dockerPrefix
+}
+
 function tests() {
     executablePath="vendor/bin/phpunit"
     # checking if executable is there
-    if ! fileExists $executablePath; then
+    if ! fileExists $executablePath && ! fileExists "laravel/$executablePath"; then
         echo "phpunit is not available in path ($executablePath)."
         return 1
     fi
 
     # get the container name
-    containerName=$(getLastFolder)
-    prefix=''
-    if isInstalled "docker" && containerExists $containerName; then
-        # run the artisan command in the container
-        prefix="docker exec -it --user www-data $containerName "
-    fi
-    commandToRun="${prefix}${executablePath} $@"
-    #echo $commandToRun
+    dockerPrefix=$(getDockerPrefix)
+
+    commandToRun="${dockerPrefix}${executablePath} $@"
+    echo $commandToRun
     eval $commandToRun
 }
 

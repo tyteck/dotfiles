@@ -125,7 +125,7 @@ function tailLastLog() {
         # specific lucie (Actual)
         logPath='laravel/storage/logs'
     fi
-    echo "logPath - ${logPath}"
+
     # search for classic laravel.log first
     fileToTail="$logPath/laravel.log"
     if [ -f $fileToTail ]; then

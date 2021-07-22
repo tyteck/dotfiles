@@ -121,6 +121,11 @@ function tailLastLog() {
     fi
 
     logPath='storage/logs'
+    if [ ! -d 'storage/logs' ]; then
+        # specific lucie (Actual)
+        logPath='laravel/storage/logs'
+    fi
+    echo "logPath - ${logPath}"
     # search for classic laravel.log first
     fileToTail="$logPath/laravel.log"
     if [ -f $fileToTail ]; then
@@ -129,7 +134,7 @@ function tailLastLog() {
     fi
 
     # search for daily log first
-    fileToTail=$(find storage/logs/ -name 'laravel*.log' | sort -r | head -1)
+    fileToTail=$(find ${logPath} -name 'laravel*.log' | sort -r | head -1)
     if [ ! -z $fileToTail ]; then
         tail -f $fileToTail -n 200
         return 0

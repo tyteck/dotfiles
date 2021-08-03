@@ -20,6 +20,8 @@ if [ isMacos ]; then
     APACHE_GROUP=_www
 fi
 
+export LD_LIBRARY_PATH=$(which openssl)
+
 # monit
 alias monitRestart='sudo monit -t && sudo monit reload'
 

@@ -37,7 +37,7 @@ function artisan() {
 
     # run artisan
     commandToRun="${dockerPrefix}php artisan $@"
-    #echo $commandToRun
+    echo $commandToRun
     eval $commandToRun
 }
 
@@ -66,6 +66,23 @@ function tests() {
     commandToRun="${dockerPrefix}${executablePath} $@"
     echo $commandToRun
     eval $commandToRun
+}
+
+function getBaseFolder() {
+    directoryIWantTheBaseFrom=$1
+    if [ -z $directoryIWantTheBaseFrom ]; then
+        echo "You should send one the folder you want to get the base folder from."
+        return 1
+    fi
+
+    firstPathChar=${directoryIWantTheBaseFrom:0:1}
+
+    cutPosition=1
+    if [[ $firstPathChar == '/' ]]; then
+        cutPosition=2
+    fi
+    baseDirectory=$(echo "$directoryIWantTheBaseFrom" | cut -d "/" -f${cutPosition})
+    echo $baseDirectory
 }
 
 # grab the last part of path

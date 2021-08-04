@@ -271,3 +271,32 @@ function inArray() {
 #echo "should be cool"
 #if inArray 2 "${first_array[@]}"; then echo "cool"; else echo "pas cool"; fi
 #echo "---------------------------------"
+
+textBold='\e[1m'
+resetTextColor='\e[0m'
+textColorCyan='\e[96m'
+textColorLightYellow='\e[93m'
+function coloredEcho() {
+    defaultColor=$textColorCyan
+    if [[ $# < 1 ]]; then
+        echo '-------------------------------------------------'
+        echo "$textBold\e[91mYou should pass one message at least.$resetTextColor"
+        echo "\e[1mUsage : coloredEcho message.$resetTextColor"
+        echo '-------------------------------------------------'
+        return 1
+    fi
+    textColor=$2
+    if [[ $# < 2 ]]; then
+        textColor=$defaultColor
+    fi
+    message=$1
+    echo "${textColor}${message}${resetTextColor}"
+}
+#coloredEcho
+#coloredEcho "le chat est cyan"
+#coloredEcho "le chat est jaune" '\e[93m'
+
+function comment() {
+    message=$1
+    coloredEcho "$message" '\e[32m'
+}

@@ -37,7 +37,7 @@ function artisan() {
 
     # run artisan
     commandToRun="${dockerPrefix}php artisan $@"
-    echo $commandToRun
+    comment ${commandToRun}
     eval $commandToRun
 }
 

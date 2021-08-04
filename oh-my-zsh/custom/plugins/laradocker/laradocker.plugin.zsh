@@ -44,8 +44,8 @@ function artisan() {
 function getDockerPrefix() {
     containerName=$(getLastFolder)
     dockerPrefix=''
-    if [[ "$containerName" = "lucie" ]]; then
-        dockerPrefix="docker-compose -f docker/docker-compose.yml -p actual exec php-nginx "
+    if [[ "$containerName" = "lucie" || "$containerName" = "laravel" ]]; then # lucie - Actual
+        dockerPrefix="docker-compose -f ${LUCIE_PATH}/docker/docker-compose.yml -p actual exec php-nginx "
     elif isInstalled "docker" && containerExists $containerName; then
         dockerPrefix="docker exec -it --user www-data $containerName "
     fi

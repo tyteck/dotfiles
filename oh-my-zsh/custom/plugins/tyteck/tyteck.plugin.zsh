@@ -251,3 +251,23 @@ function dokrmi() {
     IMAGE_NAME=$1
     docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
 }
+
+function inArray() {
+    local needle=$1
+    shift
+    local haystack=("$@")
+    for i in $haystack; do
+        if [[ $needle == $haystack[$i] ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+#first_array=(1 2 3)
+#echo "---------------------------------"
+#echo "should be pas cool"
+#if inArray cat "${first_array[@]}"; then echo "cool"; else echo "pas cool"; fi
+#echo "---------------------------------"
+#echo "should be cool"
+#if inArray 2 "${first_array[@]}"; then echo "cool"; else echo "pas cool"; fi
+#echo "---------------------------------"

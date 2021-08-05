@@ -300,3 +300,12 @@ function comment() {
     message=$1
     coloredEcho "$message" '\e[32m'
 }
+
+function pause() {
+    message=$1
+    if [ -z $1 ]; then
+        message='Press any key to continue ...'
+    fi
+    echo $message
+    read -k1 -s
+}

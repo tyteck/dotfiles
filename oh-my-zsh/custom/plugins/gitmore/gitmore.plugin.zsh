@@ -215,3 +215,12 @@ function remoteBranchExists() {
 function getCurrentBranchName() {
     echo $(git rev-parse --abbrev-ref HEAD)
 }
+
+function gdiffall() {
+    for fileToDiff in $(git ls-files -m); do
+        clear
+        echo "========= $fileToDiff ========="
+        git diff $fileToDiff
+        pause
+    done
+}

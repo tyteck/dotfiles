@@ -64,7 +64,7 @@ function tests() {
     dockerPrefix=$(getDockerPrefix)
 
     commandToRun="${dockerPrefix}${executablePath} $@"
-    echo $commandToRun
+    comment $commandToRun
     eval $commandToRun
 }
 

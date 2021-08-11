@@ -304,7 +304,7 @@ function comment() {
 function pause() {
     message=$1
     if [ -z $1 ]; then
-        message='Press any key to continue ...'
+        message='Press any key to continue (or Ctrl+c to quit)...'
     fi
     echo $message
     read -k1 -s

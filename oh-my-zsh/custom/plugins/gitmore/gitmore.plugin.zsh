@@ -220,8 +220,7 @@ function gdiffall() {
     nbFiles=$(git ls-files -m | wc -l)
     index=1
     for fileToDiff in $(git ls-files -m); do
-        clear
-        echo "========= $fileToDiff (${index}/${nbFiles}) ========="
+        echo "\n========= $fileToDiff (${index}/${nbFiles}) ========="
         git diff $fileToDiff
         let index=${index}+1
         pause

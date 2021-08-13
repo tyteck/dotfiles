@@ -5,7 +5,7 @@ echo "------------ WIP ------------"
 echo "============================="
 
 sudo apt update
-sudo apt install git curl gnupg apache2 cifs-utils -y
+sudo apt install --no-install-recommends -y git curl gnupg apache2 cifs-utils
 
 echo "Type your password for freebox user."
 echo "It will be asked when changing shell."

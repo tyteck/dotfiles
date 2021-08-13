@@ -6,7 +6,7 @@
 #
 # installing zsh
 #
-sudo apt install -y zsh curl
+sudo apt install --no-install-recommends -y zsh curl
 if [ "$?" != 0 ]; then
     echo "Installing zsh has failed."
     exit 1

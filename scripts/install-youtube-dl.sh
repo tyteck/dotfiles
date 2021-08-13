@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is installing youtube-dl
 
-sudo apt update -y && sudo apt install -y python
+sudo apt update -y && sudo apt install --no-install-recommends -y python
 
 sudo curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
 

@@ -92,9 +92,10 @@ alias compRequire="composer require --ignore-platform-reqs"
 alias compRemove="composer remove --ignore-platform-reqs"
 
 # linux
-alias editHosts='sudo vim /etc/hosts'
-alias biggestFolders='du -a . | sort -n -r | head -n 10'
-alias biggestFiles='du -Sh . | sort -rh | head -20'
+alias edithosts='sudo vim /etc/hosts'
+alias editsshconfig='vim ~/.ssh/config'
+alias biggestfolders='du -a . | sort -n -r | head -n 10'
+alias biggestfiles='du -Sh . | sort -rh | head -20'
 alias dir='du -hs * | sort -h'
 
 # apt

@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is installing system monitor, freon and gravatar
 
-sudo apt install -y gir1.2-gtop-2.0 gir1.2-nm-1.0 gir1.2-clutter-1.0 lm-sensors hddtemp
+sudo apt install --no-install-recommends -y gir1.2-gtop-2.0 gir1.2-nm-1.0 gir1.2-clutter-1.0 lm-sensors hddtemp
 
 sudo sensors-detect
 

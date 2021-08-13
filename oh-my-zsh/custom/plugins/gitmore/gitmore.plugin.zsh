@@ -226,3 +226,11 @@ function gdiffall() {
         pause
     done
 }
+
+function removeuntrackedfiles() {
+    git clean -n -d
+    pause "======================================================================\n\
+Beware !!! All files above will be deleted !!! Ctrl+C to prevent this.\n\
+======================================================================"
+    git clean -f
+}

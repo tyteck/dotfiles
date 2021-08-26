@@ -159,7 +159,7 @@ function tailLastLog() {
     echo "No laravel logs file by there. Are you sure you are in the right place ?"
 }
 
-alias acc="artisan cache:clear"
+alias acc="artisan cache:clear && artisan config:clear"
 alias ads="artisan db:seed"
 alias aig="artisan ide-helper:generate"
 alias aie="artisan ide-helper:eloquent"

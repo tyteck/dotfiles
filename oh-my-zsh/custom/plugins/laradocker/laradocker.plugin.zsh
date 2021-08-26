@@ -36,7 +36,7 @@ function artisan() {
     dockerPrefix=$(getDockerPrefix)
 
     # run artisan
-    commandToRun="${dockerPrefix}php artisan $@"
+    commandToRun="noglob ${dockerPrefix}php artisan $@"
     comment ${commandToRun}
     eval $commandToRun
 }
@@ -165,6 +165,7 @@ alias aig="artisan ide-helper:generate"
 alias aie="artisan ide-helper:eloquent"
 alias al="artisan list"
 alias arl="artisan route:list"
+alias arc="artisan route:clear"
 alias am="artisan migrate"
 alias amf="artisan migrate:fresh"
 alias amfs="artisan migrate:fresh --seed"

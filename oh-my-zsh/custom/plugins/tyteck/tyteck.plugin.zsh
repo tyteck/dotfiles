@@ -82,6 +82,9 @@ alias phpunit='./vendor/bin/phpunit --colors=always'
 # npm
 alias upgradeNpm='sudo npm install -g npm'
 
+# ngrok
+alias ngrok='ngrok http --region eu 80'
+
 # Composer
 alias composer='docker run --rm -v $(pwd):/app composer:latest '
 alias cdu='composer dump-autoload --ignore-platform-reqs'

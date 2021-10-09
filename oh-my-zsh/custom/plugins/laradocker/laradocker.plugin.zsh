@@ -36,7 +36,7 @@ function artisan() {
     dockerPrefix=$(getDockerPrefix)
 
     # run artisan
-    commandToRun="${dockerPrefix}php artisan $@"
+    commandToRun="noglob ${dockerPrefix}php artisan $@"
     comment ${commandToRun}
     eval $commandToRun
 }
@@ -159,12 +159,13 @@ function tailLastLog() {
     echo "No laravel logs file by there. Are you sure you are in the right place ?"
 }
 
-alias acc="artisan cache:clear"
+alias acc="artisan cache:clear && artisan config:clear"
 alias ads="artisan db:seed"
 alias aig="artisan ide-helper:generate"
 alias aie="artisan ide-helper:eloquent"
 alias al="artisan list"
 alias arl="artisan route:list"
+alias arc="artisan route:clear"
 alias am="artisan migrate"
 alias amf="artisan migrate:fresh"
 alias amfs="artisan migrate:fresh --seed"
@@ -174,7 +175,6 @@ alias aoc="artisan optimize:clear"
 alias aqf="artisan queue:flush"
 alias aqr="artisan queue:restart"
 alias arall="artisan queue:restart && artisan optimize:clear"
-alias at="artisan test"
 alias atp="artisan test --parallel"
 alias tinker="artisan tinker"
 alias insights="artisan insights --no-interaction --verbose"

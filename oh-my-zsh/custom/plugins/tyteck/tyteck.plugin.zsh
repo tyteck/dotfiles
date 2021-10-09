@@ -101,6 +101,10 @@ alias biggestfolders='du -a . | sort -n -r | head -n 10'
 alias biggestfiles='du -Sh . | sort -rh | head -20'
 alias dir='du -hs * | sort -h'
 
+# Go/Golang
+alias gor='go run'
+alias gorm='gor main.go'
+
 # apt
 alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get upgrade -q -y && \

@@ -85,6 +85,9 @@ alias upgradeNpm='sudo npm install -g npm'
 # ngrok
 alias ngrok='ngrok http --region eu 80'
 
+# screen
+alias sls='screen -ls'
+
 # stripe
 alias stripelisten='screen -S "stripe-cli" -d -m stripe listen --forward-to dashboard.pmt.local/stripe/webhooks'
 

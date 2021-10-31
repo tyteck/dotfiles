@@ -170,6 +170,16 @@ function apacheonly() {
     return 0
 }
 
+function apacheUser() {
+    host=$(uname -n)
+    apacheUser='www-data'
+    if [ $host = 'XPS-13' ]; then
+        # actual ... :(
+        apacheUser=1001
+    fi
+    echo $apacheUser
+}
+
 function apachewith() {
     SOME_USER=$1
     if ! userExists $SOME_USER; then
@@ -178,14 +188,15 @@ function apachewith() {
         return 1
     fi
     shift
+
     for FILE in "$@"; do
         if [ -f $FILE ]; then
             # a file
-            sudo chown www-data:$SOME_USER $FILE
+            sudo chown $(apacheUser):$SOME_USER $FILE
             sudo chmod g+rw $FILE
         elif [ -d $FILE ]; then
             # for a folder
-            sudo chown -R www-data:$SOME_USER $FILE
+            sudo chown -R $(apacheUser):$SOME_USER $FILE
             sudo chmod -R g+rw $FILE
         else
             echo "{$FILE} is not a valid element to change permissions on."

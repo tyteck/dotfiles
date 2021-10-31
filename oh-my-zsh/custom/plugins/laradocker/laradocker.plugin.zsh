@@ -42,12 +42,15 @@ function artisan() {
 }
 
 function getDockerPrefix() {
-    containerName=$(getLastFolder)
+    lastFolderName=$(getLastFolders)
+    lastFolderNames=$(getLastFolders 2)
     dockerPrefix=''
-    if [[ "$containerName" = "lucie" || "$containerName" = "laravel" ]]; then # lucie - Actual
+    if [[ "$lastFolderName" = "lucie" || "$lastFolderNames" = "lucie/laravel" ]]; then # lucie - Actual
         dockerPrefix="docker-compose -f ${LUCIE_PATH}/docker/docker-compose.yml -p actual exec php-nginx "
-    elif isInstalled "docker" && containerExists $containerName; then
-        dockerPrefix="docker exec -it --user www-data $containerName "
+    elif [[ "$lastFolderName" = "nina" || "$lastFolderNames" = "nina/app" ]]; then # nina - Actual
+        dockerPrefix="docker-compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
+    elif isInstalled "docker" && containerExists $lastFolderName; then
+        dockerPrefix="docker exec -it --user www-data $lastFolderName "
     fi
     echo $dockerPrefix
 }
@@ -89,6 +92,32 @@ function getBaseFolder() {
 # /path/to/folder => folder
 function getLastFolder() {
     echo $(basename $(pwd))
+}
+
+function getLastFolders() {
+    # depthLevel is the first argument. if not set using 2 for depthLevel
+    depthLevel=$1
+    if [[ -z $depthLevel || $depthLevel -lt 1 ]];then
+        depthLevel=1
+    fi
+    absolutePath=$(pwd)
+    # splitting path 
+    parts=(${(@s:/:)absolutePath})
+    
+    # getting nb items in tree
+    nbItems=${#parts[@]}
+
+    # defining start folder
+    ((start = $nbItems - $depthLevel + 1))
+    if [[ $start -lt 1 ]];then
+        start=1
+    fi 
+    lastFolders=$parts[$start]
+    ((start++))
+    for ((index = $start; index <= $nbItems; index++));do
+        lastFolders="${lastFolders}/${parts[index]}"
+    done
+    echo $lastFolders
 }
 
 # check if containerName is up and running

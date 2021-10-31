@@ -85,6 +85,9 @@ alias upgradeNpm='sudo npm install -g npm'
 # ngrok
 alias ngrok='ngrok http --region eu 80'
 
+# stripe
+alias stripelisten='screen -S "stripe-cli" -d -m stripe listen --forward-to dashboard.pmt.local/stripe/webhooks'
+
 # Composer
 alias composer='docker run --rm -v $(pwd):/app composer:latest '
 alias cdu='composer dump-autoload --ignore-platform-reqs'

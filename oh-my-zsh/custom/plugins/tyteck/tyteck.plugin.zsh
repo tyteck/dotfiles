@@ -25,6 +25,9 @@ export LD_LIBRARY_PATH=$(which openssl)
 # monit
 alias monitRestart='sudo monit -t && sudo monit reload'
 
+# ubuntu
+alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
+
 # default db shortcuts
 alias dbpmtprod='mysql --login-path=pmt pmt'
 

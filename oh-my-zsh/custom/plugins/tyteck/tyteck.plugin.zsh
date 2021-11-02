@@ -25,6 +25,9 @@ export LD_LIBRARY_PATH=$(which openssl)
 # monit
 alias monitRestart='sudo monit -t && sudo monit reload'
 
+# vscode
+alias vsdot="cd ${HOME}/dotfiles && code ."
+
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
 
@@ -246,7 +249,7 @@ itsmine() {
 # extract one value from .env file
 # @param $1 variable name
 # @param $2 file where is set this variable (default .env)
-readVar() {
+function readVar() {
     VAR_NAME=$1
     FILE_NAME=$2
     if [ -z $FILE_NAME ]; then
@@ -257,6 +260,37 @@ readVar() {
     # ${VAR[1]} is the key
     # ${VAR[2]} is the value
     echo ${VAR[2]}
+}
+
+function luciepp() {
+    branchName=$1
+    if [ -z $branchName ]; then
+        warning "Usage : luciepp <BRANCH_NAME> (ie : luciepp s21-17)"
+        return 1
+    fi
+
+    gcloud config set project eactual-preprod
+
+    output=$(gcloud beta builds triggers list)
+    echo $output | while read line; do
+
+        key=$(echo $line | cut -sd':' -f 1)
+        value=$(echo $line | cut -sd':' -f 2)
+        # trimming
+        value=${value// /}
+        if [ -z $key ]; then
+            # we are on a separator string '---'
+            continue
+        fi
+
+        if [ $key = 'id' ]; then
+            cmd="gcloud beta builds triggers run ${value} --branch ${branchName}"
+            comment "=============> $cmd <============="
+            #eval $cmd
+        fi
+
+    done
+
 }
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
@@ -303,7 +337,10 @@ function inArray() {
 textBold='\e[1m'
 resetTextColor='\e[0m'
 textColorCyan='\e[96m'
+textColorRed='\e[31m'
+textColorGreen='\e[32m'
 textColorLightYellow='\e[93m'
+textColorOrange='\e[38;5;208m'
 function coloredEcho() {
     defaultColor=$textColorCyan
     if [[ $# < 1 ]]; then
@@ -326,7 +363,17 @@ function coloredEcho() {
 
 function comment() {
     message=$1
-    coloredEcho "$message" '\e[32m'
+    coloredEcho "$message" $textColorGreen
+}
+
+function warning() {
+    message=$1
+    coloredEcho "$message" $textColorOrange
+}
+
+function error() {
+    message=$1
+    coloredEcho "$message" $textColorRed
 }
 
 function pause() {
@@ -334,6 +381,6 @@ function pause() {
     if [ -z $1 ]; then
         message='Press any key to continue (or Ctrl+c to quit)...'
     fi
-    echo $message
+    comment $message
     read -k1 -s
 }

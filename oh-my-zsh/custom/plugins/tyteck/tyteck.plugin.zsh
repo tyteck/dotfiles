@@ -159,7 +159,7 @@ function emptyFile() {
         return 1
     fi
     : >$fileToEmpty
-    echo "$fileToEmpty is now empty"
+    comment "$fileToEmpty is now empty"
     return 0
 }
 
@@ -172,7 +172,7 @@ function apacheonly() {
             sudo chown -R www-data:www-data $ITEM
             sudo chmod -R g+rw $ITEM
         else
-            echo "{$ITEM} is not a valid element to change permssions on."
+            warning "{$ITEM} is not a valid element to change permssions on."
             continue
         fi
     done
@@ -285,10 +285,9 @@ function luciepp() {
 
         if [ $key = 'id' ]; then
             cmd="gcloud beta builds triggers run ${value} --branch ${branchName}"
-            comment "=============> $cmd <============="
-            #eval $cmd
+            comment "running : $cmd"
+            eval $cmd
         fi
-
     done
 
 }

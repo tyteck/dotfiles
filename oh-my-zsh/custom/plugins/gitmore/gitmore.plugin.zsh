@@ -23,17 +23,17 @@ function gitown() {
 
 function gdelete() {
     if [ -z $1 ]; then
-        echo "Usage : gdelete <BRANCH_TO_DELETE>"
-        echo "This function will delete a branch locally AND remotely."
+        comment "Usage : gdelete <BRANCH_TO_DELETE>"
+        comment "This function will delete a branch locally AND remotely."
         return 1
     fi
 
     for BRANCH_TO_DELETE in $@; do
-        echo "Branch to be deleted : $BRANCH_TO_DELETE"
+        comment "Branch to be deleted : $BRANCH_TO_DELETE"
 
         # necessary to avoid
         if [ "$BRANCH_TO_DELETE" = "master" ] || [ "$BRANCH_TO_DELETE" = "main" ] || [ "$BRANCH_TO_DELETE" = "dev" ]; then
-            echo "ARE YOU CRAZY ? you shouldn't delete \"$BRANCH_TO_DELETE\""
+            error "ARE YOU CRAZY ? you shouldn't delete \"$BRANCH_TO_DELETE\""
             return 1
         fi
 
@@ -61,7 +61,7 @@ function gdelete() {
 
 function mergeCurrentWith() {
     if [ -z "$1" ]; then
-        echo "you should give the branch name you want to merge with"
+        error "you should give the branch name you want to merge with"
         return 1
     fi
     currentBranch=$(getCurrentBranchName)
@@ -71,35 +71,35 @@ function mergeCurrentWith() {
     # check if branch exists
     #
     if ! localBranchExists $branchNameToMergeWith; then
-        echo "The branch name you want to merge with does not exists"
+        error "The branch name you want to merge with does not exists"
         return 1
     fi
 
-    echo "-- checkout $branchNameToMergeWith --"
+    comment "-- checkout $branchNameToMergeWith --"
     git checkout $branchNameToMergeWith
     if [ $? -ne 0 ]; then
-        echo "Checkout for the branch $branchNameToMergeWith has failed."
+        error "Checkout for the branch $branchNameToMergeWith has failed."
         return 1
     fi
 
-    echo "-- pulling $branchNameToMergeWith --"
+    comment "-- pulling $branchNameToMergeWith --"
     git pull
     if [ $? -ne 0 ]; then
-        echo "Pull of branch $branchNameToMergeWith has failed."
+        error "Pull of branch $branchNameToMergeWith has failed."
         return 1
     fi
 
-    echo "-- merging current $branchNameToMergeWith with $currentBranch --"
+    comment "-- merging current $branchNameToMergeWith with $currentBranch --"
     git merge $currentBranch
     if [ $? -ne 0 ]; then
-        echo "Merging the branch $currentBranch with $branchNameToMergeWith has failed."
+        error "Merging the branch $currentBranch with $branchNameToMergeWith has failed."
         return 1
     fi
 
-    echo "-- pushing result --"
+    comment "-- pushing result --"
     git push
     if [ $? -ne 0 ]; then
-        echo "Pushing the branch has failed."
+        error "Pushing the branch has failed."
         return 1
     fi
     return 0
@@ -164,7 +164,7 @@ function gmit() {
     fi
     eval $CMD
     if [ $? -ne 0 ]; then
-        echo "Pushing on remote branch $currentBranchName has failed with command ($CMD)"
+        error "Pushing on remote branch $currentBranchName has failed with command ($CMD)"
         return 1
     fi
 }
@@ -172,13 +172,13 @@ function gmit() {
 # this function will restore one previously deleted (and committed file)
 function grestore() {
     if [ -z "$1" ]; then
-        echo "you should give file name you want to restore"
+        warning "you should give file name you want to restore"
         return 1
     fi
     FILEPATH_TO_RESTORE=$1
     git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
     if [ "$?" != 0 ]; then
-        echo "Git restoring file $FILEPATH_TO_RESTORE has failed !"
+        error "Git restoring file $FILEPATH_TO_RESTORE has failed !"
         return 1
     fi
     return 0
@@ -186,7 +186,7 @@ function grestore() {
 
 function localBranchExists() {
     if [ -z "$1" ]; then
-        echo "you should give the branch name you want to check if exists"
+        error "you should give the branch name you want to check if exists"
         return 1
     fi
     localBranchName=$1

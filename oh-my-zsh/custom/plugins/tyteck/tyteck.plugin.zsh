@@ -262,14 +262,36 @@ function readVar() {
     echo ${VAR[2]}
 }
 
-function luciepp() {
+function pushluciepp() {
     branchName=$1
     if [ -z $branchName ]; then
-        warning "Usage : luciepp <BRANCH_NAME> (ie : luciepp s21-17)"
+        warning "Usage : pushluciepp <BRANCH_NAME> (ie : pushluciepp s21-17)"
         return 1
     fi
 
     gcloud config set project eactual-preprod
+
+    rungGcloudTriggersWithBranch $branchName
+}
+
+function pushninadev() {
+    branchName=$1
+    if [ -z $branchName ]; then
+        warning "Usage : pushninadev <BRANCH_NAME> (ie : pushninadev develop)"
+        return 1
+    fi
+
+    gcloud config set project synchro-rh-dev
+
+    rungGcloudTriggersWithBranch $branchName
+}
+
+function rungGcloudTriggersWithBranch() {
+    branchName=$1
+    if [ -z $branchName ]; then
+        error "rungGcloudTriggersWithBranch expects the branch name to be non empty"
+        return 1
+    fi
 
     output=$(gcloud beta builds triggers list)
     echo $output | while read line; do
@@ -286,10 +308,9 @@ function luciepp() {
         if [ $key = 'id' ]; then
             cmd="gcloud beta builds triggers run ${value} --branch ${branchName}"
             comment "running : $cmd"
-            eval $cmd
+            #eval $cmd
         fi
     done
-
 }
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸

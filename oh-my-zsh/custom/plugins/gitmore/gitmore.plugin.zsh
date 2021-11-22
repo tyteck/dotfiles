@@ -234,3 +234,8 @@ Beware !!! All files above will be deleted !!! Ctrl+C to prevent this.\n\
 ======================================================================"
     git clean -f
 }
+
+function modifiedFiles() {
+    backInTime=${1:-1}
+    git diff HEAD~${modifiedFiles}..HEAD --compact-summary
+}

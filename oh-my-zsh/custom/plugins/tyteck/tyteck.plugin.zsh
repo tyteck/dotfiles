@@ -308,7 +308,7 @@ function rungGcloudTriggersWithBranch() {
         if [ $key = 'id' ]; then
             cmd="gcloud beta builds triggers run ${value} --branch ${branchName}"
             comment "running : $cmd"
-            #eval $cmd
+            eval $cmd
         fi
     done
 }

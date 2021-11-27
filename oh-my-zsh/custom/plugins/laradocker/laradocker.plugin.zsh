@@ -7,7 +7,7 @@
 #  		/path/../to/<containername>/artisan
 
 function isLaravelPath() {
-    if fileExists "artisan" || fileExists "laravel/artisan"; then
+    if fileExists "artisan" || fileExists "laravel/artisan" || fileExists "app/artisan"; then
         true
     else
         false
@@ -182,6 +182,7 @@ function tailLastLog() {
     # search for daily log first
     fileToTail=$(find ${logPath} -name 'laravel*.log' | sort -r | head -1)
     if [ ! -z $fileToTail ]; then
+        comment "log file used : ${fileToTail}"
         tail -f $fileToTail -n 200
         return 0
     fi

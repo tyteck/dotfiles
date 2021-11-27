@@ -155,12 +155,22 @@ function isMacos() {
 function emptyFile() {
     fileToEmpty=$1
     if [ -z $fileToEmpty ]; then
-        echo "You should specify the file path you want to empty"
+        error "You should specify the file path you want to empty"
         return 1
     fi
+
+    if [ ! -f $fileToEmpty ]; then
+        error "The file you want to purge does not exist."
+        return 1
+    fi
+
     : >$fileToEmpty
-    comment "$fileToEmpty is now empty"
-    return 0
+    if [ $? -eq 0 ]; then
+        comment "$fileToEmpty is now empty"
+        return 0
+    fi
+    error "command has failed."
+    return 1
 }
 
 function apacheonly() {

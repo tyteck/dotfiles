@@ -4,7 +4,7 @@ alias restart='please shutdown -r now'
 alias reboot='restart'
 
 PROJECTS_PATH="$HOME/Projects"
-DASH_PATH="$PROJECTS_PATH/dashboard.podmytube.com"
+PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
 REDUCBOX_PATH="$PROJECTS_PATH/reducbox"
 WEPADEL_PATH="$PROJECTS_PATH/wepadel"
 GPU_PATH="$PROJECTS_PATH/gpudispo"
@@ -62,22 +62,22 @@ alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 alias mailup="cd $MAILHOG_PATH && dokup && cd -"
 alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
 
-alias wepadelup="reducdown && dashdown && cd $WEPADEL_PATH && gpull && dokup && code ."
+alias wepadelup="reducdown && poddown && cd $WEPADEL_PATH && gpull && dokup && code ."
 alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
 
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias gpuup="reducdown && dashdown && mysqlUp && phpmyadminUp && cd $GPU_PATH && gpull && dokup && code ."
+alias gpuup="reducdown && poddown && mysqlUp && phpmyadminUp && cd $GPU_PATH && gpull && dokup && code ."
 alias gpudown="cd $GPU_PATH && dokdown && cd -"
 
-alias dashup="reducdown && mysqlUp && phpmyadminUp && cd $DASH_PATH && gpull && dokup && code ."
-alias dashdown="cd $DASH_PATH && dokdown && cd -"
+alias podup="reducdown && mysqlUp && phpmyadminUp && cd $PODMYTUBE_PATH && gpull && dokup && code ."
+alias poddown="cd $PODMYTUBE_PATH && dokdown && cd -"
 
 alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
-alias reducup="dashdown && mysqlDown && phpmyadminDown && cd $REDUCBOX_PATH && gpull && dokup && code ."
+alias reducup="poddown && mysqlDown && phpmyadminDown && cd $REDUCBOX_PATH && gpull && dokup && code ."
 alias reducrestart="cd $REDUCBOX_PATH && docker-compose restart reducbox"
-alias dashexec="docker exec -it --user www-data dashboard.podmytube.com"
+alias podexec="docker exec -it --user www-data podmytube"
 
 # Symfony
 alias sfc='php bin/console'

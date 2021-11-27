@@ -153,7 +153,7 @@ function isMacos() {
 }
 
 function emptyFile() {
-    fileToEmpty=$1
+    local fileToEmpty=$1
     if [ -z $fileToEmpty ]; then
         error "You should specify the file path you want to empty"
         return 1
@@ -190,8 +190,8 @@ function apacheonly() {
 }
 
 function apacheUser() {
-    host=$(uname -n)
-    apacheUser='www-data'
+    local host=$(uname -n)
+    local apacheUser='www-data'
     if [ $host = 'XPS-13' ]; then
         # actual ... :(
         apacheUser=1001
@@ -200,7 +200,7 @@ function apacheUser() {
 }
 
 function apachewith() {
-    SOME_USER=$1
+    local SOME_USER=$1
     if ! userExists $SOME_USER; then
         echo "User ($SOME_USER) does not exists. I need one real user to go with apache(www-data)"
         echo "usage : apachewith REAL_USER <FILE>|<FOLDER> ..."
@@ -234,14 +234,6 @@ function userExists() {
     id "$1" &>/dev/null
 }
 
-# it s mine
-# chowning files or folders to be mine.
-# I need to OWN THEM ALL !!!!
-# MUHAHAHAHAHAHAHAHAHA
-if [ -z $GROUP ]; then
-    export GROUP=staff
-fi
-
 itsmine() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
@@ -260,8 +252,8 @@ itsmine() {
 # @param $1 variable name
 # @param $2 file where is set this variable (default .env)
 function readVar() {
-    VAR_NAME=$1
-    FILE_NAME=$2
+    local VAR_NAME=$1
+    local FILE_NAME=$2
     if [ -z $FILE_NAME ]; then
         FILE_NAME='.env'
     fi
@@ -273,7 +265,7 @@ function readVar() {
 }
 
 function pushluciepp() {
-    branchName=$1
+    local branchName=$1
     if [ -z $branchName ]; then
         warning "Usage : pushluciepp <BRANCH_NAME> (ie : pushluciepp s21-17)"
         return 1
@@ -285,7 +277,7 @@ function pushluciepp() {
 }
 
 function pushninadev() {
-    branchName=$1
+    local branchName=$1
     if [ -z $branchName ]; then
         warning "Usage : pushninadev <BRANCH_NAME> (ie : pushninadev develop)"
         return 1
@@ -297,13 +289,13 @@ function pushninadev() {
 }
 
 function rungGcloudTriggersWithBranch() {
-    branchName=$1
+    local branchName=$1
     if [ -z $branchName ]; then
         error "rungGcloudTriggersWithBranch expects the branch name to be non empty"
         return 1
     fi
 
-    output=$(gcloud beta builds triggers list)
+    local output=$(gcloud beta builds triggers list)
     echo $output | while read line; do
 
         key=$(echo $line | cut -sd':' -f 1)
@@ -329,7 +321,7 @@ function rungGcloudTriggersWithBranch() {
 
 # get the ip address for one container
 function dokip() {
-    CONTAINER_NAME=$1
+    local CONTAINER_NAME=$1
     docker inspect $CONTAINER_NAME --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
 }
 
@@ -340,7 +332,7 @@ function dokips() {
 }
 
 function dokrmi() {
-    IMAGE_NAME=$1
+    local IMAGE_NAME=$1
     docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
 }
 
@@ -372,7 +364,7 @@ textColorGreen='\e[32m'
 textColorLightYellow='\e[93m'
 textColorOrange='\e[38;5;208m'
 function coloredEcho() {
-    defaultColor=$textColorCyan
+    local defaultColor=$textColorCyan
     if [[ $# < 1 ]]; then
         echo '-------------------------------------------------'
         echo "$textBold\e[91mYou should pass one message at least.$resetTextColor"
@@ -380,11 +372,11 @@ function coloredEcho() {
         echo '-------------------------------------------------'
         return 1
     fi
-    textColor=$2
+    local textColor=$2
     if [[ $# < 2 ]]; then
         textColor=$defaultColor
     fi
-    message=$1
+    local message=$1
     echo "${textColor}${message}${resetTextColor}"
 }
 #coloredEcho
@@ -392,25 +384,44 @@ function coloredEcho() {
 #coloredEcho "le chat est jaune" '\e[93m'
 
 function comment() {
-    message=$1
+    local message=$1
     coloredEcho "$message" $textColorGreen
 }
 
 function warning() {
-    message=$1
+    local message=$1
     coloredEcho "$message" $textColorOrange
 }
 
 function error() {
-    message=$1
+    local message=$1
     coloredEcho "$message" $textColorRed
 }
 
 function pause() {
-    message=$1
+    local message=$1
     if [ -z $1 ]; then
         message='Press any key to continue (or Ctrl+c to quit)...'
     fi
     comment $message
     read -k1 -s
+}
+
+# this function will set builtin audio as default input and output
+function builtinAudio() {
+    # headphones
+    local builtinAudioOutputLine="$(pactl list short sinks | egrep 'alsa_output\.pci.*analog-stereo')"
+    if [ ! -z $builtinAudioOutputLine ]; then
+        local builtinAudioOutputName="$(cut -f2 <<<$builtinAudioOutputLine)"
+        comment "setting $builtinAudioOutputName as default output"
+        pactl set-default-sink $builtinAudioOutputName
+    fi
+
+    # headset micro
+    local builtinAudioInputLine="$(pactl list short sources | egrep 'alsa_input\.pci.*analog-stereo')"
+    if [ ! -z $builtinAudioInputLine ]; then
+        local builtinAudioInputName="$(cut -f2 <<<$builtinAudioInputLine)"
+        comment "setting $builtinAudioInputName as default input"
+        pactl set-default-source $builtinAudioInputName
+    fi
 }

@@ -408,20 +408,62 @@ function pause() {
 }
 
 # this function will set builtin audio as default input and output
-function builtinAudio() {
-    # headphones
-    local builtinAudioOutputLine="$(pactl list short sinks | egrep 'alsa_output\.pci.*analog-stereo')"
-    if [ ! -z $builtinAudioOutputLine ]; then
-        local builtinAudioOutputName="$(cut -f2 <<<$builtinAudioOutputLine)"
-        comment "setting $builtinAudioOutputName as default output"
-        pactl set-default-sink $builtinAudioOutputName
+function builtinaudio() {
+    host=$(uname -n)
+    if [ $host = 'XPS-13' ]; then
+        output='alsa_output.pci-0000_00_1f.3.analog-stereo'
+        input='alsa_input.pci-0000_00_1f.3.analog-stereo'
+    else
+        comment "to be done"
+        return 1
     fi
 
+    # headset audio
+    audiooutput $output
     # headset micro
-    local builtinAudioInputLine="$(pactl list short sources | egrep 'alsa_input\.pci.*analog-stereo')"
-    if [ ! -z $builtinAudioInputLine ]; then
-        local builtinAudioInputName="$(cut -f2 <<<$builtinAudioInputLine)"
-        comment "setting $builtinAudioInputName as default input"
-        pactl set-default-source $builtinAudioInputName
+    audioinput $input
+}
+
+function sennheiser() {
+    # obtained with `pactl list short sinks`
+    audiooutput 'alsa_output.usb-Sennheiser_Communications_Sennheiser_USB_headset-00'
+
+    # obtained with `pactl list short sources`
+    audioinput 'alsa_input.usb-Sennheiser_Communications_Sennheiser_USB_headset-00'
+}
+
+function audiooutput() {
+    local audioOutputName=$1
+    if [ -z $audioOutputName ]; then
+        error 'You should specify name of audio output as it appears in `pactl list short sinks`'
+        return 1
     fi
+
+    local audioOutputLine="$(pactl list short sinks | grep ${audioOutputName})"
+    if [ ! -z $audioOutputLine ]; then
+        local foundAudioOutputName="$(cut -f2 <<<$audioOutputLine)"
+        comment "setting $foundAudioOutputName as default output"
+        pactl set-default-sink $foundAudioOutputName
+        return 0
+    fi
+
+    error "This audio device (${audioOutputName}) was not found"
+}
+
+function audioinput() {
+    local audioInputName=$1
+    if [ -z $audioInputName ]; then
+        error 'You should specify name of audio input as it appears in `pactl list short sources`'
+        return 1
+    fi
+
+    local audioInputLine="$(pactl list short sources | grep ${audioInputName})"
+    if [ ! -z $audioInputLine ]; then
+        local foundAudioInputName="$(cut -f2 <<<$audioInputLine)"
+        comment "setting $foundAudioInputName as default input"
+        pactl set-default-source $foundAudioInputName
+        return 0
+    fi
+
+    error "This audio device (${audioInputName}) was not found"
 }

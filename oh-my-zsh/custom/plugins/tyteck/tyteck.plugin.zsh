@@ -111,7 +111,6 @@ alias edithosts='sudo vim /etc/hosts'
 alias editsshconfig='vim ~/.ssh/config'
 alias biggestfolders='du -a . | sort -n -r | head -n 10'
 alias biggestfiles='du -Sh . | sort -rh | head -20'
-alias dir='du -hs * | sort -h'
 
 # Go/Golang
 alias gor='go run'
@@ -472,4 +471,13 @@ function audioinput() {
     fi
 
     error "This audio device (${audioInputName}) was not found"
+}
+
+function dir() {
+    for folder in $(ls -d *); do
+        if [ $folder = "proc" ]; then
+            continue
+        fi
+        du -hs $folder 2>/dev/null
+    done
 }

@@ -409,14 +409,20 @@ function pause() {
 
 # this function will set builtin audio as default input and output
 function builtinaudio() {
-    host=$(uname -n)
-    if [ $host = 'XPS-13' ]; then
+    case $(uname -n) in
+    'XPS-13')
         output='alsa_output.pci-0000_00_1f.3.analog-stereo'
         input='alsa_input.pci-0000_00_1f.3.analog-stereo'
-    else
-        comment "to be done"
+        ;;
+    'mini-forum')
+        output='alsa_output.pci-0000_05_00.6.analog-stereo'
+        input='alsa_input.pci-0000_05_00.6.analog-stereo'
+        ;;
+    *)
+        comment 'to be done'
         return 1
-    fi
+        ;;
+    esac
 
     # headset audio
     audiooutput $output

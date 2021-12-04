@@ -35,6 +35,7 @@ alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
 alias dbpmtprod='mysql --login-path=pmt pmt'
 
 alias c='clear'
+alias fullpath='readlink -f'
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"

@@ -478,6 +478,6 @@ function dir() {
         if [ $folder = "proc" ]; then
             continue
         fi
-        du -hs $folder 2>/dev/null
+        sudo du -hs $folder 2>/dev/null
     done
 }

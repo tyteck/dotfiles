@@ -20,7 +20,9 @@ apt-get clean
 docker system prune -f >/dev/null 2>&1
 
 # removing old snaps
-removeOldSnaps
+if command -v snap &>/dev/null; then
+    removeOldSnaps
+fi
 
 # cleaning unused docker volumes
 # chis will not delete any container or any volume in use!

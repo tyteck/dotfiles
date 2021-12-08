@@ -35,6 +35,7 @@ alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
 alias dbpmtprod='mysql --login-path=pmt pmt'
 
 alias c='clear'
+alias fullpath='readlink -f'
 # docker & docker compose
 alias dokbuild="docker-compose build"
 alias dokconfig="docker-compose config"
@@ -111,7 +112,6 @@ alias edithosts='sudo vim /etc/hosts'
 alias editsshconfig='vim ~/.ssh/config'
 alias biggestfolders='du -a . | sort -n -r | head -n 10'
 alias biggestfiles='du -Sh . | sort -rh | head -20'
-alias dir='du -hs * | sort -h'
 
 # Go/Golang
 alias gor='go run'
@@ -409,14 +409,20 @@ function pause() {
 
 # this function will set builtin audio as default input and output
 function builtinaudio() {
-    host=$(uname -n)
-    if [ $host = 'XPS-13' ]; then
+    case $(uname -n) in
+    'XPS-13')
         output='alsa_output.pci-0000_00_1f.3.analog-stereo'
         input='alsa_input.pci-0000_00_1f.3.analog-stereo'
-    else
-        comment "to be done"
+        ;;
+    'mini-forum')
+        output='alsa_output.pci-0000_05_00.6.analog-stereo'
+        input='alsa_input.pci-0000_05_00.6.analog-stereo'
+        ;;
+    *)
+        comment 'to be done'
         return 1
-    fi
+        ;;
+    esac
 
     # headset audio
     audiooutput $output
@@ -466,4 +472,13 @@ function audioinput() {
     fi
 
     error "This audio device (${audioInputName}) was not found"
+}
+
+function dir() {
+    for folder in $(ls -d *); do
+        if [ $folder = "proc" ]; then
+            continue
+        fi
+        sudo du -hs $folder 2>/dev/null
+    done
 }

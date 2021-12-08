@@ -42,9 +42,9 @@ function artisan() {
 }
 
 function getDockerPrefix() {
-    lastFolderName=$(getLastFolders)
-    lastFolderNames=$(getLastFolders 2)
-    dockerPrefix=''
+    local lastFolderName=$(getLastFolders)
+    local lastFolderNames=$(getLastFolders 2)
+    local dockerPrefix=''
     if [[ "$lastFolderName" = "lucie" || "$lastFolderNames" = "lucie/laravel" ]]; then # lucie - Actual
         dockerPrefix="docker-compose -f ${LUCIE_PATH}/docker/docker-compose.yml -p actual exec php-nginx "
     elif [[ "$lastFolderName" = "nina" || "$lastFolderNames" = "nina/app" ]]; then # nina - Actual
@@ -57,16 +57,35 @@ function getDockerPrefix() {
 
 function tests() {
     executablePath="vendor/bin/phpunit"
-    # checking if executable is there
-    if ! fileExists $executablePath && ! fileExists "laravel/$executablePath"; then
-        echo "phpunit is not available in path ($executablePath)."
+
+    if ! dockerFileExists $executablePath; then
+        error "There is no ${executablePath} by there."
         return 1
     fi
 
-    # get the container name
+    # get the command to access container
+    dockerPrefix=$(getDockerPrefix)
+    
+    commandToRun="${dockerPrefix}${executablePath} $@"
+    comment $commandToRun
+    eval $commandToRun
+}
+
+function stan() {
+    local defaultPathToCheck='/app'
+    pathToCheck="${1:-$defaultPathToCheck}"
+    
+    executablePath="vendor/bin/phpstan"
+
+    if ! dockerFileExists $executablePath; then
+        error "There is no ${executablePath} by there."
+        return 1
+    fi
+
+    # get the command to access container
     dockerPrefix=$(getDockerPrefix)
 
-    commandToRun="${dockerPrefix}${executablePath} $@"
+    commandToRun="${dockerPrefix}${executablePath} analyze ${pathToCheck} --level max"
     comment $commandToRun
     eval $commandToRun
 }
@@ -124,6 +143,23 @@ function getLastFolders() {
 function containerExists() {
     containerName=$1
     if [ "$(docker ps -a | grep $containerName)" ]; then
+        true
+    else
+        false
+    fi
+}
+
+function dockerFileExists(){
+    fileName=$1
+
+    # get the command to access container
+    dockerPrefix=$(getDockerPrefix)
+
+    # check if executable is present
+    commandToRun="${dockerPrefix} test -f ${fileName}"
+    #comment $commandToRun
+    eval $commandToRun
+    if [ $? -eq 0 ]; then
         true
     else
         false

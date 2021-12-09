@@ -72,7 +72,7 @@ function tests() {
 }
 
 function stan() {
-    local defaultPathToCheck='/app'
+    local defaultPathToCheck='app database'
     pathToCheck="${1:-$defaultPathToCheck}"
     
     executablePath="vendor/bin/phpstan"

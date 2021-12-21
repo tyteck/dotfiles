@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.config/composer/vendor/bin:/usr/local/bin:/usr/local/go/bin:$PATH
+export PATH=$HOME/bin:$HOME/dotfiles/scripts:$HOME/.config/composer/vendor/bin:/usr/local/go/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -123,3 +123,5 @@ if [ -f $localConf ]; then
     # this file should not be versionned
     . $localConf
 fi
+
+. $HOME/dotfiles/coloredMessage.sh

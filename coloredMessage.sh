@@ -1,3 +1,5 @@
+#!/usr/bin/zsh
+
 textBold='\e[1m'
 resetTextColor='\e[0m'
 textColorCyan='\e[96m'

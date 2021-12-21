@@ -45,5 +45,5 @@ fi
 
 newEndpoint="http://$cleanedEndpoint/stripe/webhooks"
 comment "setting new endpoint $newEndpoint"
-### ajout du nouveau
+### adding new one
 curl --silent https://api.stripe.com/v1/webhook_endpoints -u $STRIPE_TEST_KEY: -d url="$newEndpoint" -d "enabled_events[]"="checkout.session.completed"

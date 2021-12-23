@@ -3,6 +3,16 @@
 # loading coloring message
 . $HOME/dotfiles/coloredMessage.sh
 
+function removeDoubleQuotes() {
+    local stringToClean=$1
+    if [ -z $stringToClean ]; then
+        echo ""
+    fi
+
+    cleanedString=$(sed -e 's/^"//' -e 's/"$//' <<<$stringToClean)
+    echo $cleanedString
+}
+
 if [ -z $STRIPE_TEST_KEY ]; then
     echo "You should add something like"
     echo "export STRIPE_TEST_KEY=<YOUR STRIPE API TEST KEY HERE>"
@@ -28,7 +38,7 @@ fi
 
 # removing http|https
 cleanedEndpoint=$(sed 's~http[s]*://~~g' <<<$publicUrl)
-cleanedEndpoint=$(sed -e 's/^"//' -e 's/"$//' <<<$cleanedEndpoint)
+cleanedEndpoint=$(removeDoubleQuotes "$cleanedEndpoint")
 echo "Actual ngrok endpoint : $cleanedEndpoint"
 
 # =======================================================================
@@ -37,9 +47,10 @@ echo "Actual ngrok endpoint : $cleanedEndpoint"
 
 # removing old endpoint
 oldEndpointId=$(curl --silent https://api.stripe.com/v1/webhook_endpoints -u $STRIPE_TEST_KEY: -G | jq '.data[0].id')
+oldEndpointId=$(removeDoubleQuotes "$oldEndpointId")
 if [ $oldEndpointId != "null" ]; then
     ### suppression du endpoint
-    warning "suppression du endpoint stripe existant"
+    warning "suppression du endpoint stripe existant ($oldEndpointId)"
     curl https://api.stripe.com/v1/webhook_endpoints/$oldEndpointId -u $STRIPE_TEST_KEY: -X DELETE
 fi
 

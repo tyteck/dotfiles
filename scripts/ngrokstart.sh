@@ -57,4 +57,10 @@ fi
 newEndpoint="http://$cleanedEndpoint/stripe/webhooks"
 comment "setting new endpoint $newEndpoint"
 ### adding new one
-curl --silent https://api.stripe.com/v1/webhook_endpoints -u $STRIPE_TEST_KEY: -d url="$newEndpoint" -d "enabled_events[]"="checkout.session.completed"
+secret=$(curl --silent https://api.stripe.com/v1/webhook_endpoints -u $STRIPE_TEST_KEY: -d url="$newEndpoint" -d "enabled_events[]"="checkout.session.completed" | jq '.secret')
+secret=$(removeDoubleQuotes $secret)
+
+echo ""
+separator $textColorOrange
+warning "Don't forget to set your new STRIPE_WEBHOOK_SECRET with ($secret)"
+separator $textColorOrange

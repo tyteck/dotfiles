@@ -42,6 +42,15 @@ function error() {
     coloredEcho "$message" $textColorRed
 }
 
+function separator() {
+    local color=$1
+    if [ -z $color ]; then
+        color=$textColorGreen
+    fi
+    local foo='.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:.'
+    coloredEcho "$foo" $color
+}
+
 function pause() {
     local message=$1
     if [ -z $1 ]; then

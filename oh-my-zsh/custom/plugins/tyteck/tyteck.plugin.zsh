@@ -354,26 +354,19 @@ function inArray() {
 #echo "---------------------------------"
 
 # this function will set builtin audio as default input and output
-function builtinaudio() {
+function setaudio() {
     case $(uname -n) in
     'XPS-13')
-        output='alsa_output.pci-0000_00_1f.3.analog-stereo'
-        input='alsa_input.pci-0000_00_1f.3.analog-stereo'
+        sennheiser
         ;;
     'mini-forum')
-        output='alsa_output.pci-0000_05_00.6.analog-stereo'
-        input='alsa_input.pci-0000_05_00.6.analog-stereo'
+        arctis
         ;;
     *)
         comment 'to be done'
         return 1
         ;;
     esac
-
-    # headset audio
-    audiooutput $output
-    # headset micro
-    audioinput $input
 }
 
 function sennheiser() {
@@ -382,6 +375,14 @@ function sennheiser() {
 
     # obtained with `pactl list short sources`
     audioinput 'alsa_input.usb-Sennheiser_Communications_Sennheiser_USB_headset-00'
+}
+
+function arctis() {
+    # obtained with `pactl list short sinks`
+    audiooutput 'alsa_output.usb-SteelSeries_SteelSeries_Arctis_7-00.analog-stereo'
+
+    # obtained with `pactl list short sources`
+    audioinput 'alsa_input.usb-SteelSeries_SteelSeries_Arctis_7-00.analog-mono'
 }
 
 function audiooutput() {

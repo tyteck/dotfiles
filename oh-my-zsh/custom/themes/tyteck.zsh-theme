@@ -1,11 +1,10 @@
 function coloredHost() {
-    host=$(uname -n)
-    case $host in
-    "msi-laptop" | "engit" | "mini-forum" | "XPS-13")
-        echo "%{$fg[green]%}${host}%{$reset_color%} "
+    case ${HOST} in
+    "mini-forum" | "XPS-13")
+        echo "%{$fg[green]%}${HOST}%{$reset_color%} "
         ;;
     *)
-        echo "/!\ ====> %{$fg[red]%}$host%{$reset_color%} <==== /!\ "
+        echo "/!\ ====> %{$fg[red]%}$HOST%{$reset_color%} <==== /!\ "
         ;;
     esac
 }

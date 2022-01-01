@@ -32,7 +32,7 @@ alias vsdot="cd ${HOME}/dotfiles && code ."
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
 
 # default db shortcuts
-alias dbpmtprod='mysql --login-path=pmt pmt'
+alias dbprod="mysql --login-path=prod podmytube"
 
 alias c='clear'
 alias fullpath='readlink -f'
@@ -120,8 +120,8 @@ alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get autoclean -q -y && \
     sudo apt-get autoremove -q -y'
 
-case $(uname -n) in
-"msi-laptop" | "mini-forum" | "debian")
+case $HOST in
+"mini-forum" | "debian")
     alias shutdown="fullapt && please shutdown -h now"
     if hash ansible-playbook 2>/dev/null; then
         ansiblePlaybooksDirectory=$HOME/ansible-playbooks
@@ -187,9 +187,8 @@ function apacheonly() {
 }
 
 function apacheUser() {
-    local host=$(uname -n)
     local apacheUser='www-data'
-    if [ $host = 'XPS-13' ]; then
+    if [ $HOST = 'XPS-13' ]; then
         # actual ... :(
         apacheUser=1001
     fi
@@ -355,7 +354,7 @@ function inArray() {
 
 # this function will set builtin audio as default input and output
 function setaudio() {
-    case $(uname -n) in
+    case $HOST in
     'XPS-13')
         sennheiser
         ;;

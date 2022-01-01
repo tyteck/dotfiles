@@ -1,4 +1,5 @@
 # If you come from bash you might have to change your $PATH.
+export HOST=$(uname -n)
 export PATH=$HOME/bin:$HOME/dotfiles/scripts:$HOME/.config/composer/vendor/bin:/usr/local/go/bin:$PATH
 
 # Path to your oh-my-zsh installation.
@@ -125,3 +126,7 @@ if [ -f $localConf ]; then
 fi
 
 . $HOME/dotfiles/coloredMessage.sh
+
+if [ "$HOST" = "mini-forum" ]; then
+    . $HOME/dotfiles/dbAliases.sh
+fi

@@ -177,7 +177,7 @@ function grestore() {
     fi
     FILEPATH_TO_RESTORE=$1
     git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
-    if [ "$?" != 0 ]; then
+    if [ $? -ne 0 ]; then
         error "Git restoring file $FILEPATH_TO_RESTORE has failed !"
         return 1
     fi

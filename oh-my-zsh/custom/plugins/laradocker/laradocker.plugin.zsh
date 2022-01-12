@@ -196,33 +196,57 @@ function isInstalled() {
     fi
 }
 
-function tailLastLog() {
+function lastLogFile(){
     if ! isLaravelPath; then
         echo "You are not in a laravel path."
         return 1
     fi
 
-    logPath='storage/logs'
+    local logPath='storage/logs'
     if [ ! -d 'storage/logs' ]; then
         # specific lucie (Actual)
         logPath='laravel/storage/logs'
     fi
 
     # search for classic laravel.log first
-    fileToTail="$logPath/laravel.log"
+    local fileToTail="$logPath/laravel.log"
     if [ -f $fileToTail ]; then
-        tail -f $fileToTail -n 200
+        echo $fileToTail
         return 0
     fi
 
     # search for daily log first
     fileToTail=$(find ${logPath} -name 'laravel*.log' | sort -r | head -1)
     if [ ! -z $fileToTail ]; then
-        comment "log file used : ${fileToTail}"
-        tail -f $fileToTail -n 200
+        echo $fileToTail
         return 0
     fi
-    echo "No laravel logs file by there. Are you sure you are in the right place ?"
+    
+    echo "Seems to have no log file by there."
+    return 1
+}
+
+function tailLastLog() {
+    local lastLogFileResult
+    lastLogFileResult=$(lastLogFile)
+    if [ $? -ne 0 ]; then
+        echo $lastLogFileResult
+        return 1
+    fi
+    
+    comment "tailing $lastLogFileResult"
+    tail -f $lastLogFileResult -n 200
+}
+
+function catErrorsFromLog() {
+    local lastLogFileResult
+    lastLogFileResult=$(lastLogFile)
+    if [ $? -ne 0 ]; then
+        echo $lastLogFileResult
+        return 1
+    fi
+    
+    cat $lastLogFileResult | grep ERROR
 }
 
 alias acc="artisan cache:clear && artisan config:clear"

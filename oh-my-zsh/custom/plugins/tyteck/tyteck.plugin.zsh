@@ -188,10 +188,6 @@ function apacheonly() {
 
 function apacheUser() {
     local apacheUser='www-data'
-    if [ $HOST = 'XPS-13' ]; then
-        # actual ... :(
-        apacheUser=1001
-    fi
     echo $apacheUser
 }
 

@@ -130,3 +130,7 @@ fi
 if [ "$HOST" = "mini-forum" ]; then
     . $HOME/dotfiles/dbAliases.sh
 fi
+
+if [ "$HOST" = "XPS-13" ]; then
+    . $HOME/dotfiles/scripts/actual.sh
+fi

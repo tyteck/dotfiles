@@ -4,5 +4,6 @@
 
 nbReviewRequested=$(gh api -X GET search/issues -f q='review:required user-review-requested:@me' | jq '.total_count')
 if [ $nbReviewRequested -ne "0" ]; then
+
     notify-send foo bar
 fi

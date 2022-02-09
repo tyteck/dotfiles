@@ -1,6 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 export HOST=$(uname -n)
-export PATH=$HOME/bin:$HOME/dotfiles/scripts:$HOME/.config/composer/vendor/bin:/usr/local/go/bin:$PATH
+export PATH=$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:/usr/local/go/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -132,5 +132,5 @@ if [ "$HOST" = "mini-forum" ]; then
 fi
 
 if [ "$HOST" = "XPS-13" ]; then
-    . $HOME/dotfiles/scripts/actual.sh
+    . $HOME/dotfiles/bin/actual.sh
 fi

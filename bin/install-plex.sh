@@ -12,7 +12,7 @@ echo "It will be asked when changing shell."
 sudo passwd freebox
 
 git clone https://github.com/tyteck/dotfiles.git
-./dotfiles/scripts/install-oh-my-zsh.sh
+./dotfiles/bin/install-oh-my-zsh.sh
 
 echo "downloading the package and installing it ..."
 wget https://downloads.plex.tv/plex-media-server-new/1.23.1.4602-280ab6053/debian/plexmediaserver_1.23.1.4602-280ab6053_arm64.deb && sudo apt install ./plexmediaserver*.deb
@@ -22,6 +22,6 @@ echo deb https://downloads.plex.tv/repo/deb public main | sudo tee /etc/apt/sour
 curl https://downloads.plex.tv/plex-keys/PlexSign.key | sudo apt-key add -
 
 echo "installing podmytube local servers ..."
-./dotfiles/scripts/install-podmytube-local-servers.sh
+./dotfiles/bin/install-podmytube-local-servers.sh
 
 exit 0

@@ -189,10 +189,6 @@ function apacheonly() {
 
 function apacheUser() {
     local apacheUser='www-data'
-    if [ $HOST = 'XPS-13' ]; then
-        # actual ... :(
-        apacheUser=1001
-    fi
     echo $apacheUser
 }
 
@@ -259,57 +255,6 @@ function readVar() {
     # ${VAR[1]} is the key
     # ${VAR[2]} is the value
     echo ${VAR[2]}
-}
-
-function pushluciepp() {
-    local branchName=$1
-    if [ -z $branchName ]; then
-        warning "Usage : pushluciepp <BRANCH_NAME> (ie : pushluciepp s21-17)"
-        return 1
-    fi
-
-    gcloud config set project eactual-preprod
-
-    rungGcloudTriggersWithBranch $branchName
-}
-
-function pushninadev() {
-    local branchName=$1
-    if [ -z $branchName ]; then
-        warning "Usage : pushninadev <BRANCH_NAME> (ie : pushninadev develop)"
-        return 1
-    fi
-
-    gcloud config set project synchro-rh-dev
-
-    rungGcloudTriggersWithBranch $branchName
-}
-
-function rungGcloudTriggersWithBranch() {
-    local branchName=$1
-    if [ -z $branchName ]; then
-        error "rungGcloudTriggersWithBranch expects the branch name to be non empty"
-        return 1
-    fi
-
-    local output=$(gcloud beta builds triggers list)
-    echo $output | while read line; do
-
-        key=$(echo $line | cut -sd':' -f 1)
-        value=$(echo $line | cut -sd':' -f 2)
-        # trimming
-        value=${value// /}
-        if [ -z $key ]; then
-            # we are on a separator string '---'
-            continue
-        fi
-
-        if [ $key = 'id' ]; then
-            cmd="gcloud beta builds triggers run ${value} --branch ${branchName}"
-            comment "running : $cmd"
-            eval $cmd
-        fi
-    done
 }
 
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸

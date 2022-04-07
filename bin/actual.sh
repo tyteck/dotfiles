@@ -6,14 +6,14 @@
 
 function eodurl() {
     if [ -z $EOD_PASSWORD ]; then
-        error "EOD_PASSWORD is empty. You should export it somewhere"
-        error "IE : export EOD_PASSWORD=<PASSWORD>"
+        error 'EOD_PASSWORD is empty. You should export it somewhere'
+        error 'IE : export EOD_PASSWORD=<PASSWORD>'
         return 1
     fi
 
     local branchName=$1
     if [ -z $branchName ]; then
-        warning "Usage : eodurl <BRANCH_NAME> (ie : eodurl T1-684-jobboard-email)"
+        warning 'Usage : eodurl <BRANCH_NAME> (ie : eodurl T1-684-jobboard-email)'
         return 1
     fi
 
@@ -23,7 +23,7 @@ function eodurl() {
 function pushluciepp() {
     local branchName=$1
     if [ -z $branchName ]; then
-        warning "Usage : pushluciepp <BRANCH_NAME> (ie : pushluciepp s21-17)"
+        warning 'Usage : pushluciepp <BRANCH_NAME> (ie : pushluciepp s21-17)'
         return 1
     fi
 
@@ -35,7 +35,7 @@ function pushluciepp() {
 function pushninadev() {
     local branchName=$1
     if [ -z $branchName ]; then
-        warning "Usage : pushninadev <BRANCH_NAME> (ie : pushninadev develop)"
+        warning 'Usage : pushninadev <BRANCH_NAME> (ie : pushninadev develop)'
         return 1
     fi
 
@@ -47,7 +47,7 @@ function pushninadev() {
 function pushlucieeod() {
     local branchName=$1
     if [ -z $branchName ]; then
-        warning "Usage : pushlucieeod <BRANCH_NAME> (ie : pushluciepp s21-17)"
+        warning 'Usage : pushlucieeod <BRANCH_NAME> (ie : pushluciepp s21-17)'
         return 1
     fi
 
@@ -59,7 +59,7 @@ function pushlucieeod() {
 function pushluciedev() {
     local branchName=$1
     if [ -z $branchName ]; then
-        warning "Usage : pushluciedev <BRANCH_NAME> (ie : pushluciedev s21-17)"
+        warning 'Usage : pushluciedev <BRANCH_NAME> (ie : pushluciedev s21-17)'
         return 1
     fi
 
@@ -71,7 +71,7 @@ function pushluciedev() {
 function rungGcloudTriggersWithBranch() {
     local branchName=$1
     if [ -z $branchName ]; then
-        error "rungGcloudTriggersWithBranch expects the branch name to be non empty"
+        error 'rungGcloudTriggersWithBranch expects the branch name to be non empty'
         return 1
     fi
 

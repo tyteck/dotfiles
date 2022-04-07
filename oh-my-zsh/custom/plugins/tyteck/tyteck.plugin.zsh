@@ -76,6 +76,7 @@ alias sfc='php bin/console'
 alias phpunit='./vendor/bin/phpunit --colors=always'
 
 # npm
+alias nrtest='npm run test'
 alias upgradeNpm='sudo npm install -g npm'
 
 # screen

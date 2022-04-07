@@ -7,7 +7,7 @@
 #  		/path/../to/<containername>/artisan
 
 function isLaravelPath() {
-    if fileExists "artisan" || fileExists "laravel/artisan" || fileExists "app/artisan"; then
+    if fileExists 'artisan' || fileExists 'laravel/artisan' || fileExists 'app/artisan'; then
         true
     else
         false
@@ -16,7 +16,7 @@ function isLaravelPath() {
 
 function laravelFirstRun() {
     if ! isLaravelPath; then
-        echo "You are not in a laravel path."
+        echo 'You are not in a laravel path.'
         return 1
     fi
 
@@ -28,7 +28,7 @@ function laravelFirstRun() {
 
 function artisan() {
     if ! isLaravelPath; then
-        echo "You are not in a laravel path."
+        echo 'You are not in a laravel path.'
         return 1
     fi
 
@@ -45,18 +45,18 @@ function getDockerPrefix() {
     local lastFolderName=$(getLastFolders)
     local lastFolderNames=$(getLastFolders 2)
     local dockerPrefix=''
-    if [[ "$lastFolderName" = "lucie" || "$lastFolderNames" = "lucie/laravel" ]]; then # lucie - Actual
+    if [[ "$lastFolderName" = 'lucie' || "$lastFolderNames" = "lucie/laravel" ]]; then # lucie - Actual
         dockerPrefix="docker-compose -f ${LUCIE_PATH}/docker/docker-compose.yml -p actual exec php-nginx "
-    elif [[ "$lastFolderName" = "nina" || "$lastFolderNames" = "nina/app" ]]; then # nina - Actual
+    elif [[ "$lastFolderName" = 'nina' || "$lastFolderNames" = "nina/app" ]]; then # nina - Actual
         dockerPrefix="docker-compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
-    elif isInstalled "docker" && containerExists $lastFolderName; then
+    elif isInstalled 'docker' && containerExists $lastFolderName; then
         dockerPrefix="docker exec -it --user www-data $lastFolderName "
     fi
     echo $dockerPrefix
 }
 
 function tests() {
-    executablePath="vendor/bin/phpunit"
+    executablePath='vendor/bin/phpunit'
 
     if ! dockerFileExists $executablePath; then
         error "There is no ${executablePath} by there."
@@ -75,7 +75,7 @@ function stan() {
     local defaultPathToCheck='app database'
     pathToCheck="${1:-$defaultPathToCheck}"
     
-    executablePath="vendor/bin/phpstan"
+    executablePath='vendor/bin/phpstan'
 
     if ! dockerFileExists $executablePath; then
         error "There is no ${executablePath} by there."
@@ -93,7 +93,7 @@ function stan() {
 function getBaseFolder() {
     directoryIWantTheBaseFrom=$1
     if [ -z $directoryIWantTheBaseFrom ]; then
-        echo "You should send one the folder you want to get the base folder from."
+        echo 'You should send one the folder you want to get the base folder from.'
         return 1
     fi
 
@@ -122,7 +122,7 @@ function getLastFolders() {
     absolutePath=$(pwd)
     # splitting path 
     parts=(${(@s:/:)absolutePath})
-    
+
     # getting nb items in tree
     nbItems=${#parts[@]}
 
@@ -198,7 +198,7 @@ function isInstalled() {
 
 function lastLogFile(){
     if ! isLaravelPath; then
-        echo "You are not in a laravel path."
+        echo 'You are not in a laravel path.'
         return 1
     fi
 
@@ -222,7 +222,7 @@ function lastLogFile(){
         return 0
     fi
     
-    echo "Seems to have no log file by there."
+    echo 'Seems to have no log file by there.'
     return 1
 }
 
@@ -249,22 +249,22 @@ function catErrorsFromLog() {
     cat $lastLogFileResult | grep ERROR
 }
 
-alias acc="artisan cache:clear && artisan config:clear"
-alias ads="artisan db:seed"
-alias aig="artisan ide-helper:generate"
-alias aie="artisan ide-helper:eloquent"
-alias al="artisan list"
-alias arl="artisan route:list"
-alias arc="artisan route:clear"
-alias am="artisan migrate"
-alias amf="artisan migrate:fresh"
-alias amfs="artisan migrate:fresh --seed"
-alias amr="artisan migrate:rollback"
-alias ams="artisan migrate:status"
-alias aoc="artisan optimize:clear"
-alias aqf="artisan queue:flush"
-alias aqr="artisan queue:restart"
-alias arall="artisan queue:restart && artisan optimize:clear"
-alias atp="artisan test --parallel"
-alias tinker="artisan tinker"
-alias insights="artisan insights --no-interaction --verbose"
+alias acc='artisan cache:clear && artisan config:clear'
+alias ads='artisan db:seed'
+alias aig='artisan ide-helper:generate'
+alias aie='artisan ide-helper:eloquent'
+alias al='artisan list'
+alias arl='artisan route:list'
+alias arc='artisan route:clear'
+alias am='artisan migrate'
+alias amf='artisan migrate:fresh'
+alias amfs='artisan migrate:fresh --seed'
+alias amr='artisan migrate:rollback'
+alias ams='artisan migrate:status'
+alias aoc='artisan optimize:clear'
+alias aqf='artisan queue:flush'
+alias aqr='artisan queue:restart'
+alias arall='artisan queue:restart && artisan optimize:clear'
+alias atp='artisan test --parallel'
+alias tinker='artisan tinker'
+alias insights='artisan insights --no-interaction --verbose'

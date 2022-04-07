@@ -1,4 +1,4 @@
 #!/usr/bin/zsh
 git pull
 source ~/.zshrc
-echo "updated"
+echo 'updated'

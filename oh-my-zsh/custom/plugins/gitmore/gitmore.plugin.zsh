@@ -218,7 +218,7 @@ function getCurrentBranchName() {
 
 function gdiffall() {
     for n in {1..20}; do
-        echo ""
+        echo ''
     done
     nbFiles=$(git ls-files -m | wc -l)
     index=1

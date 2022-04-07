@@ -1,13 +1,11 @@
-alias zrc='source ~/.zshrc && echo "sourced !"'
+alias zrc='exec zsh'
 alias please='sudo'
 alias restart='please shutdown -r now'
 alias reboot='restart'
+alias history='history -E'
 
 PROJECTS_PATH="$HOME/Projects"
 PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
-REDUCBOX_PATH="$PROJECTS_PATH/reducbox"
-WEPADEL_PATH="$PROJECTS_PATH/wepadel"
-GPU_PATH="$PROJECTS_PATH/gpudispo"
 MAILHOG_PATH="/var/opt/docker/mailhog"
 NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
@@ -37,21 +35,21 @@ alias dbprod="mysql --login-path=prod podmytube"
 alias c='clear'
 alias fullpath='readlink -f'
 # docker & docker compose
-alias dokbuild="docker-compose build"
-alias dokconfig="docker-compose config"
-alias dokcp="docker cp"
-alias dokdown="docker-compose down --remove-orphans"
-alias dokexec="docker exec -it"
-alias doklog="docker logs -f"
-alias doknames="docker ps --format '{{.Names}}'"
-alias dokrm="docker container rm -f"
-alias dokprune="docker system prune -f"
-alias dokrestart="docker-compose down --remove-orphans && docker-compose up -d"
-alias dokrestartdev="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
-alias dokrestartfred="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.fred.yml up -d"
-alias doktus="docker ps -a"
-alias dokup="docker-compose up -d"
-alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
+alias dokbuild='docker-compose build'
+alias dokconfig='docker-compose config'
+alias dokcp='docker cp'
+alias dokdown='docker-compose down --remove-orphans'
+alias dokexec='docker exec -it'
+alias doklog='docker logs -f'
+alias doknames='docker ps --format "{{.Names}}"'
+alias dokrm='docker container rm -f'
+alias dokprune='docker system prune -f'
+alias dokrestart='docker-compose down --remove-orphans && docker-compose up -d'
+alias dokrestartdev='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d'
+alias dokrestartfred='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.fred.yml up -d'
+alias doktus='docker ps -a'
+alias dokup='docker-compose up -d'
+alias dokupprod='docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
 
 # shortcut to start containers
 alias mysqlUp="cd $MYSQL_SERVER_PATH && gpull && dokup && cd -"
@@ -63,22 +61,13 @@ alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 alias mailup="cd $MAILHOG_PATH && dokup && cd -"
 alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
 
-alias wepadelup="reducdown && poddown && cd $WEPADEL_PATH && gpull && dokup && code ."
-alias wepadeldown="cd $WEPADEL_PATH && dokdown && cd -"
-
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias gpuup="reducdown && poddown && mysqlUp && phpmyadminUp && cd $GPU_PATH && gpull && dokup && code ."
-alias gpudown="cd $GPU_PATH && dokdown && cd -"
-
-alias podup="reducdown && mysqlUp && phpmyadminUp && cd $PODMYTUBE_PATH && gpull && dokup && code ."
+alias podup="mysqlUp && phpmyadminUp && cd $PODMYTUBE_PATH && gpull && dokup && code ."
 alias poddown="cd $PODMYTUBE_PATH && dokdown && cd -"
 
-alias reducdown="cd $REDUCBOX_PATH && docker-compose down && cd -"
-alias reducup="poddown && mysqlDown && phpmyadminDown && cd $REDUCBOX_PATH && gpull && dokup && code ."
-alias reducrestart="cd $REDUCBOX_PATH && docker-compose restart reducbox"
-alias podexec="docker exec -it --user www-data podmytube"
+alias podexec='docker exec -it --user www-data podmytube'
 
 # Symfony
 alias sfc='php bin/console'
@@ -96,17 +85,15 @@ alias sls='screen -ls'
 alias stripelisten='screen -S "stripe-cli" -d -m stripe listen --forward-to dashboard.pmt.local/stripe/webhooks'
 
 # Composer
-alias composer='docker run --rm -v $(pwd):/app composer:latest '
-alias cdu='composer dump-autoload --ignore-platform-reqs'
-alias compUpdate='composer update --ignore-platform-reqs'
-alias compUpgrade="composer upgrade --ignore-platform-reqs"
-alias compInstall="composer install --ignore-platform-reqs"
-alias compRequire="composer require --ignore-platform-reqs"
-alias compRemove="composer remove --ignore-platform-reqs"
+alias composer='composer --ignore-platform-reqs'
+alias cdu='composer dump-autoload'
 
 # linux
 alias edithosts='sudo vim /etc/hosts'
+alias etchosts='sudo vim /etc/hosts'
 alias editsshconfig='vim ~/.ssh/config'
+alias sshconfig='vim ~/.ssh/config'
+alias localconf='vim ~/.local.conf'
 alias biggestfolders='du -a . | sort -n -r | head -n 10'
 alias biggestfiles='du -Sh . | sort -rh | head -20'
 
@@ -121,19 +108,19 @@ alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get autoremove -q -y'
 
 case $HOST in
-"mini-forum" | "debian")
-    alias shutdown="fullapt && please shutdown -h now"
+'mini-forum' | 'debian')
+    alias shutdown='fullapt && please shutdown -h now'
     if hash ansible-playbook 2>/dev/null; then
         ansiblePlaybooksDirectory=$HOME/ansible-playbooks
         if [ -d $HOME/ansible-playbooks/ ]; then
             alias fullapt="ansible-playbook $ansiblePlaybooksDirectory/apt-upgrade.yml -i $ansiblePlaybooksDirectory/inventory/podmytube"
         else
-            echo "ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git"
+            echo 'ansible-playbook is installed but you have to clone git@github.com:tyteck/ansible-playbooks.git'
         fi
     fi
     ;;
 *)
-    alias shutdown="please shutdown -h now"
+    alias shutdown='please shutdown -h now'
     ;;
 esac
 
@@ -152,12 +139,12 @@ function isMacos() {
 function emptyFile() {
     local fileToEmpty=$1
     if [ -z $fileToEmpty ]; then
-        error "You should specify the file path you want to empty"
+        error 'You should specify the file path you want to empty'
         return 1
     fi
 
     if [ ! -f $fileToEmpty ]; then
-        error "The file you want to purge does not exist."
+        error 'The file you want to purge does not exist.'
         return 1
     fi
 
@@ -166,7 +153,7 @@ function emptyFile() {
         comment "$fileToEmpty is now empty"
         return 0
     fi
-    error "command has failed."
+    error 'command has failed.'
     return 1
 }
 
@@ -195,7 +182,7 @@ function apachewith() {
     local SOME_USER=$1
     if ! userExists $SOME_USER; then
         echo "User ($SOME_USER) does not exists. I need one real user to go with apache(www-data)"
-        echo "usage : apachewith REAL_USER <FILE>|<FOLDER> ..."
+        echo 'usage : apachewith REAL_USER <FILE>|<FOLDER> ...'
         return 1
     fi
     shift

@@ -10,7 +10,7 @@ function podmedias() {
     local period="${2:-$defaultPeriod}"
 
     if [ -z $channel ]; then
-        echo "You should give a channel_id (at least) as an argument to get medias"
+        echo 'You should give a channel_id (at least) as an argument to get medias'
         comment "usage : $funcstack[1] UCMnHkvrh_1fMWTJA_ru9ATQ 2021-12"
         return
     fi
@@ -26,7 +26,7 @@ function podchannelinfos() {
     local channel=$1
 
     if [ -z $channel ]; then
-        echo "You should give a channel_id (at least) as an argument to get infos on channel"
+        echo 'You should give a channel_id (at least) as an argument to get infos on channel'
         comment "usage : $funcstack[1] UCMnHkvrh_1fMWTJA_ru9ATQ"
         return
     fi
@@ -48,7 +48,7 @@ function podtogglechannel() {
     local channel=$1
 
     if [ -z $channel ]; then
-        echo "You should give a channel_id (at least) as an argument to be able to toggle active state of channel"
+        echo 'You should give a channel_id (at least) as an argument to be able to toggle active state of channel'
         comment "usage : $funcstack[1] UCMnHkvrh_1fMWTJA_ru9ATQ"
         return
     fi

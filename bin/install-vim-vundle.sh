@@ -7,7 +7,7 @@
 #
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 if [ "$?" != 0 ]; then
-    echo "Installing zsh has failed."
+    echo 'Installing zsh has failed.'
     exit 1
 fi
 

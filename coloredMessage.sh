@@ -1,6 +1,7 @@
 #!/usr/bin/zsh
 
 textBold='\e[1m'
+textBoldRed='\e[1m\e[91m'
 resetTextColor='\e[0m'
 textColorCyan='\e[96m'
 textColorRed='\e[31m'
@@ -11,8 +12,8 @@ function coloredEcho() {
     local defaultColor=$textColorCyan
     if [[ $# < 1 ]]; then
         echo '-------------------------------------------------'
-        echo "$textBold\e[91mYou should pass one message at least.$resetTextColor"
-        echo "\e[1mUsage : coloredEcho message.$resetTextColor"
+        echo ${textBoldRed}'You should pass one message at least.'${resetTextColor}
+        echo ${textBold}'Usage : coloredEcho message.'${resetTextColor}
         echo '-------------------------------------------------'
         return 1
     fi
@@ -21,7 +22,7 @@ function coloredEcho() {
         textColor=$defaultColor
     fi
     local message=$1
-    echo "${textColor}${message}${resetTextColor}"
+    echo ${textColor}${message}${resetTextColor}
 }
 #coloredEcho
 #coloredEcho "le chat est cyan"
@@ -29,17 +30,17 @@ function coloredEcho() {
 
 function comment() {
     local message=$1
-    coloredEcho "$message" $textColorGreen
+    coloredEcho "${message}" $textColorGreen
 }
 
 function warning() {
     local message=$1
-    coloredEcho "$message" $textColorOrange
+    coloredEcho "${message}" $textColorOrange
 }
 
 function error() {
     local message=$1
-    coloredEcho "$message" $textColorRed
+    coloredEcho "${message}" $textColorRed
 }
 
 function separator() {

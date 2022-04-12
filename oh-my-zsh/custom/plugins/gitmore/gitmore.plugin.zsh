@@ -39,21 +39,21 @@ function gdelete() {
 
         git show-ref --verify --quiet refs/heads/$BRANCH_TO_DELETE
         if [ $? -ne 0 ]; then
-            echo "The local branch {$BRANCH_TO_DELETE} does not exists."
+            warning "The local branch {$BRANCH_TO_DELETE} does not exists."
         else
             git branch -d $BRANCH_TO_DELETE
             if [ $? -ne 0 ]; then
-                echo "Local branch {$BRANCH_TO_DELETE} deletion has failed"
+                error "Local branch {$BRANCH_TO_DELETE} deletion has failed"
             fi
         fi
 
         if remoteBranchExists $BRANCH_TO_DELETE; then
             git push origin --delete $BRANCH_TO_DELETE
             if [ $? -ne 0 ]; then
-                echo "Branch {$BRANCH_TO_DELETE} deletion has failed"
+                error "Branch {$BRANCH_TO_DELETE} deletion has failed"
             fi
         else
-            echo "The remote branch {$BRANCH_TO_DELETE} does not exists."
+            warning "The remote branch {$BRANCH_TO_DELETE} does not exists."
         fi
     done
     return 0
@@ -210,6 +210,67 @@ function remoteBranchExists() {
     else
         false
     fi
+}
+
+function renamebranch() {
+    newBranchName=$1
+    if [ -z $newBranchName ]; then
+        error "You should give a new name to the current branch."
+        return 1
+    fi
+
+    oldBranchName=$(getCurrentBranchName)
+    echo $oldBranchName
+    if [ -z $oldBranchName ]; then
+        error "you are not in a repository."
+        return 1
+    fi
+
+    # update local branch from remote origin
+    if remoteBranchExists $oldBranchName; then
+        git checkout $currentBranch
+    fi
+
+    # renaming local
+    git branch -m $newBranchName
+    if [ $? -ne 0 ]; then
+        error "Renaming ${oldBranchName} to ${newBranchName} has failed"
+        return false
+    fi
+
+    if remoteBranchExists $oldBranchName; then
+        # pushing new one on remote
+        git push origin -u ${newBranchName}
+        if [ $? -ne 0 ]; then
+            error "Pushing ${newBranchName} has failed"
+            return false
+        fi
+
+        # delete old one
+        deleteRemoteBranch ${oldBranchName}
+    fi
+    comment "Branch ${oldBranchName} has been renamed to ${newBranchName}"
+}
+
+function deleteRemoteBranch() {
+    remoteBranchName=$1
+    if [ -z $remoteBranchName ]; then
+        error "You should give a new name to the current branch."
+        return false
+    fi
+
+    if ! remoteBranchExists $remoteBranchName; then
+        warning "The remote branch {$remoteBranchName} does not exists."
+        return true
+    fi
+
+    git push origin --delete $remoteBranchName
+    if [ $? -ne 0 ]; then
+        error "Branch {$remoteBranchName} deletion has failed"
+        return false
+    fi
+    comment "Branch ${remoteBranchName} has been successfully deleted"
+    return true
 }
 
 function getCurrentBranchName() {

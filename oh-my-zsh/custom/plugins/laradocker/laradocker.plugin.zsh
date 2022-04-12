@@ -157,7 +157,7 @@ function dockerFileExists(){
 
     # check if executable is present
     commandToRun="${dockerPrefix} test -f ${fileName}"
-    #comment $commandToRun
+    comment $commandToRun
     eval $commandToRun
     if [ $? -eq 0 ]; then
         true

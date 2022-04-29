@@ -5,3 +5,5 @@
 	branch = false
 [core]
 	pager = cat
+[safe]
+	directory = /home/fred/Projects/podmytube

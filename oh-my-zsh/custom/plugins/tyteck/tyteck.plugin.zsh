@@ -25,6 +25,7 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 
 # vscode
 alias vsdot="cd ${HOME}/dotfiles && code ."
+alias vspod="cd ${PODMYTUBE_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
@@ -64,7 +65,7 @@ alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias podup="mysqlUp && phpmyadminUp && cd $PODMYTUBE_PATH && gpull && dokup && code ."
+alias podup="nginxup && mysqlUp && phpmyadminUp && cd $PODMYTUBE_PATH && vspod"
 alias poddown="cd $PODMYTUBE_PATH && dokdown && cd -"
 
 alias podexec='docker exec -it --user www-data podmytube'

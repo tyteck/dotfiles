@@ -10,6 +10,7 @@ MAILHOG_PATH="/var/opt/docker/mailhog"
 NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
+JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 
 APACHE_USER=www-data
 APACHE_GROUP=www-data
@@ -64,8 +65,14 @@ alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias podup="mysqlUp && phpmyadminUp && cd $PODMYTUBE_PATH && gpull && dokup && code ."
-alias poddown="cd $PODMYTUBE_PATH && dokdown && cd -"
+alias persoup="mysqlUp ; phpmyadminUp ; nginxup ; mailup"
+alias persodown="mysqlDown ; phpmyadminDown ; nginxdown ; maildown"
+
+alias podup="persoup ; cd $PODMYTUBE_PATH && gpull && dokup && code ."
+alias poddown="persodown ; cd $PODMYTUBE_PATH && dokdown && cd -"
+
+alias jefaismescomptesup="persoup ; cd $JEFAISMESCOMPTES_PATH && gpull && dokup && code ."
+alias jefaismescomptesdown="persodown ; cd $JEFAISMESCOMPTES_PATH && dokdown && cd -"
 
 alias podexec='docker exec -it --user www-data podmytube'
 

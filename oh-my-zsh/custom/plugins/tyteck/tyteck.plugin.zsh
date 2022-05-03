@@ -26,6 +26,7 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 
 # vscode
 alias vsdot="cd ${HOME}/dotfiles && code ."
+alias vspod="cd ${PODMYTUBE_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'

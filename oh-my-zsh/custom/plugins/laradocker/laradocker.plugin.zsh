@@ -249,6 +249,50 @@ function catErrorsFromLog() {
     cat $lastLogFileResult | grep ERROR
 }
 
+function isActualPath() {
+    absolutePath=$(pwd)
+    case $absolutePath in
+        *"lucie"*)
+            return 0
+            ;;
+    esac
+    return 1
+}
+
+
+function migratePath(){
+    local migratePath=''
+    if isActualPath; then
+        migratePath=' --path="database/migrations/*"'
+    fi
+    echo $migratePath
+}
+
+function am(){
+    cmd="artisan migrate$(migratePath)"
+    eval $cmd
+}
+
+function amf(){
+    cmd="artisan migrate:fresh$(migratePath)"
+    eval $cmd
+}
+
+function amfs(){
+    cmd="artisan migrate:fresh --seed$(migratePath)"
+    eval $cmd
+}
+
+function amr(){
+    cmd="artisan migrate:rollback --seed$(migratePath)"
+    eval $cmd
+}
+
+function ams(){
+    cmd="artisan migrate:status --seed$(migratePath)"
+    eval $cmd
+}
+
 alias acc='artisan cache:clear && artisan config:clear'
 alias ads='artisan db:seed'
 alias aig='artisan ide-helper:generate'
@@ -256,11 +300,11 @@ alias aie='artisan ide-helper:eloquent'
 alias al='artisan list'
 alias arl='artisan route:list'
 alias arc='artisan route:clear'
-alias am='artisan migrate'
-alias amf='artisan migrate:fresh'
-alias amfs='artisan migrate:fresh --seed'
-alias amr='artisan migrate:rollback'
-alias ams='artisan migrate:status'
+#alias am="artisan migrate"
+#alias amf="artisan migrate:fresh"
+#alias amfs="artisan migrate:fresh --seed"
+#alias amr="artisan migrate:rollback"
+#alias ams="artisan migrate:status"
 alias aoc='artisan optimize:clear'
 alias aqf='artisan queue:flush'
 alias aqr='artisan queue:restart'

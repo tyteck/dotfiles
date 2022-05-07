@@ -7,3 +7,4 @@
 	pager = cat
 [safe]
 	directory = /home/fred/Projects/podmytube
+	directory = /home/fred/Projects/jefaismescomptes

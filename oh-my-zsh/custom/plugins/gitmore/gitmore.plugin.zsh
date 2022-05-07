@@ -89,7 +89,7 @@ function mergeCurrentWith() {
         return 1
     fi
 
-    comment "-- merging current $branchNameToMergeWith with $currentBranch --"
+    comment "-- merging $branchNameToMergeWith <= $currentBranch --"
     git merge $currentBranch
     if [ $? -ne 0 ]; then
         error "Merging the branch $currentBranch with $branchNameToMergeWith has failed."

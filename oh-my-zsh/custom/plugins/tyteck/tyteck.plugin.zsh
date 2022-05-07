@@ -50,6 +50,7 @@ alias dokrestart='docker-compose down --remove-orphans && docker-compose up -d'
 alias dokrestartdev='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d'
 alias dokrestartfred='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.fred.yml up -d'
 alias doktus='docker ps -a'
+alias dokillall='docker kill $(docker ps -q)'
 alias dokup='docker-compose up -d'
 alias dokupprod='docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
 

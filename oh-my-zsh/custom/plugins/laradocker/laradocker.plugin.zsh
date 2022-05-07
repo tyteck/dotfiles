@@ -285,7 +285,7 @@ function amr(){
 }
 
 function ams(){
-    local cmd="artisan migrate:status --seed$(migratePath)"
+    local cmd="artisan migrate:status$(migratePath)"
     eval $cmd
 }
 

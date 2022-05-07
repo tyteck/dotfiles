@@ -33,10 +33,10 @@ function artisan() {
     fi
 
     # get the container name
-    dockerPrefix=$(getDockerPrefix)
+    local dockerPrefix=$(getDockerPrefix)
 
     # run artisan
-    commandToRun="noglob ${dockerPrefix}php artisan $@"
+    local commandToRun="noglob ${dockerPrefix}php artisan $@"
     comment ${commandToRun}
     eval $commandToRun
 }
@@ -56,7 +56,7 @@ function getDockerPrefix() {
 }
 
 function tests() {
-    executablePath='vendor/bin/phpunit'
+    local executablePath='vendor/bin/phpunit'
 
     if ! dockerFileExists $executablePath; then
         error "There is no ${executablePath} by there."
@@ -64,18 +64,16 @@ function tests() {
     fi
 
     # get the command to access container
-    dockerPrefix=$(getDockerPrefix)
-    
-    commandToRun="${dockerPrefix}${executablePath} $@"
+    local dockerPrefix=$(getDockerPrefix)    
+    local commandToRun="${dockerPrefix}${executablePath} $@"
     comment $commandToRun
     eval $commandToRun
 }
 
 function stan() {
     local defaultPathToCheck='app database'
-    pathToCheck="${1:-$defaultPathToCheck}"
-    
-    executablePath='vendor/bin/phpstan'
+    local pathToCheck="${1:-$defaultPathToCheck}"
+    local executablePath='vendor/bin/phpstan'
 
     if ! dockerFileExists $executablePath; then
         error "There is no ${executablePath} by there."
@@ -83,7 +81,7 @@ function stan() {
     fi
 
     # get the command to access container
-    dockerPrefix=$(getDockerPrefix)
+    local dockerPrefix=$(getDockerPrefix)
 
     commandToRun="${dockerPrefix}${executablePath} analyze ${pathToCheck} --level max"
     comment $commandToRun
@@ -91,15 +89,15 @@ function stan() {
 }
 
 function getBaseFolder() {
-    directoryIWantTheBaseFrom=$1
+    local directoryIWantTheBaseFrom=$1
     if [ -z $directoryIWantTheBaseFrom ]; then
         echo 'You should send one the folder you want to get the base folder from.'
         return 1
     fi
 
-    firstPathChar=${directoryIWantTheBaseFrom:0:1}
+    local firstPathChar=${directoryIWantTheBaseFrom:0:1}
 
-    cutPosition=1
+    local cutPosition=1
     if [[ $firstPathChar == '/' ]]; then
         cutPosition=2
     fi
@@ -141,7 +139,7 @@ function getLastFolders() {
 
 # check if containerName is up and running
 function containerExists() {
-    containerName=$1
+    local containerName=$1
     if [ "$(docker ps -a | grep $containerName)" ]; then
         true
     else
@@ -150,13 +148,13 @@ function containerExists() {
 }
 
 function dockerFileExists(){
-    fileName=$1
+    local fileName=$1
 
     # get the command to access container
-    dockerPrefix=$(getDockerPrefix)
+    local dockerPrefix=$(getDockerPrefix)
 
     # check if executable is present
-    commandToRun="${dockerPrefix} test -f ${fileName}"
+    local commandToRun="${dockerPrefix} test -f ${fileName}"
     comment $commandToRun
     eval $commandToRun
     if [ $? -eq 0 ]; then
@@ -168,7 +166,7 @@ function dockerFileExists(){
 
 # check if filename exists
 function fileExists() {
-    fileName=$1
+    local fileName=$1
     if [ -f $fileName ]; then
         true
     else
@@ -178,7 +176,7 @@ function fileExists() {
 
 # check if filename is executable
 function isFileExecutable() {
-    fileName=$1
+    local fileName=$1
     if [ -x $fileName ]; then
         true
     else
@@ -188,7 +186,7 @@ function isFileExecutable() {
 
 # check if one program is installed on this computer
 function isInstalled() {
-    programName=$1
+    local programName=$1
     if [ -x "$(command -v $programName)" ]; then
         true
     else
@@ -227,8 +225,7 @@ function lastLogFile(){
 }
 
 function tailLastLog() {
-    local lastLogFileResult
-    lastLogFileResult=$(lastLogFile)
+    local lastLogFileResult=$(lastLogFile)
     if [ $? -ne 0 ]; then
         echo $lastLogFileResult
         return 1
@@ -239,8 +236,7 @@ function tailLastLog() {
 }
 
 function catErrorsFromLog() {
-    local lastLogFileResult
-    lastLogFileResult=$(lastLogFile)
+    local lastLogFileResult=$(lastLogFile)
     if [ $? -ne 0 ]; then
         echo $lastLogFileResult
         return 1
@@ -250,7 +246,7 @@ function catErrorsFromLog() {
 }
 
 function isActualPath() {
-    absolutePath=$(pwd)
+    local absolutePath=$(pwd)
     case $absolutePath in
         *"lucie"*)
             return 0
@@ -269,27 +265,27 @@ function migratePath(){
 }
 
 function am(){
-    cmd="artisan migrate$(migratePath)"
+    local cmd="artisan migrate$(migratePath)"
     eval $cmd
 }
 
 function amf(){
-    cmd="artisan migrate:fresh$(migratePath)"
+    local cmd="artisan migrate:fresh$(migratePath)"
     eval $cmd
 }
 
 function amfs(){
-    cmd="artisan migrate:fresh --seed$(migratePath)"
+    local cmd="artisan migrate:fresh --seed$(migratePath)"
     eval $cmd
 }
 
 function amr(){
-    cmd="artisan migrate:rollback --seed$(migratePath)"
+    local cmd="artisan migrate:rollback --seed$(migratePath)"
     eval $cmd
 }
 
 function ams(){
-    cmd="artisan migrate:status --seed$(migratePath)"
+    local cmd="artisan migrate:status --seed$(migratePath)"
     eval $cmd
 }
 
@@ -300,11 +296,6 @@ alias aie='artisan ide-helper:eloquent'
 alias al='artisan list'
 alias arl='artisan route:list'
 alias arc='artisan route:clear'
-#alias am="artisan migrate"
-#alias amf="artisan migrate:fresh"
-#alias amfs="artisan migrate:fresh --seed"
-#alias amr="artisan migrate:rollback"
-#alias ams="artisan migrate:status"
 alias aoc='artisan optimize:clear'
 alias aqf='artisan queue:flush'
 alias aqr='artisan queue:restart'

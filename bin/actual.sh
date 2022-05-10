@@ -142,3 +142,36 @@ function rungGcloudTriggersSpecifyingBranchAndTrigger() {
         #fi
     done
 }
+
+function luciedown() {
+    eval ${LUCIE_COMPOSE} down --remove-orphans
+}
+
+function lucieup() {
+    persodown
+    eval ${LUCIE_COMPOSE} up -d
+}
+
+function ninadown() {
+    eval ${NINA_COMPOSE} down --remove-orphans
+}
+
+function ninaup() {
+    persodown
+    eval ${NINA_COMPOSE} up -d
+}
+
+function actualdown() {
+    comment "bonne nuit actual"
+    ninadown
+    luciedown
+}
+
+function persoup() {
+    comment "en avant le perso"
+    actualdown
+    mysqlup
+    phpmyadminup
+    nginxup
+    mailup
+}

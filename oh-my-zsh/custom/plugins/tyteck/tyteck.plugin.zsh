@@ -50,24 +50,22 @@ alias dokrestart='docker-compose down --remove-orphans && docker-compose up -d'
 alias dokrestartdev='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d'
 alias dokrestartfred='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.fred.yml up -d'
 alias doktus='docker ps -a'
+alias dokillall='docker kill $(docker ps -q)'
 alias dokup='docker-compose up -d'
 alias dokupprod='docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
 
 # shortcut to start containers
-alias mysqlUp="cd $MYSQL_SERVER_PATH && gpull && dokup && cd -"
-alias mysqlDown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
+alias mysqlup="cd $MYSQL_SERVER_PATH && gpull && dokup && cd -"
+alias mysqldown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
 
-alias phpmyadminUp="cd $PHPMYADMIN_PATH && gpull && dokup && cd -"
-alias phpmyadminDown="cd $PHPMYADMIN_PATH && dokdown && cd -"
+alias phpmyadminup="cd $PHPMYADMIN_PATH && gpull && dokup && cd -"
+alias phpmyadmindown="cd $PHPMYADMIN_PATH && dokdown && cd -"
 
 alias mailup="cd $MAILHOG_PATH && dokup && cd -"
 alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
 
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
-
-alias persoup="mysqlUp ; phpmyadminUp ; nginxup ; mailup"
-alias persodown="mysqlDown ; phpmyadminDown ; nginxdown ; maildown"
 
 alias podup="persoup ; cd $PODMYTUBE_PATH && gpull && dokup && code ."
 alias poddown="persodown ; cd $PODMYTUBE_PATH && dokdown && cd -"
@@ -102,7 +100,7 @@ alias edithosts='sudo vim /etc/hosts'
 alias etchosts='sudo vim /etc/hosts'
 alias editsshconfig='vim ~/.ssh/config'
 alias sshconfig='vim ~/.ssh/config'
-alias localconf='vim ~/.local.conf'
+alias editlocalconf='vim ~/.local.conf'
 alias biggestfolders='du -a . | sort -n -r | head -n 10'
 alias biggestfiles='du -Sh . | sort -rh | head -20'
 
@@ -136,6 +134,10 @@ esac
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
 #                               	COMMODITIES
 # °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸
+
+function foolperso() {
+    echo "tyteck"
+}
 
 function isMacos() {
     if [ $(uname -s) = 'Darwin' ]; then
@@ -368,4 +370,20 @@ function dir() {
         fi
         sudo du -hs $folder 2>/dev/null
     done
+}
+
+function persoup() {
+    comment "en avant le perso"
+    mysqlup
+    phpmyadminup
+    nginxup
+    mailup
+}
+
+function persodown() {
+    comment "bonne nuit le perso"
+    mysqldown
+    phpmyadmindown
+    nginxdown
+    maildown
 }

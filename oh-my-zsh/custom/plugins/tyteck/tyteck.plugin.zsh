@@ -67,11 +67,11 @@ alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
 alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
 alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
 
-alias podup="persoup ; cd $PODMYTUBE_PATH && gpull && dokup && code ."
-alias poddown="persodown ; cd $PODMYTUBE_PATH && dokdown && cd -"
+alias podup="cd $PODMYTUBE_PATH && gpull && dokup && code ."
+alias poddown="cd $PODMYTUBE_PATH && dokdown && cd -"
 
-alias jefaismescomptesup="persoup ; cd $JEFAISMESCOMPTES_PATH && gpull && dokup && code ."
-alias jefaismescomptesdown="persodown ; cd $JEFAISMESCOMPTES_PATH && dokdown && cd -"
+alias jefaismescomptesup="cd $JEFAISMESCOMPTES_PATH && gpull && dokup && code ."
+alias jefaismescomptesdown="cd $JEFAISMESCOMPTES_PATH && dokdown && cd -"
 
 alias podexec='docker exec -it --user www-data podmytube'
 
@@ -373,7 +373,7 @@ function dir() {
 }
 
 function persoup() {
-    comment "en avant le perso"
+    comment "=====> perso =====> UP"
     mysqlup
     phpmyadminup
     nginxup
@@ -381,9 +381,11 @@ function persoup() {
 }
 
 function persodown() {
-    comment "bonne nuit le perso"
+    comment "=====> perso =====> DOWN"
     mysqldown
     phpmyadmindown
     nginxdown
     maildown
+    poddown
+    jefaismescomptesdown
 }

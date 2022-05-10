@@ -162,13 +162,13 @@ function ninaup() {
 }
 
 function actualdown() {
-    comment "bonne nuit actual"
+    comment "=====> actual =====> DOWN"
     ninadown
     luciedown
 }
 
 function persoup() {
-    comment "en avant le perso"
+    comment "=====> perso =====> UP"
     actualdown
     mysqlup
     phpmyadminup

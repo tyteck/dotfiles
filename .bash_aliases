@@ -44,28 +44,28 @@ alias ..5='..4; ..'
 
 # on debian ll is not uncommented within skel/.bashrc
 alias ll='ls -alFh'
-alias vbashrc="vim ~/.bashrc && source ~/.bashrc && echo 'bashrc sourced'"
-alias sbashrc="source ~/.bashrc"
-alias valiases="vim ~/dotfiles/.bash_aliases && source ~/dotfiles/.bash_aliases && echo 'bash_aliases sourced'"
-alias phpext="php -i | grep extension_dir"
-alias phpmods="php -m"
-alias cls="clear"
-alias please="sudo"
-alias env="env|sort"
+alias vbashrc='vim ~/.bashrc && source ~/.bashrc && echo bashrc sourced'
+alias sbashrc='source ~/.bashrc'
+alias phpext='php -i | grep extension_dir'
+alias phpmods='php -m'
+alias cls='clear'
+alias please='sudo'
+alias env='env|sort'
 
 # docker & docker compose
-alias dokbuild="docker-compose build"
-alias dokconfig="docker-compose config"
-alias dokdown="docker-compose down"
-alias dokexec="docker exec -it"
+alias dokbuild='docker-compose build'
+alias dokconfig='docker-compose config'
+alias dokdown='docker-compose down'
+alias dokexec='docker exec -it'
 alias dokexecu="docker exec --user $(id -u):$(id -g) -it"
-alias doklog="docker logs"
-alias doknames="docker ps --format '{{.Names}}'"
-alias dokrm="docker container rm -f"
-alias dokprune="docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f"
-alias dokrestart="docker-compose down && docker-compose up -d"
-alias dokrestartprod="docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"
-alias doktus="docker ps -a"
+alias doklog='docker logs'
+alias doknames='docker ps --format "{{.Names}}"'
+alias dokrm='docker container rm -f'
+alias dokprune='docker container prune -f && docker image prune -f && docker network prune -f && docker volume prune -f'
+alias dokrestart='docker-compose down && docker-compose up -d'
+alias dokrestartprod='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
+alias doktus='docker ps -a'
+alias dokillall='docker kill $(docker ps -q)'
 alias dokup="docker-compose up -d"
 alias dokupfred="docker-compose -f docker-compose.fred.yml up -d"
 alias dokupprod="docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d"

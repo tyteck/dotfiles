@@ -64,8 +64,8 @@ function mergeCurrentWith() {
         error "you should give the branch name you want to merge with"
         return 1
     fi
-    currentBranch=$(getCurrentBranchName)
-    branchNameToMergeWith=$1
+    local currentBranch=$(getCurrentBranchName)
+    local branchNameToMergeWith=$1
 
     #
     # check if branch exists
@@ -89,7 +89,7 @@ function mergeCurrentWith() {
         return 1
     fi
 
-    comment "-- merging current $branchNameToMergeWith with $currentBranch --"
+    comment "-- merging $branchNameToMergeWith <= $currentBranch --"
     git merge $currentBranch
     if [ $? -ne 0 ]; then
         error "Merging the branch $currentBranch with $branchNameToMergeWith has failed."
@@ -119,7 +119,7 @@ function cleanLocalOldBranches() {
 # if no file is specified the . folder is commit then pushed
 function gmit() {
     # files to commit
-    commitFiles=""
+    local commitFiles=""
     while [ $# -gt 0 ]; do
         case $1 in
         '-?' | '-h' | '--help')
@@ -148,23 +148,22 @@ function gmit() {
         commitFiles='.'
     fi
 
-    CMD="git commit -m \"$commitMessage\" $commitFiles"
-    #echo $CMD
-    eval $CMD
+    local cmd="git commit -m \"$commitMessage\" $commitFiles"
+    eval $cmd
     if [ $? -ne 0 ]; then
-        echo "Commit has failed with command ($CMD)"
+        echo "Commit has failed with command ($cmd)"
         return 1
     fi
 
     currentBranchName=$(getCurrentBranchName)
     if ! remoteBranchExists $currentBranchName; then
-        CMD="git push --set-upstream origin $currentBranchName"
+        cmd="git push --set-upstream origin $currentBranchName"
     else
-        CMD="git push"
+        cmd="git push"
     fi
-    eval $CMD
+    eval $cmd
     if [ $? -ne 0 ]; then
-        error "Pushing on remote branch $currentBranchName has failed with command ($CMD)"
+        error "Pushing on remote branch $currentBranchName has failed with command ($cmd)"
         return 1
     fi
 }
@@ -175,7 +174,7 @@ function grestore() {
         warning "you should give file name you want to restore"
         return 1
     fi
-    FILEPATH_TO_RESTORE=$1
+    local FILEPATH_TO_RESTORE=$1
     git checkout $(git rev-list -n 1 HEAD -- "$FILEPATH_TO_RESTORE") -- "$FILEPATH_TO_RESTORE"
     if [ $? -ne 0 ]; then
         error "Git restoring file $FILEPATH_TO_RESTORE has failed !"
@@ -189,7 +188,7 @@ function localBranchExists() {
         error "you should give the branch name you want to check if exists"
         return 1
     fi
-    localBranchName=$1
+    local localBranchName=$1
     git show-ref --verify --quiet refs/heads/$localBranchName
     if [ $? -eq 0 ]; then
         true
@@ -203,7 +202,7 @@ function remoteBranchExists() {
         echo "you should give the remote branch name you want to check if exists"
         return 1
     fi
-    remoteBranchName=$1
+    local remoteBranchName=$1
     git show-ref --verify --quiet refs/remotes/origin/$remoteBranchName
     if [ $? -eq 0 ]; then
         true
@@ -213,14 +212,13 @@ function remoteBranchExists() {
 }
 
 function renamebranch() {
-    newBranchName=$1
+    local newBranchName=$1
     if [ -z $newBranchName ]; then
         error "You should give a new name to the current branch."
         return 1
     fi
 
-    oldBranchName=$(getCurrentBranchName)
-    echo $oldBranchName
+    local oldBranchName=$(getCurrentBranchName)
     if [ -z $oldBranchName ]; then
         error "you are not in a repository."
         return 1
@@ -253,7 +251,7 @@ function renamebranch() {
 }
 
 function deleteRemoteBranch() {
-    remoteBranchName=$1
+    local remoteBranchName=$1
     if [ -z $remoteBranchName ]; then
         error "You should give a new name to the current branch."
         return false
@@ -281,8 +279,8 @@ function gdiffall() {
     for n in {1..20}; do
         echo ''
     done
-    nbFiles=$(git ls-files -m | wc -l)
-    index=1
+    local nbFiles=$(git ls-files -m | wc -l)
+    local index=1
     for fileToDiff in $(git ls-files -m); do
         echo "\n\n\n========= $fileToDiff (${index}/${nbFiles}) =========\n\n"
         git diff $fileToDiff
@@ -300,6 +298,6 @@ Beware !!! All files above will be deleted !!! Ctrl+C to prevent this.\n\
 }
 
 function modifiedFiles() {
-    backInTime=${1:-1}
+    local backInTime=${1:-1}
     git diff HEAD~${modifiedFiles}..HEAD --compact-summary
 }

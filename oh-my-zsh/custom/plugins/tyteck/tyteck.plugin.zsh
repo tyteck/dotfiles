@@ -11,6 +11,7 @@ NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
 JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
+RSSBOT_PATH="$PROJECTS_PATH/rss-bot"
 
 APACHE_USER=www-data
 APACHE_GROUP=www-data
@@ -72,6 +73,9 @@ alias poddown="cd $PODMYTUBE_PATH && dokdown && cd -"
 
 alias jefaismescomptesup="cd $JEFAISMESCOMPTES_PATH && gpull && dokup && code ."
 alias jefaismescomptesdown="cd $JEFAISMESCOMPTES_PATH && dokdown && cd -"
+
+alias rssbotup="cd $RSSBOT_PATH && gpull && dokup && code ."
+alias rssbotupdown="cd $RSSBOT_PATH && dokdown && cd -"
 
 alias podexec='docker exec -it --user www-data podmytube'
 
@@ -387,5 +391,6 @@ function persodown() {
     nginxdown
     maildown
     poddown
+    rssbotdown
     jefaismescomptesdown
 }

@@ -4,14 +4,14 @@ alias restart='please shutdown -r now'
 alias reboot='restart'
 alias history='history -E'
 
-PROJECTS_PATH="$HOME/Projects"
-PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
-MAILHOG_PATH="/var/opt/docker/mailhog"
-NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
-MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
-PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
-JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
-RSSBOT_PATH="$PROJECTS_PATH/rss-bot"
+export PROJECTS_PATH="$HOME/Projects"
+export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
+export MAILHOG_PATH="/var/opt/docker/mailhog"
+export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
+export MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
+export PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
+export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
+export RSSBOT_PATH="$PROJECTS_PATH/rss-bot"
 
 APACHE_USER=www-data
 APACHE_GROUP=www-data
@@ -54,28 +54,6 @@ alias doktus='docker ps -a'
 alias dokillall='docker kill $(docker ps -q)'
 alias dokup='docker-compose up -d'
 alias dokupprod='docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
-
-# shortcut to start containers
-alias mysqlup="cd $MYSQL_SERVER_PATH && gpull && dokup && cd -"
-alias mysqldown="cd $MYSQL_SERVER_PATH && dokdown && cd -"
-
-alias phpmyadminup="cd $PHPMYADMIN_PATH && gpull && dokup && cd -"
-alias phpmyadmindown="cd $PHPMYADMIN_PATH && dokdown && cd -"
-
-alias mailup="cd $MAILHOG_PATH && dokup && cd -"
-alias maildown="cd $MAILHOG_PATH && dokdown && cd -"
-
-alias nginxup="cd $NGINX_PROXY_PATH && dokup && gpull && cd -"
-alias nginxdown="cd $NGINX_PROXY_PATH && dokdown && cd -"
-
-alias podup="cd $PODMYTUBE_PATH && gpull && dokup && code ."
-alias poddown="cd $PODMYTUBE_PATH && dokdown && cd -"
-
-alias jefaismescomptesup="cd $JEFAISMESCOMPTES_PATH && gpull && dokup && code ."
-alias jefaismescomptesdown="cd $JEFAISMESCOMPTES_PATH && dokdown && cd -"
-
-alias rssbotup="cd $RSSBOT_PATH && gpull && dokup && code ."
-alias rssbotupdown="cd $RSSBOT_PATH && dokdown && cd -"
 
 alias podexec='docker exec -it --user www-data podmytube'
 
@@ -279,6 +257,18 @@ function dokrmi() {
     docker rmi $(docker image ls --filter "reference=$IMAGE_NAME" -q)
 }
 
+function dokexists() {
+    local containerName=$1
+    if [ -z $containerName ]; then
+        echo 'You should give a container name as an argument to check container existence.'
+        return 1
+    fi
+
+    cmd="docker inspect ${containerName} >/dev/null 2>/dev/null"
+    eval $cmd
+    return $?
+}
+
 function inArray() {
     local needle=$1
     shift
@@ -374,6 +364,98 @@ function dir() {
         fi
         sudo du -hs $folder 2>/dev/null
     done
+}
+
+function containerup() {
+    local containerName=$1
+    local containerRoot=$2
+
+    if [ -z $containerName ]; then
+        echo 'You should give a container name as an argument to compose it up.'
+        return 1
+    fi
+
+    if [ -z $containerRoot ]; then
+        echo 'You should give a container root/path as an argument to compose it up.'
+        return 1
+    fi
+
+    if dokexists $containerName; then
+        comment "$containerName is already up"
+        return 0
+    fi
+
+    cd $containerRoot && dokup
+}
+
+function containerdown() {
+    local containerName=$1
+    local containerRoot=$2
+
+    if [ -z $containerName ]; then
+        echo 'You should give a container name as an argument to compose it down.'
+        return 1
+    fi
+
+    if [ -z $containerRoot ]; then
+        echo 'You should give a container root/path as an argument to compose it down.'
+        return 1
+    fi
+
+    if ! dokexists $containerName; then
+        comment "$containerName is already down"
+        return 0
+    fi
+
+    cd $containerRoot && dokdown
+}
+
+function mysqlup() {
+    containerup "mysqlServer" "$MYSQL_SERVER_PATH"
+}
+
+function mysqldown() {
+    containerdown "mysqlServer" "$MYSQL_SERVER_PATH"
+}
+
+function phpmyadminup() {
+    containerup "phpmyadmin" "$PHPMYADMIN_PATH"
+}
+
+function phpmyadmindown() {
+    containerdown "phpmyadmin" "$PHPMYADMIN_PATH"
+}
+
+function mailup() {
+    containerup "mailhog" "$MAILHOG_PATH"
+}
+
+function maildown() {
+    containerdown "mailhog" "$MAILHOG_PATH"
+}
+
+function nginxup() {
+    containerup "nginx-proxy" "$NGINX_PROXY_PATH"
+}
+
+function nginxdown() {
+    containerdown "nginx-proxy" "$NGINX_PROXY_PATH"
+}
+
+function podup() {
+    containerup "podmytube" "$PODMYTUBE_PATH"
+}
+
+function poddown() {
+    containerdown "podmytube" "$PODMYTUBE_PATH"
+}
+
+function jefaismescomptesup() {
+    containerup "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
+}
+
+function jefaismescomptesdown() {
+    containerdown "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
 }
 
 function persoup() {

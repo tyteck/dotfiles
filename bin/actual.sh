@@ -4,6 +4,8 @@
 # loading coloring message
 . $HOME/dotfiles/coloredMessage.sh
 
+export LOCAL_DOCKER_IP=$(docker network inspect bridge --format='{{index .IPAM.Config 0 "Gateway"}}')
+
 function eodurl() {
     if [ -z $EOD_PASSWORD ]; then
         error 'EOD_PASSWORD is empty. You should export it somewhere'

@@ -259,12 +259,15 @@ function dokrmi() {
 
 function dokexists() {
     local containerName=$1
-    if [ -z $containerName ]; then
+
+    if [ -z "$containerName" ]; then
         echo 'You should give a container name as an argument to check container existence.'
         return 1
     fi
-
-    cmd="docker inspect ${containerName} >/dev/null 2>/dev/null"
+    # getting image is a way to avoid getting network of the same name
+    # by example there is a network nginx-proxy and a container
+    cmd="docker inspect ${containerName} --format='{{.Config.Image}}' >/dev/null 2>/dev/null"
+    #echo $cmd
     eval $cmd
     return $?
 }
@@ -380,7 +383,7 @@ function containerup() {
         return 1
     fi
 
-    if dokexists $containerName; then
+    if dokexists "$containerName"; then
         comment "$containerName is already up"
         return 0
     fi
@@ -453,6 +456,7 @@ function poddown() {
 function jefaismescomptesup() {
     persoup
     containerup "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
+    cd $JEFAISMESCOMPTES_PATH
 }
 
 function jefaismescomptesdown() {

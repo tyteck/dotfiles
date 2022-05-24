@@ -172,8 +172,8 @@ function actualdown() {
 function persoup() {
     comment "=====> perso =====> UP"
     actualdown
+    nginxup
     mysqlup
     phpmyadminup
-    nginxup
     mailup
 }

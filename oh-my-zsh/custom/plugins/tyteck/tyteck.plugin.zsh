@@ -451,6 +451,7 @@ function poddown() {
 }
 
 function jefaismescomptesup() {
+    persoup
     containerup "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
 }
 

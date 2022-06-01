@@ -7,6 +7,7 @@ alias gpull='git pull'
 alias gbr='git branch'
 alias gco='git checkout'
 alias gme='git merge'
+alias glastlogs='git log -n 3'
 
 # avoiding to save and git vim for default
 # merge message when I'm making a git merge

@@ -11,7 +11,6 @@ export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
 export MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 export PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
-export RSSBOT_PATH="$PROJECTS_PATH/rss-bot"
 
 APACHE_USER=www-data
 APACHE_GROUP=www-data
@@ -478,6 +477,5 @@ function persodown() {
     nginxdown
     maildown
     poddown
-    rssbotdown
     jefaismescomptesdown
 }

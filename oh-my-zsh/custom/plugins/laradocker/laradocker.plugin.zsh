@@ -280,7 +280,7 @@ function amfs(){
 }
 
 function amr(){
-    local cmd="artisan migrate:rollback --seed$(migratePath)"
+    local cmd="artisan migrate:rollback $(migratePath)"
     eval $cmd
 }
 

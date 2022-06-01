@@ -97,7 +97,7 @@ alias fullapt='sudo apt-get update -q -y && \
 
 case $HOST in
 'mini-forum' | 'debian')
-    alias shutdown='fullapt && please shutdown -h now'
+    alias shutdown='fullapt ; please shutdown -h now'
     if hash ansible-playbook 2>/dev/null; then
         ansiblePlaybooksDirectory=$HOME/ansible-playbooks
         if [ -d $HOME/ansible-playbooks/ ]; then

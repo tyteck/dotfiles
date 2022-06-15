@@ -479,3 +479,20 @@ function persodown() {
     poddown
     jefaismescomptesdown
 }
+
+function installdeb() {
+    local filepath=$1
+    if [ -z $filepath ]; then
+        error 'You should specify the deb file path you want to install'
+        return 1
+    fi
+
+    comment "Installing $filepath ..."
+    sudo dpkg -i $filepath && rm -f $filepath
+    if [ $? -ne 0 ]; then
+        error "Installing $filepath has failed"
+        return 1
+    fi
+    comment "Installation successful"
+    return 0
+}

@@ -152,6 +152,7 @@ function luciedown() {
 function lucieup() {
     persodown
     eval ${LUCIE_COMPOSE} up -d
+    cd ${LUCIE_PATH}/laravel
 }
 
 function ninadown() {
@@ -161,6 +162,7 @@ function ninadown() {
 function ninaup() {
     persodown
     eval ${NINA_COMPOSE} up -d
+    cd ${NINA_PATH}
 }
 
 function actualdown() {

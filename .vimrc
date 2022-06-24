@@ -84,8 +84,13 @@ set mps=(:),{:},[:],<:>
 set fileformats=unix,dos
 
 "tabulation
-set shiftwidth=4  " pour les touches >> et <<
-set tabstop=4     " pour la touche Tab
+filetype plugin indent on
+" show existing tab with 4 spaces width
+set tabstop=4
+" when indenting with '>', use 4 spaces width
+set shiftwidth=4
+" On pressing tab, insert 4 spaces
+set expandtab
 
 nnoremap <F3> :bp<cr>
 nnoremap <F4> :bn<cr>

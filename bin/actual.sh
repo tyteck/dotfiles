@@ -155,6 +155,11 @@ function lucieup() {
     cd ${LUCIE_PATH}/laravel
 }
 
+function lucierestart() {
+    luciedown
+    lucieup
+}
+
 function ninadown() {
     eval ${NINA_COMPOSE} down --remove-orphans
 }

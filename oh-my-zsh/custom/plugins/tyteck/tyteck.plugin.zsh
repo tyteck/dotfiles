@@ -6,8 +6,8 @@ alias history='history -E'
 
 export PROJECTS_PATH="$HOME/Projects"
 export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
-export MAILHOG_PATH="/var/opt/docker/mailhog"
-export NGINX_PROXY_PATH="/var/opt/docker/nginx-proxy"
+export MAILHOG_PATH='/var/opt/docker/mailhog'
+export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 export PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
@@ -413,11 +413,11 @@ function containerdown() {
 }
 
 function mysqlup() {
-    containerup "mysqlServer" "$MYSQL_SERVER_PATH"
+    containerup "mysqlserver_db_1" "$MYSQL_SERVER_PATH"
 }
 
 function mysqldown() {
-    containerdown "mysqlServer" "$MYSQL_SERVER_PATH"
+    containerdown "mysqlserver_db_1" "$MYSQL_SERVER_PATH"
 }
 
 function phpmyadminup() {

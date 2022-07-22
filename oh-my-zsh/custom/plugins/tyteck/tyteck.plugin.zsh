@@ -3,6 +3,7 @@ alias please='sudo'
 alias restart='please shutdown -r now'
 alias reboot='restart'
 alias history='history -E'
+alias myipeth0='ip addr show enp2s0'
 
 export PROJECTS_PATH="$HOME/Projects"
 export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"

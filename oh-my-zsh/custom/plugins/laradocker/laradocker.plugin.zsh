@@ -55,6 +55,22 @@ function getDockerPrefix() {
     echo $dockerPrefix
 }
 
+
+function pest() {
+    local executablePath='vendor/bin/pest'
+
+    if ! dockerFileExists $executablePath; then
+        error "There is no ${executablePath} by there."
+        return 1
+    fi
+
+    # get the command to access container
+    local dockerPrefix=$(getDockerPrefix)    
+    local commandToRun="${dockerPrefix}${executablePath} $@"
+    comment $commandToRun
+    eval $commandToRun
+}
+
 function tests() {
     local executablePath='vendor/bin/phpunit'
 

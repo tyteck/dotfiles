@@ -1,4 +1,13 @@
 #!/usr/bin/zsh
+# ===================================================
+# this script goal is to be able to record/test a payment with stripe on local environment.
+# to do so :
+# - it is starting ngrok with one generic subdomain name on europe
+# - it's trying to configure stripe webhook dev mode to use this new ngrok subdomain
+#
+# Requirements :
+# you should export STRIPE_TEST with your STRIPE_API_KEY in your env (bashrc/zshrc)
+# ===================================================
 
 # loading coloring message
 . $HOME/dotfiles/coloredMessage.sh
@@ -25,9 +34,9 @@ fi
 # =======================================================================
 # running ngrok in a screen
 screen -dm ngrok http --region eu 80
-
-warning "waiting 2 secs for ngrok to be running"
-sleep 1
+waitForSeconds=2
+warning "waiting $waitForSeconds secs for ngrok to be running"
+sleep $waitForSeconds
 
 # getting public url from ngrok local api
 publicUrl=$(curl --silent http://127.0.0.1:4040/api/tunnels | jq '.tunnels[0].public_url')

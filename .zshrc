@@ -1,6 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 export HOST=$(uname -n)
-export PATH=$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:/usr/local/go/bin:$PATH
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:/usr/local/go/bin
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"

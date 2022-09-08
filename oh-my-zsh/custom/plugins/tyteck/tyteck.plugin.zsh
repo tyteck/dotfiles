@@ -55,7 +55,7 @@ alias dokillall='docker kill $(docker ps -q)'
 alias dokup='docker-compose up -d'
 alias dokupprod='docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
 
-alias podexec='docker exec -it --user www-data podmytube'
+alias podexec='docker exec -it podmytube'
 
 # Symfony
 alias sfc='php bin/console'
@@ -89,6 +89,10 @@ alias biggestfiles='du -Sh . | sort -rh | head -20'
 # Go/Golang
 alias gor='go run'
 alias gorm='gor main.go'
+
+alias aptu='sudo apt update -y'
+alias aptg='sudo apt upgrade -y'
+alias aptclean='sudo apt autoremove -y'
 
 # apt
 alias fullapt='sudo apt-get update -q -y && \

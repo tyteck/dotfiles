@@ -14,3 +14,5 @@
 	directory = /home/fred/Projects/
 	directory = /home/fred/Projects/sogedep-om-manager
 	directory = /home/fred/Projects/
+[pull]
+	rebase = false

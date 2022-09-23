@@ -6,6 +6,8 @@
 
 export LOCAL_DOCKER_IP=$(docker network inspect bridge --format='{{index .IPAM.Config 0 "Gateway"}}')
 
+alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
+
 function eodurl() {
     if [ -z $EOD_PASSWORD ]; then
         error 'EOD_PASSWORD is empty. You should export it somewhere'
@@ -67,7 +69,7 @@ function pushluciedev() {
 
     gcloud config set project eactual-215607
 
-    rungGcloudTriggersSpecifyingBranchAndTrigger $branchName 'laravel-ondemand'
+    rungGcloudTriggersWithBranch $branchName
 }
 
 function rungGcloudTriggersWithBranch() {
@@ -83,7 +85,7 @@ function rungGcloudTriggersWithBranch() {
         value=$(echo $line | cut -sd':' -f 2)
         # trimming
         value=${value// /}
-        echo "key : |${key}| --- value : ${value}"
+        #echo "key : |${key}| --- value : ${value}"
         if [ -z $key ]; then
             continue
         fi

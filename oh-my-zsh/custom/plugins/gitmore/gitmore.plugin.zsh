@@ -300,5 +300,6 @@ Beware !!! All files above will be deleted !!! Ctrl+C to prevent this.\n\
 
 function modifiedFiles() {
     local backInTime=${1:-1}
-    git diff HEAD~${modifiedFiles}..HEAD --compact-summary
+    comment "Here are the file you modified"
+    git diff HEAD~${backInTime}..HEAD --compact-summary
 }

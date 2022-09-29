@@ -7,6 +7,7 @@
 export LOCAL_DOCKER_IP=$(docker network inspect bridge --format='{{index .IPAM.Config 0 "Gateway"}}')
 
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
+alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 
 function eodurl() {
     if [ -z $EOD_PASSWORD ]; then

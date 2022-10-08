@@ -251,6 +251,16 @@ function tailLastLog() {
     tail -f $lastLogFileResult -n 200
 }
 
+function emptyLastLog() {
+    local lastLogFileResult=$(lastLogFile)
+    if [ $? -ne 0 ]; then
+        echo $lastLogFileResult
+        return 1
+    fi
+
+    emptyFile $lastLogFileResult
+}
+
 function catErrorsFromLog() {
     local lastLogFileResult=$(lastLogFile)
     if [ $? -ne 0 ]; then

@@ -5,6 +5,7 @@
 . $HOME/dotfiles/coloredMessage.sh
 
 export LOCAL_DOCKER_IP=$(docker network inspect bridge --format='{{index .IPAM.Config 0 "Gateway"}}')
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'

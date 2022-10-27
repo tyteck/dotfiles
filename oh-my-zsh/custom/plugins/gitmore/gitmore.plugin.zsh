@@ -61,6 +61,18 @@ function gdelete() {
     return 0
 }
 
+function mergeToMain() {
+    local currentBranch=$(getCurrentBranchName)
+    # merge to dev
+    mergeCurrentWith dev
+
+    # merge to main
+    mergeCurrentWith main
+
+    # delete feat. branch
+    gdelete $currentBranch
+}
+
 function mergeCurrentWith() {
     if [ -z "$1" ]; then
         error "you should give the branch name you want to merge with"

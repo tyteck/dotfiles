@@ -37,6 +37,10 @@ function artisan() {
 
     # run artisan
     local commandToRun="noglob ${dockerPrefix}php artisan $@"
+    local lastFolderName=$(getLastFolders)
+    if [[ "$lastFolderName" = 'sogedep-om' ]]; then # Dom sail
+        commandToRun="./vendor/bin/sail artisan $@"
+    fi
     comment ${commandToRun}
     eval $commandToRun
 }

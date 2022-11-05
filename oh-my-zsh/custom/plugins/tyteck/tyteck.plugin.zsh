@@ -419,11 +419,11 @@ function containerdown() {
 }
 
 function mysqlup() {
-    containerup "mysqlserver_db_1" "$MYSQL_SERVER_PATH"
+    containerup "mysqlserver" "$MYSQL_SERVER_PATH"
 }
 
 function mysqldown() {
-    containerdown "mysqlserver_db_1" "$MYSQL_SERVER_PATH"
+    containerdown "mysqlserver" "$MYSQL_SERVER_PATH"
 }
 
 function phpmyadminup() {
@@ -472,6 +472,7 @@ function jefaismescomptesdown() {
 
 function persoup() {
     comment "=====> perso =====> UP"
+    sogedown
     mysqlup
     phpmyadminup
     nginxup

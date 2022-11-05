@@ -58,6 +58,21 @@ function getDockerPrefix() {
 }
 
 
+function pint() {
+    local executablePath='vendor/bin/pint'
+
+    if ! dockerFileExists $executablePath; then
+        error "There is no ${executablePath} by there."
+        return 1
+    fi
+
+    # get the command to access container
+    local dockerPrefix=$(getDockerPrefix)    
+    local commandToRun="${dockerPrefix}${executablePath} $@"
+    comment $commandToRun
+    eval $commandToRun
+}
+
 function pest() {
     local executablePath='vendor/bin/pest'
 

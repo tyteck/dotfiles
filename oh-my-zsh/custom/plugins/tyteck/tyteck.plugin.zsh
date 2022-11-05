@@ -12,6 +12,7 @@ export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
 export PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
+export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 
 APACHE_USER=www-data
 APACHE_GROUP=www-data
@@ -485,6 +486,17 @@ function persodown() {
     maildown
     poddown
     jefaismescomptesdown
+}
+
+function sogeup() {
+    comment "=====> sogedep =====> UP"
+    persodown
+    docker-compose -f ${SOGEDEP_PATH}/docker-compose.yml up -d
+}
+
+function sogedown() {
+    comment "=====> sogedep =====> DOWN"
+    docker-compose -f ${SOGEDEP_PATH}/docker-compose.yml down
 }
 
 function installdeb() {

@@ -1,7 +1,7 @@
 #!/bin/bash
 # This script is installing tools I'm using every day
 
-## PHP 7.4 and all required tools
+## PHP and all required tools
 sudo add-apt-repository ppa:ondrej/php -y &&
     sudo apt update -y &&
     sudo apt-get install -y ansible supervisor curl wget mlocate htop jq fonts-firacode gnome-tweaks php8.1-cli php-xml php-mbstring screen terminator tree vim chrome-gnome-shell &&

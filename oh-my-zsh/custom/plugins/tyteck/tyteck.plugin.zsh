@@ -39,22 +39,22 @@ alias dbprod="mysql --login-path=prod podmytube"
 alias c='clear'
 alias fullpath='readlink -f'
 # docker & docker compose
-alias dokbuild='docker-compose build'
-alias dokconfig='docker-compose config'
+alias dokbuild='docker compose build'
+alias dokconfig='docker compose config'
 alias dokcp='docker cp'
-alias dokdown='docker-compose down --remove-orphans'
+alias dokdown='docker compose down --remove-orphans'
 alias dokexec='docker exec -it'
 alias doklog='docker logs -f'
 alias doknames='docker ps --format "{{.Names}}"'
 alias dokrm='docker container rm -f'
 alias dokprune='docker system prune -f'
-alias dokrestart='docker-compose down --remove-orphans && docker-compose up -d'
-alias dokrestartdev='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d'
-alias dokrestartfred='docker-compose down && docker-compose -f docker-compose.yml -f docker-compose.fred.yml up -d'
+alias dokrestart='docker compose down --remove-orphans && docker compose up -d'
+alias dokrestartdev='docker compose down && docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d'
+alias dokrestartfred='docker compose down && docker compose -f docker-compose.yml -f docker-compose.fred.yml up -d'
 alias doktus='docker ps -a'
 alias dokillall='docker kill $(docker ps -q)'
-alias dokup='docker-compose up -d'
-alias dokupprod='docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
+alias dokup='docker compose up -d'
+alias dokupprod='docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
 
 alias podexec='docker exec -it podmytube'
 
@@ -491,13 +491,23 @@ function persodown() {
 
 function sogeup() {
     comment "=====> sogedep =====> UP"
-    persodown
-    docker-compose -f ${SOGEDEP_PATH}/docker-compose.yml up -d
+    actualdown
+    containerup "nginx-proxy" "$NGINX_PROXY_PATH"
+    containerup "mysqlserver" "$MYSQL_SERVER_PATH"
+    containerup "mailhog" "$MAILHOG_PATH"
+    containerup "phpmyadmin" "$PHPMYADMIN_PATH"
+    docker compose -f ${SOGEDEP_PATH}/compose.yaml up -d
+    cd $SOGEDEP_PATH
 }
 
 function sogedown() {
     comment "=====> sogedep =====> DOWN"
-    docker-compose -f ${SOGEDEP_PATH}/docker-compose.yml down
+    docker-compose -f ${SOGEDEP_PATH}/compose.yaml down
+}
+
+function sogerestart() {
+    sogedown
+    sogeup
 }
 
 function installdeb() {

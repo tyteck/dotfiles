@@ -6,6 +6,8 @@
 
 export LOCAL_DOCKER_IP=$(docker network inspect bridge --format='{{index .IPAM.Config 0 "Gateway"}}')
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+export SOGEDEP_PATH="$PROJECTS_PATH/github.com/sogedep-om"
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
@@ -155,6 +157,10 @@ function luciedown() {
 
 function lucieup() {
     persodown
+    docker network inspect actual-network >/dev/null 2>&1
+    if [ $? != 0 ]; then
+        docker network create actual-network
+    fi
     eval ${LUCIE_COMPOSE} up -d
     cd ${LUCIE_PATH}/laravel
 }
@@ -187,4 +193,12 @@ function persoup() {
     mysqlup
     phpmyadminup
     mailup
+}
+
+function domup() {
+    comment "=====> dom =====> UP"
+    actualdown
+    persodown
+    cd {$PROJECTS_PATH}/github.com/sogedep-om
+    docker compose up -d
 }

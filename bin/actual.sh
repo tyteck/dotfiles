@@ -52,18 +52,6 @@ function pushninadev() {
     rungGcloudTriggersWithBranch $branchName
 }
 
-function pushlucieeod() {
-    local branchName=$1
-    if [ -z $branchName ]; then
-        warning 'Usage : pushlucieeod <BRANCH_NAME> (ie : pushluciepp s21-17)'
-        return 1
-    fi
-
-    gcloud config set project eactual-sandbox
-
-    rungGcloudTriggersSpecifyingBranchAndTrigger $branchName 'laravel-ondemand'
-}
-
 function pushluciedev() {
     local branchName=$1
     if [ -z $branchName ]; then
@@ -102,61 +90,13 @@ function rungGcloudTriggersWithBranch() {
     done
 }
 
-function rungGcloudTriggersSpecifyingBranchAndTrigger() {
-    local branchName=$1
-    if [ -z $branchName ]; then
-        error "rungGcloudTriggersWithBranch expects the branch name to be non empty"
-        return 1
-    fi
-
-    local output=$(gcloud beta builds triggers list)
-    local currentId=''
-    local currentName=''
-    local index=0
-    echo $output | while read line; do
-        if [[ "$line" == "---" ]]; then
-            ((index++))
-            echo "============> $index"
-            continue
-        fi
-
-        key=$(echo $line | cut -sd':' -f 1)
-        value=$(echo $line | cut -sd':' -f 2)
-        # trimming
-        key=${key// /}
-        value=${value// /}
-        echo "key : |${key}| --- value : ${value}"
-        if [ -z $key ]; then
-            # we are on a separator string '---'
-            echo "============================================="
-            echo "currentName : $currentName - currentId : $currentId"
-            echo "============================================="
-            continue
-        fi
-
-        echo "key : ${key} --- value : ${value}"
-        if [ $key = 'id' ]; then
-            currentId=$value
-        fi
-
-        if [ $key = 'name' ]; then
-            currentName=$value
-        fi
-
-        #if [ $key = 'id' ]; then
-        #    cmd="gcloud beta builds triggers run ${value} --branch ${branchName}"
-        #    comment "running : $cmd"
-        #    eval $cmd
-        #fi
-    done
-}
-
 function luciedown() {
     eval ${LUCIE_COMPOSE} down --remove-orphans
 }
 
 function lucieup() {
     persodown
+    sogedown
     docker network inspect actual-network >/dev/null 2>&1
     if [ $? != 0 ]; then
         docker network create actual-network
@@ -189,6 +129,11 @@ function actualdown() {
 function persoup() {
     comment "=====> perso =====> UP"
     actualdown
+
+    docker network inspect nginx-proxy >/dev/null 2>&1
+    if [ $? != 0 ]; then
+        docker network create nginx-proxy
+    fi
     nginxup
     mysqlup
     phpmyadminup

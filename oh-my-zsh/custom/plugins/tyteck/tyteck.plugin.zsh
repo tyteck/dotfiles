@@ -91,9 +91,11 @@ alias biggestfiles='du -Sh . | sort -rh | head -20'
 alias gor='go run'
 alias gorm='gor main.go'
 
-alias aptu='sudo apt update -y'
-alias aptg='sudo apt upgrade -y'
-alias aptclean='sudo apt autoremove -y'
+# apt
+alias apt='sudo apt -y'
+alias aptu='apt update'
+alias aptg='apt upgrade'
+alias aptclean='apt autoremove'
 
 # apt
 alias fullapt='sudo apt-get update -q -y && \
@@ -508,6 +510,14 @@ function sogedown() {
 function sogerestart() {
     sogedown
     sogeup
+}
+
+function actualup() {
+    echo "actualup is doing nothing and it's 👍"
+}
+
+function actualdown() {
+    echo "actualdown is doing nothing and it's 👍"
 }
 
 function installdeb() {

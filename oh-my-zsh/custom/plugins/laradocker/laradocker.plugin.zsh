@@ -50,6 +50,7 @@ function getDockerPrefix() {
         dockerPrefix="docker-compose -f ${LUCIE_PATH}/docker/docker-compose.yml -p actual exec php-nginx "
     elif [[ "$lastFolderName" = 'nina' || "$lastFolderNames" = "nina/app" ]]; then # nina - Actual
         dockerPrefix="docker-compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
+    
     elif isInstalled 'docker' && containerExists $lastFolderName; then
         dockerPrefix="docker exec -it $lastFolderName "
     fi

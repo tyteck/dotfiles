@@ -1,0 +1,86 @@
+#!/usr/bin/php
+<?php
+/**
+ * Improvements : 
+ * - get pint binary path from env or .env config file
+ * - get pint config path (pint.json) from env or .env config file
+ */
+
+if($argc<2){
+    echo 'This script will format the php file you are passing as parameter'.PHP_EOL;
+    echo 'Should be use with a "run on save" addon from your IDE.'.PHP_EOL;
+    echo 'Usage: pinter file1.php path/to/file2.php'.PHP_EOL;
+    exit(0);
+}
+
+// pint .json config file
+$pintConfigPath = getPintConfigPath($argv[0]);
+
+if (!file_exists($pintConfigPath)){
+    throw new RuntimeException("There is no pint config path here {$pintConfigPath}");
+}
+
+//extract folder that are excluded from formatting
+$foldersToExclude = json_decode(file_get_contents($pintConfigPath), true)['exclude'];
+
+// parsing arguments
+$filesOfFoldersToFormat = [];
+for ($i = 1; $i < $argc; $i++) {
+    if (shouldBeExcluded($argv[$i], $foldersToExclude)) {
+        continue;
+    }
+    $filesOfFoldersToFormat[] = $argv[$i];
+}
+
+if (count($filesOfFoldersToFormat)) {
+    $command = "/home/fred/.config/composer/vendor/bin/pint --config $pintConfigPath " . implode(' ', $filesOfFoldersToFormat);
+    passthru($command);
+    exit(0);
+}
+echo '=====================================' . PHP_EOL;
+echo 'Nothing to do.' . PHP_EOL;
+echo '=====================================' . PHP_EOL;
+exit(0);
+
+/*
+|--------------------------------------------------------------------------
+| helpers
+|--------------------------------------------------------------------------
+*/
+
+function shouldBeExcluded(string $path, array $excludeFolders): bool
+{
+    $excludeFilePath = [
+
+    ];
+
+    // specific file to be excluded
+    if (in_array($path, $excludeFilePath)) {
+        return true;
+    }
+
+    // file in a folder that shouldn't be formatted
+    $folderPath = '';
+    $folders    = explode(DIRECTORY_SEPARATOR, pathinfo($path, PATHINFO_DIRNAME));
+    foreach ($folders as $folder) {
+        $folderPath .= $folder;
+        if (in_array($folderPath, $excludeFolders)) {
+            return true;
+        }
+        $folderPath .= DIRECTORY_SEPARATOR;
+    }
+
+    return false;
+}
+
+function getPintConfigPath(string $pinterRelativePath): string {
+    // when running from symlink, need to get path from where it s launched
+    $binaryPath = getcwd() . DIRECTORY_SEPARATOR . $pinterRelativePath;
+
+    $configPath = __DIR__ . DIRECTORY_SEPARATOR;
+    if(is_link($binaryPath)){
+        $configPath = pathinfo($binaryPath, PATHINFO_DIRNAME);
+    }
+
+    return $configPath . DIRECTORY_SEPARATOR . 'pint.json';
+}

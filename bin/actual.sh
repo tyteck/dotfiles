@@ -12,6 +12,12 @@ export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 
+#
+#-------------------------------------------------------------------------
+# functions
+#-------------------------------------------------------------------------
+#
+
 function eodurl() {
     if [ -z $EOD_PASSWORD ]; then
         error 'EOD_PASSWORD is empty. You should export it somewhere'

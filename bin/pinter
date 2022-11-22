@@ -1,6 +1,9 @@
 #!/usr/bin/php
 <?php
 /**
+ * requirements :
+ * - pint should be installed globally
+ * `composer global require laravel/pint`
  * Improvements : 
  * - get pint binary path from env or .env config file
  * - get pint config path (pint.json) from env or .env config file
@@ -13,15 +16,14 @@ if($argc<2){
     exit(0);
 }
 
-// pint .json config file
+// het pint.json config file path
 $pintConfigPath = getPintConfigPath($argv[0]);
-
 if (!file_exists($pintConfigPath)){
     throw new RuntimeException("There is no pint config path here {$pintConfigPath}");
 }
 
-//extract folder that are excluded from formatting
-$foldersToExclude = json_decode(file_get_contents($pintConfigPath), true)['exclude'];
+// extract folder that are excluded from formatting
+$foldersToExclude = getExcludedFoldersFromConfig($pintConfigPath);
 
 // parsing arguments
 $filesOfFoldersToFormat = [];
@@ -33,7 +35,10 @@ for ($i = 1; $i < $argc; $i++) {
 }
 
 if (count($filesOfFoldersToFormat)) {
-    $command = "/home/fred/.config/composer/vendor/bin/pint --config $pintConfigPath " . implode(' ', $filesOfFoldersToFormat);
+    $command = getenv('HOME') . DIRECTORY_SEPARATOR 
+        . ".config/composer/vendor/bin/pint --config $pintConfigPath " 
+        . implode(' ', $filesOfFoldersToFormat)
+    ;
     passthru($command);
     exit(0);
 }
@@ -73,14 +78,19 @@ function shouldBeExcluded(string $path, array $excludeFolders): bool
     return false;
 }
 
-function getPintConfigPath(string $pinterRelativePath): string {
-    // when running from symlink, need to get path from where it s launched
-    $binaryPath = getcwd() . DIRECTORY_SEPARATOR . $pinterRelativePath;
-
+function getPintConfigPath(string $binaryPath): string 
+{
     $configPath = __DIR__ . DIRECTORY_SEPARATOR;
     if(is_link($binaryPath)){
         $configPath = pathinfo($binaryPath, PATHINFO_DIRNAME);
     }
 
     return $configPath . DIRECTORY_SEPARATOR . 'pint.json';
+}
+
+function getExcludedFoldersFromConfig(string $pintConfigPath): array 
+{
+    //extract folder that are excluded from formatting (if any)
+    $pintConfig = json_decode(file_get_contents($pintConfigPath), true);
+    return isset($pintConfig['exclude']) ? $pintConfig['exclude'] : [];
 }

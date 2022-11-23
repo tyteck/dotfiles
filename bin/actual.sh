@@ -6,7 +6,6 @@
 
 export LOCAL_DOCKER_IP=$(docker network inspect bridge --format='{{index .IPAM.Config 0 "Gateway"}}')
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-export SOGEDEP_PATH="$PROJECTS_PATH/github.com/sogedep-om"
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'

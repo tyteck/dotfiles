@@ -39,6 +39,7 @@ if (count($filesOfFoldersToFormat)) {
         . ".config/composer/vendor/bin/pint --config $pintConfigPath " 
         . implode(' ', $filesOfFoldersToFormat)
     ;
+    echo "$command" . PHP_EOL;
     passthru($command);
     exit(0);
 }

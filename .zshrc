@@ -128,7 +128,7 @@ fi
 
 . $HOME/dotfiles/coloredMessage.sh
 
-if [ "$HOST" = "mini-forum" ]; then
+if [[ "$HOST" = "mini-forum"]] || [["$HOST" = "tour-fred" ]]; then
     . $HOME/dotfiles/dbAliases.sh
 fi
 

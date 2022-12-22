@@ -20,4 +20,5 @@ RESULT=$?
 rm composer-setup.php
 sudo mv composer.phar /usr/local/bin/composer
 
+echo "Composer installed 🤗"
 exit $RESULT

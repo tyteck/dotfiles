@@ -1,0 +1,11 @@
+{
+	"auths": {
+		"https://index.docker.io/v1/": {
+			"auth": "dHl0ZWNrOnBEcTg5JklydTIjdyZn"
+		}
+	},
+	"HttpHeaders": {
+		"User-Agent": "Docker-Client/18.06.0-ce (linux)"
+	},
+	"psFormat": "table {{.Names}}\\t{{.ID}}\\t{{.Image}}\\t{{.RunningFor}}\\t{{.Status}}\\t{{.Ports}}\\t{{.Command}}"
+}

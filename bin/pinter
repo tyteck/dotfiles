@@ -1,12 +1,17 @@
 #!/usr/bin/php
 <?php
 /**
- * requirements :
+ * Requirements :
  * - pint should be installed globally
  * `composer global require laravel/pint`
- * Improvements : 
- * - get pint binary path from env or .env config file
- * - get pint config path (pint.json) from env or .env config file
+ * you should have a pinter.json file nearby pinter binary.
+ * this json should have 2 entries 
+ * - pint : the pint binary path to use
+ * - pint.json : the config file to use
+ * Improvements :
+ * - pinter.json 
+ *      - add some settings to exclude folders 
+ *      - add some settings to exclude specific files 
  */
 
 if($argc<2){
@@ -16,14 +21,16 @@ if($argc<2){
     exit(0);
 }
 
-// het pint.json config file path
-$pintConfigPath = getPintConfigPath($argv[0]);
-if (!file_exists($pintConfigPath)){
-    throw new RuntimeException("There is no pint config path here {$pintConfigPath}");
-}
+// get pinter path from binary or symlink that run.
+$pinterPath = getPinterPath($argv[0]);
+
+// check config is ok.
+$pinterConfig = checkPinterConfig($pinterPath);
+$pintBinaryPath = $pinterConfig['pint'];
+$pintJsonConfigPath = $pinterConfig['pint.json'];
 
 // extract folder that are excluded from formatting
-$foldersToExclude = getExcludedFoldersFromConfig($pintConfigPath);
+$foldersToExclude = getExcludedFoldersFromConfig($pintJsonConfigPath);
 
 // parsing arguments
 $filesOfFoldersToFormat = [];
@@ -35,11 +42,11 @@ for ($i = 1; $i < $argc; $i++) {
 }
 
 if (count($filesOfFoldersToFormat)) {
-    $command = getenv('HOME') . DIRECTORY_SEPARATOR 
-        . ".config/composer/vendor/bin/pint --config $pintConfigPath " 
-        . implode(' ', $filesOfFoldersToFormat)
-    ;
-    passthru($command);
+    $command = "{$pintBinaryPath} --config {$pintJsonConfigPath} " . implode(' ', $filesOfFoldersToFormat) ;
+    passthru($command, $result);
+    if ($result !== 0){
+        throw new RuntimeException("Command {{$command}} has failed.");
+    }
     exit(0);
 }
 echo '=====================================' . PHP_EOL;
@@ -49,15 +56,13 @@ exit(0);
 
 /*
 |--------------------------------------------------------------------------
-| helpers
+| helpers & functions
 |--------------------------------------------------------------------------
 */
 
 function shouldBeExcluded(string $path, array $excludeFolders): bool
 {
-    $excludeFilePath = [
-
-    ];
+    $excludeFilePath = [];
 
     // specific file to be excluded
     if (in_array($path, $excludeFilePath)) {
@@ -78,19 +83,47 @@ function shouldBeExcluded(string $path, array $excludeFolders): bool
     return false;
 }
 
-function getPintConfigPath(string $binaryPath): string 
+function getPinterPath(string $binaryPath): string 
 {
-    $configPath = __DIR__ . DIRECTORY_SEPARATOR;
+    $pinterPath = __DIR__ . DIRECTORY_SEPARATOR;
     if(is_link($binaryPath)){
-        $configPath = pathinfo($binaryPath, PATHINFO_DIRNAME);
+        $pinterPath = pathinfo($binaryPath, PATHINFO_DIRNAME);
     }
 
-    return $configPath . DIRECTORY_SEPARATOR . 'pint.json';
+    return $pinterPath . DIRECTORY_SEPARATOR;
 }
 
-function getExcludedFoldersFromConfig(string $pintConfigPath): array 
+/**
+ * extract (from pint.json) the folders that are not allowed to be formatted.
+ * 
+ * @param string $pintJsonConfigPath 
+ * @return array 
+ */
+function getExcludedFoldersFromConfig(string $pintJsonConfigPath): array 
 {
     //extract folder that are excluded from formatting (if any)
-    $pintConfig = json_decode(file_get_contents($pintConfigPath), true);
+    $pintConfig = json_decode(file_get_contents($pintJsonConfigPath), true);
     return isset($pintConfig['exclude']) ? $pintConfig['exclude'] : [];
+}
+
+function checkPinterConfig(string $pinterPath): array
+{
+    $pinterConfigPath = $pinterPath. DIRECTORY_SEPARATOR.'pinter.json';
+    $pinterConfig = [];
+    if (!file_exists($pinterConfigPath)){
+        throw new RuntimeException("pinter.json config file is missing. Should be nearby pinter.");
+    }
+
+    // extract pint binary and pint.json path from pinter.json config.
+    $pinterConfig = json_decode(file_get_contents($pinterConfigPath), true);
+
+    if (!file_exists($pinterConfig['pint']) || !is_executable($pinterConfig['pint'])) {
+        throw new RuntimeException("Pint binary file is either missing or not executable.");
+    }
+
+    if (!file_exists($pinterConfig['pint.json'])) {
+        throw new RuntimeException("pint.json config is missing or invalid.");
+    }
+
+    return $pinterConfig;
 }

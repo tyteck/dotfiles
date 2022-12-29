@@ -9,8 +9,8 @@ export PROJECTS_PATH="$HOME/Projects"
 export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
 export MAILHOG_PATH='/var/opt/docker/mailhog'
 export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
-export MYSQL_SERVER_PATH="$PROJECTS_PATH/mysqlserver"
-export PHPMYADMIN_PATH="$PROJECTS_PATH/phpmyadmin"
+export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
+export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 
@@ -104,7 +104,7 @@ alias fullapt='sudo apt-get update -q -y && \
     sudo apt-get autoremove -q -y'
 
 case $HOST in
-'mini-forum' | 'debian')
+'mini-forum' | 'debian' | 'Tour-fred')
     alias shutdown='fullapt ; please shutdown -h now'
     if hash ansible-playbook 2>/dev/null; then
         ansiblePlaybooksDirectory=$HOME/ansible-playbooks
@@ -504,7 +504,7 @@ function sogeup() {
 
 function sogedown() {
     comment "=====> sogedep =====> DOWN"
-    docker-compose -f ${SOGEDEP_PATH}/compose.yaml down
+    docker compose -f ${SOGEDEP_PATH}/compose.yaml down
 }
 
 function sogerestart() {

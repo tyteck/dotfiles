@@ -71,28 +71,50 @@ function pushluciedev() {
 
 function rungGcloudTriggersWithBranch() {
     local branchName=$1
-    if [ -z $branchName ]; then
+    if [[ -z $branchName ]]; then
         error 'rungGcloudTriggersWithBranch expects the branch name to be non empty'
         return 1
     fi
 
     local output=$(gcloud beta builds triggers list)
+    local triggerName=''
+    local triggerId=''
     echo $output | while read line; do
-        key=$(echo $line | cut -sd':' -f 1)
-        value=$(echo $line | cut -sd':' -f 2)
+        local key=$(echo $line | cut -sd':' -f 1)
+        local value=$(echo $line | cut -sd':' -f 2)
         # trimming
         value=${value// /}
-        #echo "key : |${key}| --- value : ${value}"
-        if [ -z $key ]; then
-            continue
+
+        if [[ $key = 'name' ]]; then
+            triggerName=${value}
         fi
 
-        if [ $key = 'id' ]; then
-            cmd="gcloud beta builds triggers run ${value} --branch ${branchName}"
-            comment "running : $cmd"
-            eval $cmd
+        if [[ $key = 'id' ]]; then
+            triggerId=${value}
+        fi
+
+        if [[ -z $key ]] && [[ -z $value ]]; then
+            # it s a new trigger
+            runTriggerWithGoodNameOnly "${triggerName}" "${triggerId}" "${branchName}"
+
+            # then we reset trgger name and id
+            triggerName=''
+            triggerId=''
         fi
     done
+    # we dont forget the last one
+    runTriggerWithGoodNameOnly "${triggerName}" "${triggerId}" "${branchName}"
+}
+
+function runTriggerWithGoodNameOnly() {
+    local triggerName=$1
+    local triggerId=$2
+    local branchName=$3
+    if [[ ${triggerName} = 'k8s-jobs' ]] || [[ ${triggerName} = 'lucie-web-cloudrun' ]]; then
+        cmd="gcloud beta builds triggers run ${triggerId} --branch ${branchName}"
+        comment "running : {$cmd} for $triggerName"
+        eval $cmd
+    fi
 }
 
 function luciedown() {

@@ -101,9 +101,10 @@ function getPinterPath(string $binaryPath): string
  */
 function getExcludedFoldersFromConfig(string $pintJsonConfigPath): array 
 {
+    $defaultFoldersToExclude = ['vendor'];
     //extract folder that are excluded from formatting (if any)
     $pintConfig = json_decode(file_get_contents($pintJsonConfigPath), true);
-    return isset($pintConfig['exclude']) ? $pintConfig['exclude'] : [];
+    return isset($pintConfig['exclude']) ? array_merge($pintConfig['exclude'], $defaultFoldersToExclude) : $defaultFoldersToExclude;
 }
 
 function checkPinterConfig(string $pinterPath): array

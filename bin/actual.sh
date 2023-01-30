@@ -16,6 +16,13 @@ alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 # functions
 #-------------------------------------------------------------------------
 #
+function memorytests() {
+    cd ${LUCIE_PATH}/laravel && tests tests/Memory --stop-on-failure
+}
+
+function refontebesoin() {
+    cd ${LUCIE_PATH}/laravel && git checkout refonte-besoin && git pull
+}
 
 function eodurl() {
     if [ -z $EOD_PASSWORD ]; then

@@ -156,7 +156,8 @@ function getLastFolders() {
 # check if containerName is up and running
 function containerExists() {
     local containerName=$1
-    if [ "$(docker ps -a | grep $containerName)" ]; then
+    docker container inspect $containerName >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
         true
     else
         false

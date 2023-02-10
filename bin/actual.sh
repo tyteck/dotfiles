@@ -17,7 +17,7 @@ alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 #-------------------------------------------------------------------------
 #
 function memorytests() {
-    cd ${LUCIE_PATH}/laravel && tests tests/Memory --stop-on-failure
+    cd ${LUCIE_PATH}/laravel && artisan test --coverage-clover ./coverage.xml --exclude-group IgnoreCI --testsuite Memory --stop-on-failure
 }
 
 function refontebesoin() {

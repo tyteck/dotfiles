@@ -55,7 +55,6 @@ alias doktus='docker ps -a'
 alias dokillall='docker kill $(docker ps -q)'
 alias dokup='docker compose up -d'
 alias dokupprod='docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
-
 alias podexec='docker exec -it podmytube'
 
 # Symfony

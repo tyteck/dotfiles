@@ -24,6 +24,10 @@ function refontebesoin() {
     cd ${LUCIE_PATH}/laravel && git checkout refonte-besoin && git pull
 }
 
+function mergerefontebesoin() {
+    cd ${LUCIE_PATH}/laravel && git fetch -a && git merge origin/refonte-besoin
+}
+
 function eodurl() {
     if [ -z $EOD_PASSWORD ]; then
         error 'EOD_PASSWORD is empty. You should export it somewhere'

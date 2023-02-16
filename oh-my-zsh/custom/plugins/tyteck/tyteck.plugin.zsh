@@ -13,6 +13,7 @@ export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
 export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
+export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
 
 APACHE_USER=www-data
 APACHE_GROUP=www-data
@@ -509,6 +510,18 @@ function sogedown() {
 function sogerestart() {
     sogedown
     sogeup
+}
+
+function demoup() {
+    comment "=====> demo-print-factory =====> UP"
+    persoup
+    cd $DEMO_PRINT_FACTORY_PATH
+}
+
+function demodown() {
+    comment "=====> demo-print-factory =====> DOWN"
+    persodown
+    cd $HOME
 }
 
 function actualup() {

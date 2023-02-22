@@ -10,6 +10,7 @@ export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
+alias fredseeder='artisan db:seed --class FredSeeder'
 
 #
 #-------------------------------------------------------------------------

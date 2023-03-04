@@ -14,6 +14,8 @@ export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
+# required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
+export PHP_CS_FIXER_IGNORE_ENV=1
 
 APACHE_USER=www-data
 APACHE_GROUP=www-data

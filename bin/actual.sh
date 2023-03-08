@@ -11,6 +11,7 @@ export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 alias fredseeder='artisan db:seed --class FredSeeder'
+alias mt='memorytests'
 
 #
 #-------------------------------------------------------------------------
@@ -18,7 +19,13 @@ alias fredseeder='artisan db:seed --class FredSeeder'
 #-------------------------------------------------------------------------
 #
 function memorytests() {
-    cd ${LUCIE_PATH}/laravel && artisan test --coverage-clover ./coverage.xml --exclude-group IgnoreCI --testsuite Memory --stop-on-failure
+    cd ${LUCIE_PATH}/laravel
+    for testsuite in MemoryFeature MemoryFeature MemoryModels MemoryPubsub MemoryUnit MemoryView; do
+        artisan test --coverage-clover ./coverage.xml --exclude-group IgnoreCI --stop-on-failure --testsuite ${testsuite}
+        if [ $? != 0 ]; then
+            return
+        fi
+    done
 }
 
 function refontebesoin() {

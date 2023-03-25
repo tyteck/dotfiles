@@ -15,6 +15,7 @@ export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
+export TEMP_PATH="$PROJECTS_PATH/temperatures"
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
 export PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -33,6 +34,7 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 # vscode
 alias vsdot="cd ${HOME}/dotfiles && code ."
 alias vspod="cd ${PODMYTUBE_PATH} && code ."
+alias vstemp="cd ${TEMP_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
@@ -476,6 +478,16 @@ function jefaismescomptesdown() {
     containerdown "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
 }
 
+function tempup() {
+    persoup
+    containerup "temperatures" "$TEMP_PATH"
+    cd $TEMP_PATH
+}
+
+function tempdown() {
+    containerdown "temperatures" "$TEMP_PATH"
+}
+
 function persoup() {
     comment "=====> perso =====> UP"
     sogedown
@@ -492,6 +504,7 @@ function persodown() {
     nginxdown
     maildown
     poddown
+    tempdown
     jefaismescomptesdown
 }
 

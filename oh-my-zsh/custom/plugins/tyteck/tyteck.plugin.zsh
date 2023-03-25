@@ -1,9 +1,10 @@
-alias zrc='exec zsh'
-alias please='sudo'
-alias restart='please shutdown -r now'
-alias reboot='restart'
+alias code='PHP_CS_FIXER_IGNORE_ENV=1 | code'
 alias history='history -E'
 alias myipeth0='ip addr show enp2s0'
+alias please='sudo'
+alias reboot='restart'
+alias restart='please shutdown -r now'
+alias zrc='exec zsh'
 
 export PROJECTS_PATH="$HOME/Projects"
 export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
@@ -38,6 +39,7 @@ alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
 
 # default db shortcuts
 alias dbprod="mysql --login-path=prod podmytube"
+alias dbblog="mysql --login-path=blog blogging"
 
 alias c='clear'
 alias fullpath='readlink -f'

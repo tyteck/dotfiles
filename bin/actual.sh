@@ -29,7 +29,7 @@ function memorytests() {
 }
 
 function refontebesoin() {
-    cd ${LUCIE_PATH}/laravel && git checkout refonte-besoin && git pull
+    cd ${LUCIE_PATH}/laravel && git checkout refonte-besoin && git pull && composer install
 }
 
 function mergerefontebesoin() {

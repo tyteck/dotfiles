@@ -316,3 +316,13 @@ function modifiedFiles() {
     comment "Here are the file you modified"
     git diff HEAD~${backInTime}..HEAD --compact-summary
 }
+
+function commiturl() {
+    local hash=$1
+    if [ -z $hash ]; then
+        error "You need to give the commit hash ot get url."
+        return 1
+    fi
+    local remote=$(git remote -v | awk '/(fetch)/ {print $2}' | sed 's/:/\// ; s/git@/https:\/\// ; s/perso\.github\.com/github\.com/; s/\.git// ')
+    echo "$remote/commit/$hash"
+}

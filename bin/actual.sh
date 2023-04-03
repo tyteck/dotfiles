@@ -175,7 +175,6 @@ function actualdown() {
 function persoup() {
     comment "=====> perso =====> UP"
     actualdown
-
     docker network inspect nginx-proxy >/dev/null 2>&1
     if [ $? != 0 ]; then
         docker network create nginx-proxy
@@ -184,6 +183,7 @@ function persoup() {
     mysqlup
     phpmyadminup
     mailup
+    memorymysqlup
 }
 
 function domup() {

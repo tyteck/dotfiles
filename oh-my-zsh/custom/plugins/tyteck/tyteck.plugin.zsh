@@ -11,6 +11,7 @@ export MAILHOG_PATH='/var/opt/docker/mailhog'
 export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
 export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
+export MEMORYMYSQL_PATH="/var/opt/docker/memorymysql"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
@@ -444,8 +445,16 @@ function mailup() {
     containerup "mailhog" "$MAILHOG_PATH"
 }
 
+function memorymysqlup() {
+    containerup "memorymysql" "$MEMORYMYSQL_PATH"
+}
+
 function maildown() {
     containerdown "mailhog" "$MAILHOG_PATH"
+}
+
+function memorymysqldown() {
+    containerdown "memorymysql" "$MEMORYMYSQL_PATH"
 }
 
 function nginxup() {
@@ -488,11 +497,11 @@ function tempdown() {
 
 function persoup() {
     comment "=====> perso =====> UP"
-    sogedown
     mysqlup
     phpmyadminup
     nginxup
     mailup
+    memorymysqlup
 }
 
 function persodown() {
@@ -501,6 +510,7 @@ function persodown() {
     phpmyadmindown
     nginxdown
     maildown
+    memorymysqldown
     poddown
     tempdown
     jefaismescomptesdown

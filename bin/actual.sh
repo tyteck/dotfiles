@@ -18,6 +18,28 @@ alias mt='memorytests'
 # functions
 #-------------------------------------------------------------------------
 #
+function rebuildTestingIfNeeded() {
+    dblucielocal -e "create database if not exists actual_testing;" >/dev/null 2>&1
+    comment "actual_testing ✅"
+}
+
+function tests() {
+    rebuildTestingIfNeeded
+
+    local executablePath='vendor/bin/phpunit'
+
+    if ! dockerFileExists $executablePath; then
+        error "There is no ${executablePath} by there."
+        return 1
+    fi
+
+    # get the command to access container
+    local dockerPrefix=$(getDockerPrefix)
+    local commandToRun="${dockerPrefix}${executablePath} $@"
+    comment $commandToRun
+    eval $commandToRun
+}
+
 function memorytests() {
     cd ${LUCIE_PATH}/laravel
     for testsuite in MemoryFeature MemoryFeature MemoryModels MemoryPubsub MemoryUnit MemoryView; do

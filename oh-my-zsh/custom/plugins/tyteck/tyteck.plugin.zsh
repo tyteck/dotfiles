@@ -426,11 +426,11 @@ function containerdown() {
 }
 
 function mysqlup() {
-    containerup "mysqlserver" "$MYSQL_SERVER_PATH"
+    containerup "mysqlserver-db-1" "$MYSQL_SERVER_PATH"
 }
 
 function mysqldown() {
-    containerdown "mysqlserver" "$MYSQL_SERVER_PATH"
+    containerdown "mysqlserver-db-1" "$MYSQL_SERVER_PATH"
 }
 
 function phpmyadminup() {

@@ -169,6 +169,8 @@ function lucieup() {
     if [ $? != 0 ]; then
         docker network create actual-network
     fi
+    logFile=${LUCIE_PATH}/laravel/storage/logs/laravel-$(date "+%Y-%m-%d").log
+    touch $logFile && sudo chown www-data:fred $logFile
     eval ${LUCIE_COMPOSE} up -d
     cd ${LUCIE_PATH}/laravel
 }

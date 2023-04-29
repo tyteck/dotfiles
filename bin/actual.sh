@@ -18,6 +18,28 @@ alias mt='memorytests'
 # functions
 #-------------------------------------------------------------------------
 #
+function rebuildTestingIfNeeded() {
+    dblucielocal -e "create database if not exists actual_testing;" >/dev/null 2>&1
+    comment "actual_testing ✅"
+}
+
+function tests() {
+    rebuildTestingIfNeeded
+
+    local executablePath='vendor/bin/phpunit'
+
+    if ! dockerFileExists $executablePath; then
+        error "There is no ${executablePath} by there."
+        return 1
+    fi
+
+    # get the command to access container
+    local dockerPrefix=$(getDockerPrefix)
+    local commandToRun="${dockerPrefix}${executablePath} $@"
+    comment $commandToRun
+    eval $commandToRun
+}
+
 function memorytests() {
     cd ${LUCIE_PATH}/laravel
     for testsuite in MemoryFeature MemoryFeature MemoryModels MemoryPubsub MemoryUnit MemoryView; do
@@ -29,7 +51,7 @@ function memorytests() {
 }
 
 function refontebesoin() {
-    cd ${LUCIE_PATH}/laravel && git checkout refonte-besoin && git pull
+    cd ${LUCIE_PATH}/laravel && git checkout refonte-besoin && git pull && composer install
 }
 
 function mergerefontebesoin() {
@@ -147,6 +169,8 @@ function lucieup() {
     if [ $? != 0 ]; then
         docker network create actual-network
     fi
+    logFile=${LUCIE_PATH}/laravel/storage/logs/laravel-$(date "+%Y-%m-%d").log
+    touch $logFile && sudo chown www-data:fred $logFile
     eval ${LUCIE_COMPOSE} up -d
     cd ${LUCIE_PATH}/laravel
 }
@@ -175,7 +199,6 @@ function actualdown() {
 function persoup() {
     comment "=====> perso =====> UP"
     actualdown
-
     docker network inspect nginx-proxy >/dev/null 2>&1
     if [ $? != 0 ]; then
         docker network create nginx-proxy
@@ -184,6 +207,7 @@ function persoup() {
     mysqlup
     phpmyadminup
     mailup
+    memorymysqlup
 }
 
 function domup() {

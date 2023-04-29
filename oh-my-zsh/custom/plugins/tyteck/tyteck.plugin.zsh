@@ -12,10 +12,12 @@ export MAILHOG_PATH='/var/opt/docker/mailhog'
 export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
 export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
+export MEMORYMYSQL_PATH="/var/opt/docker/memorymysql"
 export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
 export TEMP_PATH="$PROJECTS_PATH/temperatures"
+export DOCS_PATH="$PROJECTS_PATH/apidocuments"
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
 export PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -35,6 +37,7 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 alias vsdot="cd ${HOME}/dotfiles && code ."
 alias vspod="cd ${PODMYTUBE_PATH} && code ."
 alias vstemp="cd ${TEMP_PATH} && code ."
+alias vsdocs="cd ${DOCS_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
@@ -63,6 +66,7 @@ alias dokillall='docker kill $(docker ps -q)'
 alias dokup='docker compose up -d'
 alias dokupprod='docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d'
 alias podexec='docker exec -it podmytube'
+alias dbcourbesprod='mysql --login-path=courbes'
 
 # Symfony
 alias sfc='php bin/console'
@@ -427,11 +431,11 @@ function containerdown() {
 }
 
 function mysqlup() {
-    containerup "mysqlserver" "$MYSQL_SERVER_PATH"
+    containerup "mysqlserver-db-1" "$MYSQL_SERVER_PATH"
 }
 
 function mysqldown() {
-    containerdown "mysqlserver" "$MYSQL_SERVER_PATH"
+    containerdown "mysqlserver-db-1" "$MYSQL_SERVER_PATH"
 }
 
 function phpmyadminup() {
@@ -446,8 +450,16 @@ function mailup() {
     containerup "mailhog" "$MAILHOG_PATH"
 }
 
+function memorymysqlup() {
+    containerup "memorymysql" "$MEMORYMYSQL_PATH"
+}
+
 function maildown() {
     containerdown "mailhog" "$MAILHOG_PATH"
+}
+
+function memorymysqldown() {
+    containerdown "memorymysql" "$MEMORYMYSQL_PATH"
 }
 
 function nginxup() {
@@ -488,13 +500,23 @@ function tempdown() {
     containerdown "temperatures" "$TEMP_PATH"
 }
 
+function docsup() {
+    persoup
+    containerup "apidocuments" "$DOCS_PATH"
+    cd $DOCS_PATH
+}
+
+function docsdown() {
+    containerdown "apidocuments" "$DOCS_PATH"
+}
+
 function persoup() {
     comment "=====> perso =====> UP"
-    sogedown
     mysqlup
     phpmyadminup
     nginxup
     mailup
+    memorymysqlup
 }
 
 function persodown() {
@@ -503,8 +525,10 @@ function persodown() {
     phpmyadmindown
     nginxdown
     maildown
+    memorymysqldown
     poddown
     tempdown
+    docsdown
     jefaismescomptesdown
 }
 

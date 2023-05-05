@@ -17,6 +17,7 @@ export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
 export TEMP_PATH="$PROJECTS_PATH/temperatures"
 export DOCS_PATH="$PROJECTS_PATH/apidocuments"
+export POKER_PATH="$PROJECTS_PATH/planning-poker-back"
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
 export PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -471,7 +472,6 @@ function nginxdown() {
 function podup() {
     persoup
     containerup "podmytube" "$PODMYTUBE_PATH"
-    cd $PODMYTUBE_PATH
 }
 
 function poddown() {
@@ -481,7 +481,6 @@ function poddown() {
 function jefaismescomptesup() {
     persoup
     containerup "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
-    cd $JEFAISMESCOMPTES_PATH
 }
 
 function jefaismescomptesdown() {
@@ -491,7 +490,6 @@ function jefaismescomptesdown() {
 function tempup() {
     persoup
     containerup "temperatures" "$TEMP_PATH"
-    cd $TEMP_PATH
 }
 
 function tempdown() {
@@ -501,11 +499,21 @@ function tempdown() {
 function docsup() {
     persoup
     containerup "apidocuments" "$DOCS_PATH"
-    cd $DOCS_PATH
 }
 
 function docsdown() {
+    persoup
     containerdown "apidocuments" "$DOCS_PATH"
+}
+
+function pokerup() {
+    persoup
+    containerup "poker" "$POKER_PATH"
+}
+
+function pokerdown() {
+    persoup
+    containerdown "poker" "$POKER_PATH"
 }
 
 function persoup() {

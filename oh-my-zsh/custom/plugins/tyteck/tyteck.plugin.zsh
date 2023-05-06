@@ -138,14 +138,6 @@ function foolperso() {
     echo "tyteck"
 }
 
-function isMacos() {
-    if [ $(uname -s) = 'Darwin' ]; then
-        true
-    else
-        false
-    fi
-}
-
 function emptyFile() {
     local fileToEmpty=$1
     if [ -z $fileToEmpty ]; then
@@ -600,4 +592,20 @@ function installdeb() {
     fi
     comment "Installation successful"
     return 0
+}
+
+function refreshmycontainers() {
+    for container in mailhog memorymysql mysqlserver nginx-proxy phpmyadmin; do
+        echo "====> refreshing $container"
+        cd /var/opt/docker/$container
+        git pull
+        dokrestart
+    done
+}
+
+function refreshimages() {
+    for image in jwilder/nginx-proxy:alpine jrcs/letsencrypt-nginx-proxy-companion mysql:5.7 phpmyadmin/phpmyadmin mailhog/mailhog; do
+        echo "====> refreshing $image"
+        docker pull $image
+    done
 }

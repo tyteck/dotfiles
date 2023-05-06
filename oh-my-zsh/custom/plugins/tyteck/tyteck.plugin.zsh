@@ -13,11 +13,11 @@ export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
 export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
 export MEMORYMYSQL_PATH="/var/opt/docker/memorymysql"
-export JEFAISMESCOMPTES_PATH="$PROJECTS_PATH/jefaismescomptes"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
 export TEMP_PATH="$PROJECTS_PATH/temperatures"
 export DOCS_PATH="$PROJECTS_PATH/apidocuments"
+export POKER_PATH="$PROJECTS_PATH/poker"
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
 export PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -450,12 +450,12 @@ function mailup() {
     containerup "mailhog" "$MAILHOG_PATH"
 }
 
-function memorymysqlup() {
-    containerup "memorymysql" "$MEMORYMYSQL_PATH"
-}
-
 function maildown() {
     containerdown "mailhog" "$MAILHOG_PATH"
+}
+
+function memorymysqlup() {
+    containerup "memorymysql" "$MEMORYMYSQL_PATH"
 }
 
 function memorymysqldown() {
@@ -470,45 +470,57 @@ function nginxdown() {
     containerdown "nginx-proxy" "$NGINX_PROXY_PATH"
 }
 
+# ==================================
+# Podmytube
+# ==================================
 function podup() {
     persoup
     containerup "podmytube" "$PODMYTUBE_PATH"
-    cd $PODMYTUBE_PATH
 }
 
 function poddown() {
     containerdown "podmytube" "$PODMYTUBE_PATH"
 }
 
-function jefaismescomptesup() {
-    persoup
-    containerup "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
-    cd $JEFAISMESCOMPTES_PATH
-}
-
-function jefaismescomptesdown() {
-    containerdown "jefaismescomptes" "$JEFAISMESCOMPTES_PATH"
-}
-
+# ==================================
+# Temperatures
+# ==================================
 function tempup() {
     persoup
     containerup "temperatures" "$TEMP_PATH"
-    cd $TEMP_PATH
 }
 
 function tempdown() {
     containerdown "temperatures" "$TEMP_PATH"
 }
 
+# ==================================
+# GDPR
+# ==================================
 function docsup() {
     persoup
     containerup "apidocuments" "$DOCS_PATH"
-    cd $DOCS_PATH
 }
 
 function docsdown() {
     containerdown "apidocuments" "$DOCS_PATH"
 }
+
+# ==================================
+# POKER
+# ==================================
+function pokerup() {
+    persoup
+    containerup "poker" "$POKER_PATH"
+}
+
+function pokerdown() {
+    containerdown "poker" "$POKER_PATH"
+}
+
+# ==================================
+# Common
+# ==================================
 
 function persoup() {
     comment "=====> perso =====> UP"
@@ -529,7 +541,7 @@ function persodown() {
     poddown
     tempdown
     docsdown
-    jefaismescomptesdown
+    pokerdown
 }
 
 function sogeup() {

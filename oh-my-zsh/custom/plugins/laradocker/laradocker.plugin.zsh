@@ -40,6 +40,10 @@ function artisan() {
     local lastFolderName=$(getLastFolders)
     comment ${commandToRun}
     eval $commandToRun
+    if [ $? != 0 ]; then
+        error "Something wrong happened ... container is probably down."
+        return 1
+    fi
 }
 
 function getDockerPrefix() {
@@ -171,7 +175,7 @@ function dockerFileExists(){
     local dockerPrefix=$(getDockerPrefix)
 
     # check if executable is present
-    local commandToRun="${dockerPrefix} test -f ${fileName}"
+    local commandToRun="${dockerPrefix}test -f ${fileName}"
     comment $commandToRun
     eval $commandToRun
     if [ $? -eq 0 ]; then

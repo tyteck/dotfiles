@@ -71,7 +71,7 @@ function eodurl() {
         return 1
     fi
 
-    echo "https://actual:${EOD_PASSWORD}@${branchName}.eod.groupeactual.io/lucie"
+    echo "https://actual:${EOD_PASSWORD}@${branchName}.eodv2.groupeactual.io/lucie"
 }
 
 function pushluciepp() {
@@ -216,4 +216,14 @@ function domup() {
     persodown
     cd {$PROJECTS_PATH}/github.com/sogedep-om
     docker compose up -d
+}
+
+function kube() {
+    local namespace=$1
+    if [ -z $namespace ]; then
+        warning 'Usage : kube <namespace> (ie : eodurl T1-684-jobboard-email)'
+        return 1
+    fi
+    kubectl cp ~/dotfiles/.miniBashrc commander:/root/.bashrc --namespace=$namespace
+    kubectl exec -it --namespace=accuse-reception commander -- bash -c "source /root/.bashrc"
 }

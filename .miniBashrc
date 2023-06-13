@@ -1,1 +1,4 @@
 alias l='ls -lsa --color=auto'
+alias artisan='php artisan'
+alias tinker='artisan tinker'
+

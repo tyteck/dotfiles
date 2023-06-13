@@ -51,7 +51,7 @@ function getDockerPrefix() {
     local lastFolderNames=$(getLastFolders 2)
     local dockerPrefix=''
     if [[ "$lastFolderName" = 'lucie' || "$lastFolderNames" = "lucie/laravel" ]]; then # lucie - Actual
-        dockerPrefix="docker-compose -f ${LUCIE_PATH}/docker/docker-compose.yml -p actual exec php-nginx "
+        dockerPrefix="${LUCIE_COMPOSE} exec php-nginx "
     elif [[ "$lastFolderName" = 'nina' || "$lastFolderNames" = "nina/app" ]]; then # nina - Actual
         dockerPrefix="docker-compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
     elif isInstalled 'docker' && containerExists $lastFolderName; then
@@ -336,3 +336,4 @@ alias atp='artisan test --parallel'
 alias avp='artisan vendor:publish'
 alias tinker='artisan tinker'
 alias insights='artisan insights --no-interaction --verbose'
+alias teststop='tests --stop-on-failure --stop-on-error'

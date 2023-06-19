@@ -11,19 +11,24 @@ function removeOldSnaps() {
 }
 
 # cleaning journal
+echo "cleaning journal"
 journalctl --vacuum-time=1d --quiet
 
 # cleaning apt archives
+echo "cleaning apt archives"
 apt-get clean
 
 # cleaning old docker images
+echo "cleaning old docker images"
 docker system prune -f >/dev/null 2>&1
 
 # removing old snaps
+echo "removing old snaps"
 if command -v snap &>/dev/null; then
     removeOldSnaps
 fi
 
 # cleaning unused docker volumes
+echo "cleaning unused docker volumes"
 # chis will not delete any container or any volume in use!
 docker volume rm $(docker volume ls -qf dangling=true) >/dev/null 2>&1

@@ -224,6 +224,13 @@ function kube() {
         warning 'Usage : kube <namespace> (ie : eodurl T1-684-jobboard-email)'
         return 1
     fi
-    kubectl cp ~/dotfiles/.miniBashrc commander:/root/.bashrc --namespace=$namespace
-    kubectl exec -it --namespace=accuse-reception commander -- bash -c "source /root/.bashrc"
+
+    kubectl cp ~/dotfiles/.miniBashrc commander:/root/.fredt_aliases --namespace=$namespace
+    if [ $? != 0 ]; then
+        error "copying minibash on kube pod $namespace has failed."
+        return 1
+    fi
+
+    kubectl exec -it -n "$namespace" commander -- bash -c "source /root/.fredt_aliases && bash"
+    return 0
 }

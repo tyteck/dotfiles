@@ -43,6 +43,7 @@ for ($i = 1; $i < $argc; $i++) {
 
 if (count($filesOfFoldersToFormat)) {
     $command = "{$pintBinaryPath} --config {$pintJsonConfigPath} " . implode(' ', $filesOfFoldersToFormat) ;
+    echo $command . PHP_EOL;
     passthru($command, $result);
     if ($result !== 0){
         throw new RuntimeException("Command {{$command}} has failed.");

@@ -16,6 +16,7 @@ export MEMORYMYSQL_PATH="/var/opt/docker/memorymysql"
 export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
 export TEMP_PATH="$PROJECTS_PATH/temperatures"
+export ECRAN_PATH="$PROJECTS_PATH/ecran-inspirant"
 export DOCS_PATH="$PROJECTS_PATH/apidocuments"
 export POKER_PATH="$PROJECTS_PATH/poker"
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
@@ -38,6 +39,7 @@ alias vsdot="cd ${HOME}/dotfiles && code ."
 alias vspod="cd ${PODMYTUBE_PATH} && code ."
 alias vstemp="cd ${TEMP_PATH} && code ."
 alias vsdocs="cd ${DOCS_PATH} && code ."
+alias vsecran="cd ${ECRAN_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
@@ -511,6 +513,18 @@ function pokerdown() {
 }
 
 # ==================================
+# Ecran Inspirant
+# ==================================
+function ecranup() {
+    persoup
+    containerup "ecran-inspirant" "$ECRAN_PATH"
+}
+
+function ecrandown() {
+    containerdown "ecran-inspirant" "$ECRAN_PATH"
+}
+
+# ==================================
 # Common
 # ==================================
 
@@ -534,6 +548,7 @@ function persodown() {
     tempdown
     docsdown
     pokerdown
+    ecrandown
 }
 
 function sogeup() {

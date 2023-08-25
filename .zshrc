@@ -2,7 +2,7 @@
 export HOST=$(uname -n)
 export PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin/
 export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:/usr/local/go/bin
-
+export GOPATH=$HOME/go
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 

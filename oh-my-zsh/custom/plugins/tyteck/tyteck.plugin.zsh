@@ -75,12 +75,10 @@ alias dbcourbesprod='mysql --login-path=courbes'
 # Symfony
 alias sfc='php bin/console'
 
-# Php
-alias phpunit='./vendor/bin/phpunit --colors=always'
-
-# npm
-alias nrtest='npm run test'
-alias upgradeNpm='sudo npm install -g npm'
+# Golang
+alias got='go test'
+alias gor='go run'
+alias gob='go build'
 
 # screen
 alias sls='screen -ls'

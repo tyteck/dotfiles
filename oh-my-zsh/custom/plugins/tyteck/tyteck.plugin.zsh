@@ -8,6 +8,7 @@ alias zrc='exec zsh'
 
 export PROJECTS_PATH="$HOME/Projects"
 export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
+export INSPIRATION_PATH="$PROJECTS_PATH/ecran-inspirant"
 export MAILHOG_PATH='/var/opt/docker/mailhog'
 export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
@@ -36,8 +37,9 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 
 # vscode
 alias vsdot="cd ${HOME}/dotfiles && code ."
+alias vsecran="cd ${INSPIRATION_PATH} && screen -d -m npm run dev && code ."
 alias vspod="cd ${PODMYTUBE_PATH} && code ."
-alias vstemp="cd ${TEMP_PATH} && code ."
+alias vstemp="cd ${TEMP_PATH} && screen -d -m npm run dev && code ."
 alias vsdocs="cd ${DOCS_PATH} && code ."
 alias vsecran="cd ${ECRAN_PATH} && code ."
 
@@ -73,12 +75,10 @@ alias dbcourbesprod='mysql --login-path=courbes'
 # Symfony
 alias sfc='php bin/console'
 
-# Php
-alias phpunit='./vendor/bin/phpunit --colors=always'
-
-# npm
-alias nrtest='npm run test'
-alias upgradeNpm='sudo npm install -g npm'
+# Golang
+alias got='go test'
+alias gor='go run'
+alias gob='go build'
 
 # screen
 alias sls='screen -ls'

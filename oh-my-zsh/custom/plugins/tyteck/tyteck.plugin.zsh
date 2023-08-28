@@ -101,6 +101,7 @@ alias biggestfiles='du -Sh . | sort -rh | head -20'
 
 # Go/Golang
 alias gor='go run'
+alias got='go test'
 alias gorm='gor main.go'
 
 # apt

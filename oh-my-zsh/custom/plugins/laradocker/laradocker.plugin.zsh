@@ -40,10 +40,6 @@ function artisan() {
     local lastFolderName=$(getLastFolders)
     comment ${commandToRun}
     eval $commandToRun
-    if [ $? != 0 ]; then
-        error "Something wrong happened ... container is probably down."
-        return 1
-    fi
 }
 
 function getDockerPrefix() {

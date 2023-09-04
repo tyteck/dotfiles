@@ -133,5 +133,5 @@ if [ "$HOST" = "tour-fred" ]; then
 fi
 
 if [ "$HOST" = "XPS-13" ]; then
-    . $HOME/dotfiles/bin/actual.sh
+    . $HOME/dotfiles/bin/actual.zsh
 fi

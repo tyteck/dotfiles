@@ -284,25 +284,30 @@ function dokexists() {
     return $?
 }
 
-function inArray() {
-    local needle=$1
-    shift
-    local haystack=("$@")
-    for i in $haystack; do
-        if [[ $needle == $haystack[$i] ]]; then
-            return 0
+function in_array() {
+    local needle="$1"
+    local haystack="$2"
+    
+    # Split the string into an array
+    local values_array=(${(@s/ /)haystack})
+
+    # Iterate through the elements in the array
+    for item in $values_array; do
+        if [[ $item == $needle ]]; then
+            return 0 # Return success (true) if the value is found
         fi
     done
-    return 1
+
+    return 1 # Return failure (false) if the value is not found
 }
-#first_array=(1 2 3)
-#echo "---------------------------------"
-#echo "should be pas cool"
-#if inArray cat "${first_array[@]}"; then echo "cool"; else echo "pas cool"; fi
-#echo "---------------------------------"
-#echo "should be cool"
-#if inArray 2 "${first_array[@]}"; then echo "cool"; else echo "pas cool"; fi
-#echo "---------------------------------"
+
+#my_string="item1 item2 item3 item4"
+#value_to_check="item3"
+#if in_array "$value_to_check" "$my_string"; then
+#    echo "$value_to_check is in the string."
+#else
+#    echo "$value_to_check is not in the string."
+#fi
 
 # this function will set builtin audio as default input and output
 function setaudio() {

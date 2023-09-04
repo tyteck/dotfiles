@@ -107,13 +107,32 @@ function pushluciedev() {
 
     gcloud config set project eactual-215607
 
-    rungGcloudTriggersWithBranch $branchName
+    triggersToRun="k8s-jobs lucie-web-cloudrun"
+    rungGcloudTriggersWithBranch $branchName $triggersToRun
+}
+
+function pushlucieeod() {
+    local branchName=$1
+    if [ -z $branchName ]; then
+        warning 'Usage : pushluciedeod <BRANCH_NAME> (ie : pushluciedev s21-17)'
+        return 1
+    fi
+
+    gcloud config set project eactual-215607
+    triggersToRun="laravel-ondemand k8s-jobs-ondemand-manuel"
+    rungGcloudTriggersWithBranch $branchName $triggersToRun
 }
 
 function rungGcloudTriggersWithBranch() {
     local branchName=$1
     if [[ -z $branchName ]]; then
         error 'rungGcloudTriggersWithBranch expects the branch name to be non empty'
+        return 1
+    fi
+
+    local triggerNamesToRun=$2
+    if [[ -z $triggerNamesToRun ]]; then
+        error 'rungGcloudTriggersWithBranch expects the triggers to run non being empty'
         return 1
     fi
 
@@ -134,28 +153,30 @@ function rungGcloudTriggersWithBranch() {
             triggerId=${value}
         fi
 
-        if [[ -z $key ]] && [[ -z $value ]]; then
-            # it s a new trigger
+        # it s a new line => new item to come
+        # let s process the one we finished
+        if [[ -z $key ]] && [[ -z $value ]] && in_array $triggerName $triggerNamesToRun; then
+            # it s a trigger to run
             runTriggerWithGoodNameOnly "${triggerName}" "${triggerId}" "${branchName}"
 
-            # then we reset trgger name and id
+            # then we reset trigger name and id
             triggerName=''
             triggerId=''
         fi
     done
-    # we dont forget the last one
-    runTriggerWithGoodNameOnly "${triggerName}" "${triggerId}" "${branchName}"
+    if in_array $triggerName $triggerNamesToRun; then
+        # we dont forget the last line
+        runTriggerWithGoodNameOnly "${triggerName}" "${triggerId}" "${branchName}"
+    fi
 }
 
 function runTriggerWithGoodNameOnly() {
     local triggerName=$1
     local triggerId=$2
     local branchName=$3
-    if [[ ${triggerName} = 'k8s-jobs' ]] || [[ ${triggerName} = 'lucie-web-cloudrun' ]]; then
-        cmd="gcloud beta builds triggers run ${triggerId} --branch ${branchName}"
-        comment "running : {$cmd} for $triggerName"
-        eval $cmd
-    fi
+    cmd="gcloud beta builds triggers run ${triggerId} --branch ${branchName}"
+    comment "running : {$cmd} for $triggerName"
+    eval $cmd
 }
 
 function luciedown() {

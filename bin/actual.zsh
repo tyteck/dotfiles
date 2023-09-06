@@ -119,7 +119,7 @@ function pushlucieeod() {
     fi
 
     gcloud config set project eactual-215607
-    triggersToRun="laravel-ondemand k8s-jobs-ondemand-manuel"
+    triggersToRun="k8s-jobs-ondemand-manuel"
     rungGcloudTriggersWithBranch $branchName $triggersToRun
 }
 

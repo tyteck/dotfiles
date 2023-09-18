@@ -45,6 +45,7 @@ alias vsecran="cd ${ECRAN_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
+alias fixbrokeninstall="sudo apt install -y --fix-broken"
 
 # default db shortcuts
 alias dbprod="mysql --login-path=prod podmytube"

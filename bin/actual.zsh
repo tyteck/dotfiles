@@ -235,7 +235,7 @@ function domup() {
     comment "=====> dom =====> UP"
     actualdown
     persodown
-    cd {$PROJECTS_PATH}/github.com/sogedep-om
+    cd {$SOGEDEP_PATH}
     docker compose up -d
 }
 

@@ -272,6 +272,16 @@ function catErrorsFromLog() {
     cat $lastLogFileResult | grep ERROR
 }
 
+function inNina() {
+    local absolutePath=$(pwd)
+    case $absolutePath in
+        *"nina"*)
+            return 0
+            ;;
+    esac
+    return 1
+}
+
 function isActualPath() {
     local absolutePath=$(pwd)
     case $absolutePath in

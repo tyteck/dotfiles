@@ -1,5 +1,4 @@
 #!/usr/bin/zsh
-# this script will display one eod env url so I can easily click on it
 
 # loading coloring message
 . $HOME/dotfiles/coloredMessage.sh
@@ -186,6 +185,7 @@ function luciedown() {
 function lucieup() {
     persodown
     sogedown
+    ninadown
     docker network inspect actual-network >/dev/null 2>&1
     if [ $? != 0 ]; then
         docker network create actual-network
@@ -207,6 +207,7 @@ function ninadown() {
 
 function ninaup() {
     persodown
+    luciedown
     eval ${NINA_COMPOSE} up -d
     cd ${NINA_PATH}
 }

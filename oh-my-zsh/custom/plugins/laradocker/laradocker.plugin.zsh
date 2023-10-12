@@ -272,30 +272,38 @@ function catErrorsFromLog() {
     cat $lastLogFileResult | grep ERROR
 }
 
+# sample test
+# if inNina;then echo "IN";else echo "out";fi
 function inNina() {
+    inPath "nina"
+}
+
+# sample test
+# if inLucie;then echo "IN";else echo "out";fi
+function inLucie() {
+    inPath "lucie"
+}
+
+# sample test
+# if inPath "lorem";then echo "IN";else echo "out";fi
+function inPath() {
+    local pathToCheck=$1
+    if [ -z $pathToCheck ]; then
+        echo 'You should give the path you want to check you are in.'
+        return 1
+    fi
     local absolutePath=$(pwd)
     case $absolutePath in
-        *"nina"*)
+        *"${pathToCheck}"*)
             return 0
             ;;
     esac
     return 1
 }
-
-function isActualPath() {
-    local absolutePath=$(pwd)
-    case $absolutePath in
-        *"lucie"*)
-            return 0
-            ;;
-    esac
-    return 1
-}
-
 
 function migratePath(){
     local migratePath=''
-    if isActualPath; then
+    if inLucie; then
         migratePath=' --path="database/migrations/*"'
     fi
     echo $migratePath

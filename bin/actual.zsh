@@ -23,7 +23,9 @@ function rebuildTestingIfNeeded() {
 }
 
 function tests() {
-    rebuildTestingIfNeeded
+    if inLucie; then
+        rebuildTestingIfNeeded
+    fi
 
     local executablePath='vendor/bin/phpunit'
 

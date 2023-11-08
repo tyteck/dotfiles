@@ -46,10 +46,12 @@ function getDockerPrefix() {
     local lastFolderName=$(getLastFolders)
     local lastFolderNames=$(getLastFolders 2)
     local dockerPrefix=''
-    if [[ "$lastFolderName" = 'lucie' || "$lastFolderNames" = "lucie/laravel" ]]; then # lucie - Actual
+    if inLucie; then # lucie - Actual
         dockerPrefix="${LUCIE_COMPOSE} exec php-nginx "
-    elif [[ "$lastFolderName" = 'nina' || "$lastFolderNames" = "nina/app" ]]; then # nina - Actual
+    elif inNina; then # nina - Actual
         dockerPrefix="docker-compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
+    elif inDac; then # demande-acompte - Actual
+        dockerPrefix="docker compose --env-file ${DAC_PATH}/.env -f ${DAC_PATH}/docker/docker-compose.yml -p demande-acompte exec php-nginx "
     elif isInstalled 'docker' && containerExists $lastFolderName; then
         dockerPrefix="docker exec -it $lastFolderName "
     fi
@@ -283,6 +285,11 @@ function inNina() {
 function inLucie() {
     inPath "lucie"
 }
+
+function inDac() {
+    inPath "demande-acompte"
+}
+
 
 # sample test
 # if inPath "lorem";then echo "IN";else echo "out";fi

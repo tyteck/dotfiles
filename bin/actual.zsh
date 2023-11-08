@@ -5,12 +5,11 @@
 
 export LOCAL_DOCKER_IP=$(docker network inspect bridge --format='{{index .IPAM.Config 0 "Gateway"}}')
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 alias fredseeder='artisan db:seed --class FredSeeder'
-alias mt='memorytests'
 
 #
 #-------------------------------------------------------------------------
@@ -39,24 +38,6 @@ function tests() {
     local commandToRun="${dockerPrefix}${executablePath} $@"
     comment $commandToRun
     eval $commandToRun
-}
-
-function memorytests() {
-    cd ${LUCIE_PATH}/laravel
-    for testsuite in MemoryFeature MemoryFeature MemoryModels MemoryPubsub MemoryUnit MemoryView; do
-        artisan test --coverage-clover ./coverage.xml --exclude-group IgnoreCI --stop-on-failure --testsuite ${testsuite}
-        if [ $? != 0 ]; then
-            return
-        fi
-    done
-}
-
-function refontebesoin() {
-    cd ${LUCIE_PATH}/laravel && git checkout refonte-besoin && git pull && composer install
-}
-
-function mergerefontebesoin() {
-    cd ${LUCIE_PATH}/laravel && git fetch -a && git merge origin/refonte-besoin
 }
 
 function eodurl() {

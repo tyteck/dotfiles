@@ -203,21 +203,42 @@ function lucierestart() {
     lucieup
 }
 
+function ninastart() {
+    eval ${NINA_COMPOSE} run --rm -p 127.0.0.1:3000:3000 node pnpm start
+}
+
 function ninadown() {
+    echo ${NINA_COMPOSE} down --remove-orphans
     eval ${NINA_COMPOSE} down --remove-orphans
+}
+
+function dacup() {
+    persodown
+    cd ${DAC_PATH} && docker compose --env-file .env -f docker/docker-compose.yml -p demande-acompte up -d
+}
+
+function dacdown() {
+    cd ${DAC_PATH} && docker compose --env-file .env -f docker/docker-compose.yml -p demande-acompte down --remove-orphans
 }
 
 function ninaup() {
     persodown
     luciedown
-    eval ${NINA_COMPOSE} up -d
+    eval ${NINA_COMPOSE} up -d --remove-orphans
     cd ${NINA_PATH}
+    docker ps -a
+}
+
+function ninarestart() {
+    ninadown
+    ninaup
 }
 
 function actualdown() {
     comment "=====> actual =====> DOWN"
     ninadown
     luciedown
+    dacdown
 }
 
 function persoup() {

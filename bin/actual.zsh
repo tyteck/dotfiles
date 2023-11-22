@@ -202,6 +202,15 @@ function dacdown() {
     cd ${DAC_PATH} && docker compose --env-file .env -f docker/docker-compose.yml -p demande-acompte down --remove-orphans
 }
 
+function anaelup() {
+    persodown
+    cd ${ANAEL_PATH} && make up
+}
+
+function anaeldown() {
+    cd ${ANAEL_PATH} && make down
+}
+
 function ninaup() {
     persodown
     luciedown
@@ -220,6 +229,7 @@ function actualdown() {
     ninadown
     luciedown
     dacdown
+    anaeldown
 }
 
 function persoup() {
@@ -234,14 +244,6 @@ function persoup() {
     phpmyadminup
     mailup
     memorymysqlup
-}
-
-function domup() {
-    comment "=====> dom =====> UP"
-    actualdown
-    persodown
-    cd {$SOGEDEP_PATH}
-    docker compose up -d
 }
 
 function kube() {

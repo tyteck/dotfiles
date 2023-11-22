@@ -14,7 +14,6 @@ export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
 export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
 export MEMORYMYSQL_PATH="/var/opt/docker/memorymysql"
-export SOGEDEP_PATH="$PROJECTS_PATH/sogedep-om"
 export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
 export TEMP_PATH="$PROJECTS_PATH/temperatures"
 export ECRAN_PATH="$PROJECTS_PATH/ecran-inspirant"
@@ -556,27 +555,6 @@ function persodown() {
     docsdown
     pokerdown
     ecrandown
-}
-
-function sogeup() {
-    comment "=====> sogedep =====> UP"
-    actualdown
-    containerup "nginx-proxy" "$NGINX_PROXY_PATH"
-    containerup "mysqlserver" "$MYSQL_SERVER_PATH"
-    containerup "mailhog" "$MAILHOG_PATH"
-    containerup "phpmyadmin" "$PHPMYADMIN_PATH"
-    docker compose -f ${SOGEDEP_PATH}/compose.yaml up -d
-    cd $SOGEDEP_PATH
-}
-
-function sogedown() {
-    comment "=====> sogedep =====> DOWN"
-    docker compose -f ${SOGEDEP_PATH}/compose.yaml down
-}
-
-function sogerestart() {
-    sogedown
-    sogeup
 }
 
 function demoup() {

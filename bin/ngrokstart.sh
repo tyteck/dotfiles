@@ -6,7 +6,7 @@
 # - it's trying to configure stripe webhook dev mode to use this new ngrok subdomain
 #
 # Requirements :
-# you should export STRIPE_TEST with your STRIPE_API_KEY in your env (bashrc/zshrc)
+# you should export STRIPE_TEST_KEY with your STRIPE_API_KEY in your env (bashrc/zshrc)
 # ===================================================
 
 # loading coloring message
@@ -25,6 +25,8 @@ function removeDoubleQuotes() {
 if [ -z $STRIPE_TEST_KEY ]; then
     echo "You should add something like"
     echo "export STRIPE_TEST_KEY=<YOUR STRIPE API TEST KEY HERE>"
+    echo "it is the secret one that is relevant here"
+    echo "IE : sk_test_XXXXXXXXXXXXXXmg7"
     echo "in a non versionned/secure place"
     exit 1
 fi
@@ -33,7 +35,7 @@ fi
 # Ngrok Part
 # =======================================================================
 # running ngrok in a screen
-screen -dm ngrok http --region eu 80
+screen -dm ngrok http 80
 waitForSeconds=2
 warning "waiting $waitForSeconds secs for ngrok to be running"
 sleep $waitForSeconds
@@ -45,31 +47,28 @@ if [ -z $publicUrl ]; then
     exit 1
 fi
 
-# removing http|https
-cleanedEndpoint=$(sed 's~http[s]*://~~g' <<<$publicUrl)
-cleanedEndpoint=$(removeDoubleQuotes "$cleanedEndpoint")
+cleanedEndpoint=$(removeDoubleQuotes "$publicUrl")
 echo "Actual ngrok endpoint : $cleanedEndpoint"
 
 # =======================================================================
 # Stripe Part
 # =======================================================================
-
 # removing old endpoint
 oldEndpointId=$(curl --silent https://api.stripe.com/v1/webhook_endpoints -u $STRIPE_TEST_KEY: -G | jq '.data[0].id')
 oldEndpointId=$(removeDoubleQuotes "$oldEndpointId")
 if [ $oldEndpointId != "null" ]; then
     ### suppression du endpoint
-    warning "suppression du endpoint stripe existant ($oldEndpointId)"
+    warning "suppression du endpoint stripe existant ($oldEndpointId)\n"
     curl https://api.stripe.com/v1/webhook_endpoints/$oldEndpointId -u $STRIPE_TEST_KEY: -X DELETE
 fi
 
-newEndpoint="http://$cleanedEndpoint/stripe/webhooks"
+newEndpoint="$cleanedEndpoint/stripe/webhooks"
 comment "setting new endpoint $newEndpoint"
 ### adding new one
 secret=$(curl --silent https://api.stripe.com/v1/webhook_endpoints -u $STRIPE_TEST_KEY: -d url="$newEndpoint" -d "enabled_events[]"="checkout.session.completed" | jq '.secret')
 secret=$(removeDoubleQuotes $secret)
 
-echo ""
+echo "\n"
 separator $textColorOrange
 warning "Don't forget to set your new STRIPE_WEBHOOK_SECRET with ($secret)"
 separator $textColorOrange

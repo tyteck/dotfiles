@@ -470,6 +470,10 @@ function nginxdown() {
     containerdown "nginx-proxy" "$NGINX_PROXY_PATH"
 }
 
+function nginxrestart() {
+    nginxdown && nginxup
+}
+
 # ==================================
 # Podmytube
 # ==================================

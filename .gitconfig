@@ -5,6 +5,7 @@
 	branch = false
 [core]
 	pager = cat
+	excludesfile = /home/fred/.gitignore
 [safe]
 	directory = /home/fred/Projects/podmytube
 	directory = /home/fred/Projects/lucie

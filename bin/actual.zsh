@@ -167,7 +167,6 @@ function luciedown() {
 
 function lucieup() {
     persodown
-    sogedown
     ninadown
     docker network inspect actual-network >/dev/null 2>&1
     if [ $? != 0 ]; then

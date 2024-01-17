@@ -102,7 +102,11 @@ function stan() {
     # get the command to access container
     local dockerPrefix=$(getDockerPrefix)
 
-    commandToRun="${dockerPrefix}${executablePath} analyze ${pathToCheck} --level max"
+    if inNina; then # nina - Actual
+        commandToRun="${dockerPrefix}${executablePath} analyze ${pathToCheck} --level max"
+    else
+        commandToRun="${dockerPrefix}${executablePath}"
+    fi
     comment $commandToRun
     eval $commandToRun
 }

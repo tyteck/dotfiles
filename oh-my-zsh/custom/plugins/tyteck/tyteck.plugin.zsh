@@ -225,7 +225,7 @@ itsmine() {
         elif [ -d $FILE ]; then
             sudo chown -R $USER:$GROUP $FILE
         else
-            echo "{$FILE} is not a valid element to chown "
+            echo "{$FILE} do not exists. Check your path !"
             continue
         fi
     done

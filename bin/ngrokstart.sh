@@ -69,6 +69,14 @@ secret=$(curl --silent https://api.stripe.com/v1/webhook_endpoints -u $STRIPE_TE
 secret=$(removeDoubleQuotes $secret)
 
 echo "\n"
+
 separator $textColorOrange
-warning "Don't forget to set your new STRIPE_WEBHOOK_SECRET with ($secret)"
-separator $textColorOrange
+if [ -f .env ]; then
+    warning "Your .env is about to be updated with new STRIPE_WEBHOOK_SECRET with ($secret)"
+    pause
+    cp .env .env.back
+    sed -i "s/\(^STRIPE_WEBHOOK_SECRET=\).*/\1${secret}/" .env
+    comment "Your .env has been updated (copy saved in .env.back)"
+else
+    warning "Don't forget to set your new STRIPE_WEBHOOK_SECRET with ($secret)"
+fi

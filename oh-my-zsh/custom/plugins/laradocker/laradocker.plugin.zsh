@@ -111,6 +111,22 @@ function stan() {
     eval $commandToRun
 }
 
+function pint() {
+    local executablePath='vendor/bin/pint'
+
+    # get the command to access container
+    local dockerPrefix=$(getDockerPrefix)
+
+    if inDac || inNina || inLucie ; then # Actual
+        commandToRun="${dockerPrefix}${executablePath} --config /app/vendor/actual/code-quality/pint.run.json --ansi"
+    else
+        comment "nothing to run"
+        return
+    fi
+    comment $commandToRun
+    eval $commandToRun
+}
+
 function getBaseFolder() {
     local directoryIWantTheBaseFrom=$1
     if [ -z $directoryIWantTheBaseFrom ]; then

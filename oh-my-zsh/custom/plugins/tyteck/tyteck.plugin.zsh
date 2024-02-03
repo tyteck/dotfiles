@@ -480,6 +480,7 @@ function nginxrestart() {
 function podup() {
     persoup
     containerup "podmytube" "$PODMYTUBE_PATH"
+    cd $PODMYTUBE_PATH
 }
 
 function poddown() {

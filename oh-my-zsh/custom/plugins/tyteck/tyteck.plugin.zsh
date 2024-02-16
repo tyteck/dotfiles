@@ -163,63 +163,40 @@ function emptyFile() {
     return 1
 }
 
-function apacheonly() {
-    for ITEM in "$@"; do
-        if [ -f $ITEM ]; then
-            sudo chown www-data:www-data $ITEM
-            sudo chmod g+rw $ITEM
-        elif [ -d $ITEM ]; then
-            sudo chown -R www-data:www-data $ITEM
-            sudo chmod -R g+rw $ITEM
-        else
-            warning "{$ITEM} is not a valid element to change permssions on."
-            continue
-        fi
-    done
-    return 0
-}
-
-function apacheUser() {
-    local apacheUser='www-data'
-    echo $apacheUser
-}
-
-function apachewith() {
-    local SOME_USER=$1
-    if ! userExists $SOME_USER; then
-        echo "User ($SOME_USER) does not exists. I need one real user to go with apache(www-data)"
-        echo 'usage : apachewith REAL_USER <FILE>|<FOLDER> ...'
-        return 1
-    fi
-    shift
-
-    for FILE in "$@"; do
-        if [ -f $FILE ]; then
-            # a file
-            sudo chown $(apacheUser):$SOME_USER $FILE
-            sudo chmod g+rw $FILE
-        elif [ -d $FILE ]; then
-            # for a folder
-            sudo chown -R $(apacheUser):$SOME_USER $FILE
-            sudo chmod -R g+rw $FILE
-        else
-            echo "{$FILE} is not a valid element to change permissions on."
-            continue
-        fi
-    done
-    return 0
-}
-
-function apacheandme() {
-    apachewith $USER "$@"
-    return 0
+function whatsmyip() {
+    local myIp=$(curl https://ipinfo.io/ip --silent)
+    echo "$(date +'%Y-%m-%d %H:%M') - $myIp" >> /var/log/starlink.log
+    echo $myIp
 }
 
 function userExists() {
     id "$1" &>/dev/null
 }
 
-itsmine() {
+function updateDynHost() {
+    if [ -z $DYNHOST_NAME ]; then
+        echo 'You should export a DYNHOST_NAME env variable with the dynhost name (OVH).'
+        return
+    fi
+    if [ -z $DYNHOST_USER ]; then
+        echo 'You should export a DYNHOST_NAME env variable with the dynhost login (OVH).'
+        return
+    fi
+    if [ -z $DYNHOST_PASS ]; then
+        echo 'You should export a DYNHOST_PASS env variable with the dynhost pass (OVH).'
+        return
+    fi
+
+    local myip=$(whatsmyip)
+    echo "updating ${DYNHOST_NAME} ovh rule with ${myip}"
+    echo $(curl --user "${DYNHOST_USER}:${DYNHOST_PASS}" "https://www.ovh.com/nic/update?system=dyndns&hostname=${DYNHOST_NAME}&myip=${myip}" --silent)
+    if [ $? != 0 ]; then
+        warning "update failed."
+    fi
+    comment "update done."
+}
+
+function itsmine() {
     for FILE in "$@"; do
         if [ -f $FILE ]; then
             sudo chown $USER:$GROUP $FILE

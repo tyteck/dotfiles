@@ -26,10 +26,6 @@ function rebuildNinaTestingIfNeeded() {
     comment "nina_testing ✅"
 }
 
-function whatsmyip() {
-    echo $(curl https://ipinfo.io/ip --silent)
-}
-
 function actualFirewall() {
     local myip=$(whatsmyip)
     echo "updating firewall rule with ${myip}"

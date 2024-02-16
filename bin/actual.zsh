@@ -16,14 +16,35 @@ alias fredseeder='artisan db:seed --class FredSeeder'
 # functions
 #-------------------------------------------------------------------------
 #
-function rebuildTestingIfNeeded() {
+function rebuildLucieTestingIfNeeded() {
     dblucielocal -e "create database if not exists actual_testing;" >/dev/null 2>&1
     comment "actual_testing ✅"
 }
 
+function rebuildNinaTestingIfNeeded() {
+    dbninamem -e "create database if not exists nina_testing;" >/dev/null 2>&1
+    comment "nina_testing ✅"
+}
+
+function whatsmyip() {
+    echo $(curl https://ipinfo.io/ip --silent)
+}
+
+function actualFirewall() {
+    local myip=$(whatsmyip)
+    echo "updating firewall rule with ${myip}"
+    gcloud compute firewall-rules update shared-vpc-reverse-proxy-allow-fredt --source-ranges=${myip}
+    if [ $? != 0 ]; then
+        warning "update failed."
+    fi
+    comment "update done."
+}
+
 function tests() {
     if inLucie; then
-        rebuildTestingIfNeeded
+        rebuildLucieTestingIfNeeded
+    elif inNina; then
+        rebuildNinaTestingIfNeeded
     fi
 
     local executablePath='vendor/bin/phpunit'
@@ -213,6 +234,10 @@ function anaeldown() {
 function ninaup() {
     persodown
     luciedown
+    docker network inspect actual-network >/dev/null 2>&1
+    if [ $? != 0 ]; then
+        docker network create actual-network
+    fi
     eval ${NINA_COMPOSE} up -d --remove-orphans
     cd ${NINA_PATH}
     docker ps -a

@@ -38,6 +38,7 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 alias vsdot="cd ${HOME}/dotfiles && code ."
 alias vsecran="cd ${INSPIRATION_PATH} && screen -d -m npm run dev && code ."
 alias vspod="cd ${PODMYTUBE_PATH} && code ."
+alias vspodup="podup && vspod"
 alias vstemp="cd ${TEMP_PATH} && screen -d -m npm run dev && code ."
 alias vsdocs="cd ${DOCS_PATH} && code ."
 alias vsecran="cd ${ECRAN_PATH} && code ."

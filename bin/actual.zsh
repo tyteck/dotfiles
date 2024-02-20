@@ -10,6 +10,7 @@ export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuild'
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 alias fredseeder='artisan db:seed --class FredSeeder'
+alias actualGcloud='gcloud config configurations activate actual'
 
 #
 #-------------------------------------------------------------------------
@@ -24,16 +25,6 @@ function rebuildLucieTestingIfNeeded() {
 function rebuildNinaTestingIfNeeded() {
     dbninamem -e "create database if not exists nina_testing;" >/dev/null 2>&1
     comment "nina_testing ✅"
-}
-
-function actualFirewall() {
-    local myip=$(whatsmyip)
-    echo "updating firewall rule with ${myip}"
-    gcloud compute firewall-rules update shared-vpc-reverse-proxy-allow-fredt --source-ranges=${myip}
-    if [ $? != 0 ]; then
-        warning "update failed."
-    fi
-    comment "update done."
 }
 
 function tests() {
@@ -73,6 +64,10 @@ function eodurl() {
     echo "https://actual:${EOD_PASSWORD}@${branchName}.eodv2.groupeactual.io/lucie"
 }
 
+function gcloudActual() {
+    gcloud config configurations activate actual
+}
+
 function pushluciepp() {
     local branchName=$1
     if [ -z $branchName ]; then
@@ -80,6 +75,7 @@ function pushluciepp() {
         return 1
     fi
 
+    actualGcloud
     gcloud config set project eactual-preprod
 
     rungGcloudTriggersWithBranch $branchName
@@ -92,6 +88,7 @@ function pushninadev() {
         return 1
     fi
 
+    actualGcloud
     gcloud config set project synchro-rh-dev
 
     rungGcloudTriggersWithBranch $branchName
@@ -104,6 +101,7 @@ function pushluciedev() {
         return 1
     fi
 
+    actualGcloud
     gcloud config set project eactual-215607
 
     triggersToRun="k8s-jobs lucie-web-cloudrun"
@@ -117,6 +115,7 @@ function pushlucieeod() {
         return 1
     fi
 
+    actualGcloud
     gcloud config set project eactual-215607
     triggersToRun="k8s-jobs-ondemand-manuel"
     rungGcloudTriggersWithBranch $branchName $triggersToRun
@@ -135,6 +134,7 @@ function rungGcloudTriggersWithBranch() {
         return 1
     fi
 
+    actualGcloud
     local output=$(gcloud beta builds triggers list)
     local triggerName=''
     local triggerId=''
@@ -173,6 +173,7 @@ function runTriggerWithGoodNameOnly() {
     local triggerName=$1
     local triggerId=$2
     local branchName=$3
+    actualGcloud
     cmd="gcloud beta builds triggers run ${triggerId} --branch ${branchName}"
     comment "running : {$cmd} for $triggerName"
     eval $cmd
@@ -254,6 +255,7 @@ function actualdown() {
 
 function persoup() {
     comment "=====> perso =====> UP"
+    gcloudPerso
     actualdown
     docker network inspect nginx-proxy >/dev/null 2>&1
     if [ $? != 0 ]; then

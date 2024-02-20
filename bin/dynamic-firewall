@@ -1,0 +1,26 @@
+#!/usr/bin/zsh
+
+if [ -z $DYNHOST_NAME ]; then
+    echo "You should export a DYNHOST_NAME env variable with the dynhost name (OVH)." >&2
+    exit 1
+fi
+
+dynamicHomeIp=$(host $DYNHOST_NAME | awk '/has address/ { print $4 }')
+if [ $? != 0 ]; then
+    echo "Could not resolve the IP address of $DYNHOST_NAME" >&2
+    exit 1
+fi
+
+if [ -z $dynamicHomeIp ]; then
+    echo "We failed to obtain the IP address of $DYNHOST_NAME" >&2
+    exit 1
+fi
+
+# adding firewall rule
+sudo ufw allow from ${dynamicHomeIp} to any port 22
+if [ $? != 0 ]; then
+    echo "Adding firewall rule for $DYNHOST_NAME($dynamicHomeIp) has failed" >&2
+    exit 1
+fi
+
+exit 0

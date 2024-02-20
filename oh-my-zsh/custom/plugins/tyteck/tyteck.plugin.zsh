@@ -165,7 +165,6 @@ function emptyFile() {
 
 function whatsmyip() {
     local myIp=$(curl https://ipinfo.io/ip --silent)
-    echo "$(date +'%Y-%m-%d %H:%M') - $myIp" >> /var/log/starlink.log
     echo $myIp
 }
 
@@ -173,27 +172,14 @@ function userExists() {
     id "$1" &>/dev/null
 }
 
-function updateDynHost() {
-    if [ -z $DYNHOST_NAME ]; then
-        echo 'You should export a DYNHOST_NAME env variable with the dynhost name (OVH).'
-        return
-    fi
-    if [ -z $DYNHOST_USER ]; then
-        echo 'You should export a DYNHOST_NAME env variable with the dynhost login (OVH).'
-        return
-    fi
-    if [ -z $DYNHOST_PASS ]; then
-        echo 'You should export a DYNHOST_PASS env variable with the dynhost pass (OVH).'
-        return
-    fi
+function gcloudPerso() {
+    gcloud config configurations activate perso
+}
 
-    local myip=$(whatsmyip)
-    echo "updating ${DYNHOST_NAME} ovh rule with ${myip}"
-    echo $(curl --user "${DYNHOST_USER}:${DYNHOST_PASS}" "https://www.ovh.com/nic/update?system=dyndns&hostname=${DYNHOST_NAME}&myip=${myip}" --silent)
-    if [ $? != 0 ]; then
-        warning "update failed."
-    fi
-    comment "update done."
+
+function updateGcloudApiIp(){
+    gcloudPerso
+    gcloud beta services api-keys update 54d687c1-ea47-4648-b722-fc5b74abb439 --allowed-ips=$(whatsmyip)
 }
 
 function itsmine() {
@@ -528,6 +514,7 @@ function persoup() {
 
 function persodown() {
     comment "=====> perso =====> DOWN"
+    gcloudActual
     mysqldown
     phpmyadmindown
     nginxdown

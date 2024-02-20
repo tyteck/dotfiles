@@ -1,0 +1,27 @@
+#!/usr/bin/zsh
+if [ -z $DYNHOST_NAME ]; then
+    echo 'You should export a DYNHOST_NAME env variable with the dynhost name (OVH).'
+    exit 1
+fi
+if [ -z $DYNHOST_USER ]; then
+    echo 'You should export a DYNHOST_NAME env variable with the dynhost login (OVH).'
+    exit 1
+fi
+if [ -z $DYNHOST_PASS ]; then
+    echo 'You should export a DYNHOST_PASS env variable with the dynhost pass (OVH).'
+    exit 1
+fi
+
+myIp=$(curl https://ipinfo.io/ip --silent)
+
+time=$(date +"%Y-%m-%d %H:%M")
+echo "${time} - ${myIp}" >>/var/log/starlink.log
+
+echo "updating ${DYNHOST_NAME} ovh rule with ${myIp}"
+echo $(curl --user "${DYNHOST_USER}:${DYNHOST_PASS}" "https://www.ovh.com/nic/update?system=dyndns&hostname=${DYNHOST_NAME}&myip=${myIp}" --silent)
+if [ $? != 0 ]; then
+    echo "update failed."
+    exit 1
+fi
+echo "update done."
+exit 0

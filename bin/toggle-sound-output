@@ -21,7 +21,7 @@ $laptopOutputDevice)
         exit 1
     fi
     paplay /usr/share/sounds/gnome/default/alerts/drip.ogg
-    echo "If you hear nothing from the laptop, sound is your headset."
+    echo "If you hear nothing from the laptop, it means default sound output is your headset."
     ;;
 *)
     echo $currentOuput is unknown

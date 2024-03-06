@@ -201,13 +201,34 @@ function lucierestart() {
     lucieup
 }
 
+function ninaup() {
+    persodown
+    luciedown
+    docker network inspect actual-network >/dev/null 2>&1
+    if [ $? != 0 ]; then
+        docker network create actual-network
+    fi
+    docker compose -f ${NINA_PATH}/build/docker-compose.yml -p nina up -d
+    if [ $? != 0 ]; then
+        warning "command has failed."
+        return
+    fi
+    cd ${NINA_PATH}
+    docker ps -a
+}
+
+function ninarestart() {
+    ninadown
+    ninaup
+}
+
 function ninastart() {
-    eval ${NINA_COMPOSE} run --rm -p 127.0.0.1:3000:3000 node pnpm start
+    cd ${NINA_PATH}/front
+    docker compose -f docker/docker-compose.yml -p nina run --rm -p 127.0.0.1:3000:3000 node pnpm start
 }
 
 function ninadown() {
-    echo ${NINA_COMPOSE} down --remove-orphans
-    eval ${NINA_COMPOSE} down --remove-orphans
+    docker compose -f ${NINA_PATH}/front/docker/docker-compose.yml -p nina down --remove-orphans
 }
 
 function dacup() {
@@ -226,23 +247,6 @@ function anaelup() {
 
 function anaeldown() {
     cd ${ANAEL_PATH} && make down
-}
-
-function ninaup() {
-    persodown
-    luciedown
-    docker network inspect actual-network >/dev/null 2>&1
-    if [ $? != 0 ]; then
-        docker network create actual-network
-    fi
-    eval ${NINA_COMPOSE} up -d --remove-orphans
-    cd ${NINA_PATH}
-    docker ps -a
-}
-
-function ninarestart() {
-    ninadown
-    ninaup
 }
 
 function actualdown() {

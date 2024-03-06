@@ -1,0 +1,37 @@
+#!/usr/bin/zsh
+
+function dokexists() {
+    local containerName=$1
+
+    if [ -z "$containerName" ]; then
+        echo 'You should give a container name as an argument to check container existence.'
+        return 1
+    fi
+    # getting image is a way to avoid getting network of the same name
+    # by example there is a network nginx-proxy and a container
+    cmd="docker inspect ${containerName} --format='{{.Config.Image}}' >/dev/null 2>/dev/null"
+    #echo $cmd
+    eval $cmd
+    return $?
+}
+
+folders=(storage resources config vendor)
+if dokexists "actual_php-nginx_1" && [ ! -z $LUCIE_PATH ]; then
+    # Lucie
+    cd ${LUCIE_PATH}/laravel
+    for folder in $folders; do
+        sudo chown -R www-data:$USER $folder
+        sudo chmod -R g+w $folder
+    done
+    echo "Fixed : perms for Lucie"
+fi
+
+if dokexists "nina-php-nginx-1" && [ ! -z $NINA_PATH ]; then
+    # Nina
+    cd ${NINA_PATH}/app
+    for folder in $folders; do
+        sudo chown -R www-data:$USER $folder
+        sudo chmod -R g+w $folder
+    done
+    echo "Fixed : perms for Nina"
+fi

@@ -1,11 +1,13 @@
 #!/usr/bin/zsh
 myIp=$(curl https://ipinfo.io/ip --silent)
 
-gcloud config configurations activate lucie
+gcloud config set project eactual-215607
 
 echo "updating actual firewall rule with ${myIp}"
 gcloud compute firewall-rules update shared-vpc-reverse-proxy-allow-fredt --source-ranges=${myIp}
+
+time=$(date +"%Y-%m-%d %H:%M")
 if [ $? != 0 ]; then
-    echo "update failed."
+    echo "${time} update failed."
 fi
-echo "update done."
+echo "${time} update done."

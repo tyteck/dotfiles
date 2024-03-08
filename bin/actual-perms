@@ -15,23 +15,26 @@ function dokexists() {
     return $?
 }
 
+time=$(date +"%Y-%m-%d %H:%M")
 folders=(storage resources config vendor)
-if dokexists "actual_php-nginx_1" && [ ! -z $LUCIE_PATH ]; then
+if dokexists "actual_php-nginx_1"; then
     # Lucie
     cd ${LUCIE_PATH}/laravel
     for folder in $folders; do
         sudo chown -R www-data:$USER $folder
-        sudo chmod -R g+w $folder
+        find $folder -type d -exec sudo chmod 755 {} \;
+        find $folder -type f -exec sudo chmod 664 {} \;
     done
-    echo "Fixed : perms for Lucie"
+    echo "${time} Fixed : perms for Lucie"
 fi
 
-if dokexists "nina-php-nginx-1" && [ ! -z $NINA_PATH ]; then
+if dokexists "nina-php-nginx-1"; then
     # Nina
     cd ${NINA_PATH}/app
     for folder in $folders; do
         sudo chown -R www-data:$USER $folder
-        sudo chmod -R g+w $folder
+        find $folder -type d -exec sudo chmod 755 {} \;
+        find $folder -type f -exec sudo chmod 664 {} \;
     done
-    echo "Fixed : perms for Nina"
+    echo "${time} Fixed : perms for Nina"
 fi

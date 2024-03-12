@@ -1,7 +1,7 @@
 #!/usr/bin/zsh
 myIp=$(curl https://ipinfo.io/ip --silent)
 
-gcloud config set project eactual-215607
+gcloud config configurations activate default
 
 echo "updating actual firewall rule with ${myIp}"
 gcloud compute firewall-rules update shared-vpc-reverse-proxy-allow-fredt --source-ranges=${myIp}

@@ -23,7 +23,6 @@ if($argc<2){
 
 // get pinter path from binary or symlink that run.
 $pinterPath = getPinterPath($argv[0]);
-
 // check config is ok.
 $pinterConfig = checkPinterConfig($pinterPath);
 $pintBinaryPath = $pinterConfig['pint'];
@@ -110,7 +109,8 @@ function getExcludedFoldersFromConfig(string $pintJsonConfigPath): array
 
 function checkPinterConfig(string $pinterPath): array
 {
-    $pinterConfigPath = $pinterPath. DIRECTORY_SEPARATOR.'pinter.json';
+    $pinterConfigPath = $pinterPath . DIRECTORY_SEPARATOR . 'pinter.json';
+    var_dump('checkPinterConfig : '.$pinterConfigPath);
     $pinterConfig = [];
     if (!file_exists($pinterConfigPath)){
         throw new RuntimeException("pinter.json config file is missing. Should be nearby pinter.");

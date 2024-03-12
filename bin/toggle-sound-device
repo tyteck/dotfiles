@@ -3,7 +3,9 @@
 currentOuput=$(pactl info | awk '/Default Sink:/{ print $3 }')
 
 headsetOutputDevice='alsa_output.usb-SteelSeries_SteelSeries_Arctis_7-00.stereo-game'
+headsetInputDevice='alsa_input.usb-SteelSeries_SteelSeries_Arctis_7-00.mono-chat'
 laptopOutputDevice='alsa_output.pci-0000_00_1f.3.analog-stereo'
+laptopInputDevice='alsa_input.pci-0000_00_1f.3.analog-stereo'
 
 case $currentOuput in
 $headsetOutputDevice)
@@ -12,12 +14,22 @@ $headsetOutputDevice)
         echo "Setting default output device to laptop has failed."
         exit 1
     fi
+    pacmd set-default-source $laptopInputDevice
+    if [ $? != 0 ]; then
+        echo "Setting default input device to laptop has failed."
+        exit 1
+    fi
     paplay /usr/share/sounds/gnome/default/alerts/glass.ogg
     ;;
 $laptopOutputDevice)
     pacmd set-default-sink $headsetOutputDevice
     if [ $? != 0 ]; then
-        echo "Setting default output device to laptop has failed."
+        echo "Setting default output device to headset has failed."
+        exit 1
+    fi
+    pacmd set-default-source $headsetInputDevice
+    if [ $? != 0 ]; then
+        echo "Setting default input device to headset has failed."
         exit 1
     fi
     paplay /usr/share/sounds/gnome/default/alerts/drip.ogg

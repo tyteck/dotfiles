@@ -196,6 +196,20 @@ function itsmine() {
     return 0
 }
 
+function apacheandme() {
+    for FILE in "$@"; do
+        if [ -f $FILE ]; then
+            sudo chown www-data:$USER $FILE && sudo chmod g+w $FILE
+        elif [ -d $FILE ]; then
+            sudo chown -R www-data:$USER $FILE && sudo chmod g+w $FILE
+        else
+            echo "{$FILE} do not exists. Check your path !"
+            continue
+        fi
+    done
+    return 0
+}
+
 # extract one value from .env file
 # @param $1 variable name
 # @param $2 file where is set this variable (default .env)

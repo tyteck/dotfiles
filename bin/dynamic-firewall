@@ -8,6 +8,7 @@ fi
 dynamicHomeIp=$(host $DYNHOST_NAME | awk '/has address/ { print $4 }')
 if [ $? != 0 ]; then
     echo "Could not resolve the IP address of $DYNHOST_NAME" >&2
+    echo "command not found 'host' => install bind9-host"
     exit 1
 fi
 

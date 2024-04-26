@@ -120,8 +120,7 @@ function pint() {
     if inDac || inNina || inLucie ; then # Actual
         commandToRun="${dockerPrefix}${executablePath} --config /app/vendor/actual/code-quality/pint.run.json --ansi"
     else
-        comment "nothing to run"
-        return
+        commandToRun="./${executablePath}"
     fi
     comment $commandToRun
     eval $commandToRun

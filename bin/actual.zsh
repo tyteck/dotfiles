@@ -250,7 +250,7 @@ function anaeldown() {
 }
 
 function actualdown() {
-    comment "=====> actual =====> DOWN"
+    comment "⬇️  actual ⬇️"
     ninadown
     luciedown
     dacdown
@@ -258,14 +258,13 @@ function actualdown() {
 }
 
 function persoup() {
-    comment "=====> perso =====> UP"
+    comment "⬆️  perso ⬆️"
     gcloudPerso
     actualdown
-    docker network inspect nginx-proxy >/dev/null 2>&1
+    docker network inspect local >/dev/null 2>&1
     if [ $? != 0 ]; then
-        docker network create nginx-proxy
+        docker network create local
     fi
-    nginxup
     mysqlup
     phpmyadminup
     mailup

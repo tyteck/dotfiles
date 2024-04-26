@@ -10,7 +10,6 @@ export PROJECTS_PATH="$HOME/Projects"
 export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
 export INSPIRATION_PATH="$PROJECTS_PATH/ecran-inspirant"
 export MAILHOG_PATH='/var/opt/docker/mailhog'
-export NGINX_PROXY_PATH='/var/opt/docker/nginx-proxy'
 export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
 export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
 export MEMORYMYSQL_PATH="/var/opt/docker/memorymysql"
@@ -19,6 +18,7 @@ export TEMP_PATH="$PROJECTS_PATH/temperatures"
 export ECRAN_PATH="$PROJECTS_PATH/ecran-inspirant"
 export DOCS_PATH="$PROJECTS_PATH/apidocuments"
 export POKER_PATH="$PROJECTS_PATH/poker"
+export JOB_PATH="$PROJECTS_PATH/jobboard"
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
 export PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -42,6 +42,7 @@ alias vspodup="podup && vspod"
 alias vstemp="cd ${TEMP_PATH} && screen -d -m npm run dev && code ."
 alias vsdocs="cd ${DOCS_PATH} && code ."
 alias vsecran="cd ${ECRAN_PATH} && code ."
+alias vsjob="cd ${JOB_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'
@@ -378,12 +379,14 @@ function containerup() {
         return 1
     fi
 
+    cd $containerRoot
+    
     if dokexists "$containerName"; then
         comment "$containerName is already up"
         return 0
     fi
 
-    cd $containerRoot && dokup
+    dokup
 }
 
 function containerdown() {
@@ -400,12 +403,14 @@ function containerdown() {
         return 1
     fi
 
+    cd $containerRoot 
+
     if ! dokexists $containerName; then
         comment "$containerName is already down"
         return 0
     fi
 
-    cd $containerRoot && dokdown
+    dokdown
 }
 
 function mysqlup() {
@@ -440,17 +445,6 @@ function memorymysqldown() {
     containerdown "memorymysql" "$MEMORYMYSQL_PATH"
 }
 
-function nginxup() {
-    containerup "nginx-proxy" "$NGINX_PROXY_PATH"
-}
-
-function nginxdown() {
-    containerdown "nginx-proxy" "$NGINX_PROXY_PATH"
-}
-
-function nginxrestart() {
-    nginxdown && nginxup
-}
 
 # ==================================
 # Podmytube
@@ -514,24 +508,34 @@ function ecrandown() {
 }
 
 # ==================================
+# Job Board
+# ==================================
+function jobup() {
+    persoup
+    containerup "jobboard" "$JOB_PATH"
+}
+
+function jobdown() {
+    containerdown "jobboard" "$JOB_PATH"
+}
+
+# ==================================
 # Common
 # ==================================
 
 function persoup() {
-    comment "=====> perso =====> UP"
+    comment "⬆️  perso ⬆️"
     mysqlup
     phpmyadminup
-    nginxup
     mailup
     memorymysqlup
 }
 
 function persodown() {
-    comment "=====> perso =====> DOWN"
+    comment "⬇️  perso ⬇️"
     gcloudActual
     mysqldown
     phpmyadmindown
-    nginxdown
     maildown
     memorymysqldown
     poddown
@@ -539,6 +543,7 @@ function persodown() {
     docsdown
     pokerdown
     ecrandown
+    jobdown
 }
 
 function demoup() {

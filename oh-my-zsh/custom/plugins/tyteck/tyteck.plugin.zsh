@@ -511,13 +511,9 @@ function ecrandown() {
 # Job Board
 # ==================================
 function jobup() {
-    persoup
-    containerup "jobboard" "$JOB_PATH"
+    cd ${JOB_PATH} && php artisan native:serve
 }
 
-function jobdown() {
-    containerdown "jobboard" "$JOB_PATH"
-}
 
 # ==================================
 # Common

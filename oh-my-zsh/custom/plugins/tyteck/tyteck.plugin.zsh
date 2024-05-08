@@ -511,7 +511,9 @@ function ecrandown() {
 # Job Board
 # ==================================
 function jobup() {
-    cd ${JOB_PATH} && php artisan native:serve
+    cd ${JOB_PATH} 
+    screen -dm npm run dev
+    php artisan native:serve
 }
 
 

@@ -155,7 +155,7 @@ function emptyFile() {
         return 1
     fi
 
-    : >$fileToEmpty
+    sudo truncate -s 0 $fileToEmpty
     if [ $? -eq 0 ]; then
         comment "$fileToEmpty is now empty"
         return 0
@@ -541,7 +541,6 @@ function persodown() {
     docsdown
     pokerdown
     ecrandown
-    jobdown
 }
 
 function demoup() {

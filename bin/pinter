@@ -24,9 +24,7 @@ if($argc<2){
 // get pinter path from binary or symlink that run.
 $pinterPath = getPinterPath($argv[0]);
 // check config is ok.
-$pinterConfig = checkPinterConfig($pinterPath);
-$pintBinaryPath = $pinterConfig['pint'];
-$pintJsonConfigPath = $pinterConfig['pint.json'];
+list($pintBinaryPath, $pintJsonConfigPath) = checkPinterConfig($pinterPath);
 
 // extract folder that are excluded from formatting
 $foldersToExclude = getExcludedFoldersFromConfig($pintJsonConfigPath);
@@ -109,6 +107,7 @@ function getExcludedFoldersFromConfig(string $pintJsonConfigPath): array
 
 function checkPinterConfig(string $pinterPath): array
 {
+    // get pinter config file
     $pinterConfigPath = $pinterPath . DIRECTORY_SEPARATOR . 'pinter.json';
     var_dump('checkPinterConfig : '.$pinterConfigPath);
     $pinterConfig = [];
@@ -119,13 +118,16 @@ function checkPinterConfig(string $pinterPath): array
     // extract pint binary and pint.json path from pinter.json config.
     $pinterConfig = json_decode(file_get_contents($pinterConfigPath), true);
 
+    // 
     if (!file_exists($pinterConfig['pint']) || !is_executable($pinterConfig['pint'])) {
         throw new RuntimeException("Pint binary file is either missing or not executable.");
     }
+
+    
 
     if (!file_exists($pinterConfig['pint.json'])) {
         throw new RuntimeException("pint.json config is missing or invalid.");
     }
 
-    return $pinterConfig;
+    return [$pinterConfig['pint'], $pinterConfig['pint.json']];
 }

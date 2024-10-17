@@ -326,3 +326,11 @@ function commiturl() {
     local remote=$(git remote -v | awk '/(fetch)/ {print $2}' | sed 's/:/\// ; s/git@/https:\/\// ; s/perso\.github\.com/github\.com/; s/\.git// ')
     echo "$remote/commit/$hash"
 }
+
+function prs() {
+    gh pr list --author=ftytecaActual
+}
+
+function prw() {
+    gh pr list --author=ftytecaActual --web
+}

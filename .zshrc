@@ -1,9 +1,9 @@
 # If you come from bash you might have to change your $PATH.
 export HOST=$(uname -n)
 export PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin/
-export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:/usr/local/go/bin
 export GOPATH=$HOME/go
 # Path to your oh-my-zsh installation.
+export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:/usr/local/go/bin:$GOPATH/bin:$HOME/Projects/flutter/bin
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
@@ -137,5 +137,13 @@ if [ "$HOST" = "XPS-13" ]; then
 fi
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+# pnpm
+export PNPM_HOME="/home/fred/.local/share/pnpm"
+case ":$PATH:" in
+*":$PNPM_HOME:"*) ;;
+*) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end

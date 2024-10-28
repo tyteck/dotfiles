@@ -7,6 +7,15 @@ alias restart='please shutdown -r now'
 alias zrc='exec zsh'
 
 export PROJECTS_PATH="$HOME/Projects"
+# actual
+export NINA_PATH=${PROJECTS_PATH}/nina
+export NINA_BACK_PATH=${NINA_PATH}/app
+export NINA_FRONT_PATH=${NINA_PATH}/front/app/web
+export DAC_PATH=${PROJECTS_PATH}/demande-acompte
+export LUCIE_PATH=${PROJECTS_PATH}/lucie
+export ANAEL_PATH=${PROJECTS_PATH}/anael-laravel
+
+# Perso
 export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
 export INSPIRATION_PATH="$PROJECTS_PATH/ecran-inspirant"
 export MAILHOG_PATH='/var/opt/docker/mailhog'
@@ -37,12 +46,16 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 # vscode
 alias vsdot="cd ${HOME}/dotfiles && code ."
 alias vsecran="cd ${INSPIRATION_PATH} && screen -d -m npm run dev && code ."
-alias vspod="cd ${PODMYTUBE_PATH} && code ."
-alias vspodup="podup && vspod"
 alias vstemp="cd ${TEMP_PATH} && screen -d -m npm run dev && code ."
-alias vsdocs="cd ${DOCS_PATH} && code ."
 alias vsecran="cd ${ECRAN_PATH} && code ."
 alias vsjob="cd ${JOB_PATH} && code ."
+
+# actual
+alias vsninaback="cd ${NINA_BACK_PATH} && code ."
+alias vsninafront="cd ${NINA_FRONT_PATH} && code ."
+alias vslucie="cd ${LUCIE_PATH}/laravel && code ."
+alias vsanael="cd ${ANAEL_PATH} && code ."
+alias vsdac="cd ${DAC_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'

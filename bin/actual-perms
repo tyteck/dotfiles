@@ -17,7 +17,7 @@ function dokexists() {
 
 time=$(date +"%Y-%m-%d %H:%M")
 folders=(storage resources config)
-if dokexists "actual_php-nginx_1"; then
+if dokexists "actual-php-nginx-1"; then
     # Lucie
     cd ${LUCIE_PATH}/laravel
     for folder in $folders; do

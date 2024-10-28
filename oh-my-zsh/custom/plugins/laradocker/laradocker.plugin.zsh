@@ -31,6 +31,7 @@ function artisan() {
         echo 'You are not in a laravel path.'
         return 1
     fi
+    echo "1"
 
     # get the container name
     local dockerPrefix=$(getDockerPrefix)
@@ -43,16 +44,18 @@ function artisan() {
 }
 
 function getDockerPrefix() {
+
     local lastFolderName=$(getLastFolders)
     local dockerPrefix=''
     if inLucie; then # lucie - Actual
+        [ -z $LUCIE_COMPOSE ] && echo 'env var LUCIE_COMPOSE is not defined.' && return 1;
         dockerPrefix="${LUCIE_COMPOSE} exec php-nginx "
     elif inNina; then # nina - Actual
-        dockerPrefix="docker-compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
+        dockerPrefix="docker compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
     elif inDac; then # demande-acompte - Actual
         dockerPrefix="docker compose --env-file ${DAC_PATH}/.env -f ${DAC_PATH}/docker/docker-compose.yml -p demande-acompte exec php-nginx "
     elif inAnael; then # demande-acompte - Actual
-        dockerPrefix="docker-compose -f ${ANAEL_PATH}/docker/docker-compose.yml --env-file=${ANAEL_PATH}/.project.env exec php-fpm "
+        dockerPrefix="docker compose -f ${ANAEL_PATH}/docker/docker-compose.yml --env-file=${ANAEL_PATH}/.project.env exec php-fpm "
     elif isInstalled 'docker' && containerExists $lastFolderName; then
         dockerPrefix="docker exec -it $lastFolderName "
     fi

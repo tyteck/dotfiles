@@ -1,9 +1,9 @@
 # If you come from bash you might have to change your $PATH.
 export HOST=$(uname -n)
+export XDG_CONFIG_HOME=$HOME/.config
 export PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin/
-export GOPATH=$HOME/go
 # Path to your oh-my-zsh installation.
-export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:/usr/local/go/bin:$GOPATH/bin:$HOME/Projects/flutter/bin
+export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:$HOME/dotfiles/bin
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
@@ -132,7 +132,7 @@ if [ "$HOST" = "tour-fred" ]; then
     . $HOME/dotfiles/dbAliases.sh
 fi
 
-if [ "$HOST" = "XPS-13" ]; then
+if [ "$HOST" = "actual" ]; then
     . $HOME/dotfiles/bin/actual.zsh
 fi
 

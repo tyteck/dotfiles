@@ -19,3 +19,9 @@
 	rebase = false
 [init]
 	defaultBranch = main
+[credential]
+	helper = store
+[credential "https://github.com"]
+	username = ftytecaActual
+[credential "https://api.github.com"]
+	username = ftytecaActual

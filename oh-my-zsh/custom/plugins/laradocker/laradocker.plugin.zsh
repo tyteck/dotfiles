@@ -30,9 +30,7 @@ function artisan() {
     if ! isLaravelPath; then
         echo 'You are not in a laravel path.'
         return 1
-    fi
-    echo "1"
-
+    fi    
     # get the container name
     local dockerPrefix=$(getDockerPrefix)
 

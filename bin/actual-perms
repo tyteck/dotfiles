@@ -1,4 +1,5 @@
 #!/usr/bin/zsh
+source $HOME/.local.conf
 
 function dokexists() {
     local containerName=$1

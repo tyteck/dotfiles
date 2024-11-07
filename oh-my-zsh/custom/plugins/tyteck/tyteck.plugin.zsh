@@ -28,6 +28,8 @@ export ECRAN_PATH="$PROJECTS_PATH/ecran-inspirant"
 export DOCS_PATH="$PROJECTS_PATH/apidocuments"
 export POKER_PATH="$PROJECTS_PATH/poker"
 export JOB_PATH="$PROJECTS_PATH/jobboard"
+export FIGURES_PATH="$PROJECTS_PATH/figures"
+
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
 export PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -416,6 +418,11 @@ function containerdown() {
         return 1
     fi
 
+    if [ ! -d $containerRoot ]; then
+        echo "path ${containerRoot} does not exist."
+        return 1
+    fi
+
     cd $containerRoot 
 
     if ! dokexists $containerName; then
@@ -521,6 +528,19 @@ function ecrandown() {
 }
 
 # ==================================
+# figures
+# ==================================
+function figuresup() {
+    persoup
+    containerup "figures" "$FIGURES_PATH"
+}
+
+function figuresdown() {
+    containerdown "figures" "$FIGURES_PATH"
+}
+
+
+# ==================================
 # Job Board
 # ==================================
 function jobup() {
@@ -540,6 +560,7 @@ function persoup() {
     phpmyadminup
     mailup
     memorymysqlup
+    figuresup
 }
 
 function persodown() {
@@ -549,11 +570,7 @@ function persodown() {
     phpmyadmindown
     maildown
     memorymysqldown
-    poddown
-    tempdown
-    docsdown
-    pokerdown
-    ecrandown
+    figuresdown
 }
 
 function demoup() {

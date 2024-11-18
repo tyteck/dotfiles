@@ -257,7 +257,6 @@ function actualdown() {
 
 function persoup() {
     comment "⬆️  perso ⬆️"
-    gcloudPerso
     actualdown
     docker network inspect local >/dev/null 2>&1
     if [ $? != 0 ]; then

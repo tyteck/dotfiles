@@ -6,30 +6,6 @@ alias reboot='restart'
 alias restart='please shutdown -r now'
 alias zrc='exec zsh'
 
-export PROJECTS_PATH="$HOME/Projects"
-# actual
-export NINA_PATH=${PROJECTS_PATH}/nina
-export NINA_BACK_PATH=${NINA_PATH}/app
-export NINA_FRONT_PATH=${NINA_PATH}/front/app/web
-export DAC_PATH=${PROJECTS_PATH}/demande-acompte
-export LUCIE_PATH=${PROJECTS_PATH}/lucie
-export ANAEL_PATH=${PROJECTS_PATH}/anael-laravel
-
-# Perso
-export PODMYTUBE_PATH="$PROJECTS_PATH/podmytube"
-export INSPIRATION_PATH="$PROJECTS_PATH/ecran-inspirant"
-export MAILHOG_PATH='/var/opt/docker/mailhog'
-export MYSQL_SERVER_PATH="/var/opt/docker/mysqlserver"
-export PHPMYADMIN_PATH="/var/opt/docker/phpmyadmin"
-export MEMORYMYSQL_PATH="/var/opt/docker/memorymysql"
-export DEMO_PRINT_FACTORY_PATH="$PROJECTS_PATH/demo-print-factory"
-export TEMP_PATH="$PROJECTS_PATH/temperatures"
-export ECRAN_PATH="$PROJECTS_PATH/ecran-inspirant"
-export DOCS_PATH="$PROJECTS_PATH/apidocuments"
-export POKER_PATH="$PROJECTS_PATH/poker"
-export JOB_PATH="$PROJECTS_PATH/jobboard"
-export FIGURES_PATH="$PROJECTS_PATH/figures"
-
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
 export PHP_CS_FIXER_IGNORE_ENV=1
 
@@ -48,14 +24,16 @@ alias monitRestart='sudo monit -t && sudo monit reload'
 # vscode
 alias vsdot="cd ${HOME}/dotfiles && code ."
 alias vsecran="cd ${INSPIRATION_PATH} && screen -d -m npm run dev && code ."
+alias vspod="cd ${PODMYTUBE_PATH} && code ."
 alias vstemp="cd ${TEMP_PATH} && screen -d -m npm run dev && code ."
 alias vsecran="cd ${ECRAN_PATH} && code ."
 alias vsjob="cd ${JOB_PATH} && code ."
+alias vsgnome="cd ${GNOME_PATH} && code ."
 
 # actual
 alias vsninaback="cd ${NINA_BACK_PATH} && code ."
 alias vsninafront="cd ${NINA_FRONT_PATH} && code ."
-alias vslucie="cd ${LUCIE_PATH}/laravel && code ."
+alias vslucie="cd ${LUCIE_PATH} && code ."
 alias vsanael="cd ${ANAEL_PATH} && code ."
 alias vsdac="cd ${DAC_PATH} && code ."
 
@@ -186,16 +164,6 @@ function whatsmyip() {
 
 function userExists() {
     id "$1" &>/dev/null
-}
-
-function gcloudPerso() {
-    gcloud config configurations activate perso
-}
-
-
-function updateGcloudApiIp(){
-    gcloudPerso
-    gcloud beta services api-keys update 54d687c1-ea47-4648-b722-fc5b74abb439 --allowed-ips=$(whatsmyip)
 }
 
 function itsmine() {
@@ -434,11 +402,11 @@ function containerdown() {
 }
 
 function mysqlup() {
-    containerup "mysqlserver-db-1" "$MYSQL_SERVER_PATH"
+    containerup "mysqlserver" "$MYSQL_SERVER_PATH"
 }
 
 function mysqldown() {
-    containerdown "mysqlserver-db-1" "$MYSQL_SERVER_PATH"
+    containerdown "mysqlserver" "$MYSQL_SERVER_PATH"
 }
 
 function phpmyadminup() {
@@ -530,13 +498,13 @@ function ecrandown() {
 # ==================================
 # figures
 # ==================================
-function figuresup() {
+function gnomeup() {
     persoup
-    containerup "figures" "$FIGURES_PATH"
+    containerup "gnomelab" "$GNOME_PATH"
 }
 
-function figuresdown() {
-    containerdown "figures" "$FIGURES_PATH"
+function gnomedown() {
+    containerdown "gnomelab" "$GNOME_PATH"
 }
 
 
@@ -560,7 +528,7 @@ function persoup() {
     phpmyadminup
     mailup
     memorymysqlup
-    figuresup
+    gnomeup
 }
 
 function persodown() {
@@ -570,7 +538,7 @@ function persodown() {
     phpmyadmindown
     maildown
     memorymysqldown
-    figuresdown
+    gnomedown
 }
 
 function demoup() {

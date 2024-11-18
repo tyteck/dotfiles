@@ -6,6 +6,14 @@ export PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin/
 export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:$HOME/dotfiles/bin
 export ZSH="$HOME/.oh-my-zsh"
 
+# ==================================================
+# local specific configuration
+localConf=$HOME/.local.conf
+if [ -f $localConf ]; then
+    # this file should not be versionned
+    . $localConf
+fi
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -117,14 +125,6 @@ setopt appendhistory
 #  esac; done
 #  command scp "${(@)args}"
 #}
-
-# ==================================================
-# local specific configuration
-localConf=$HOME/.local.conf
-if [ -f $localConf ]; then
-    # this file should not be versionned
-    . $localConf
-fi
 
 . $HOME/dotfiles/coloredMessage.sh
 

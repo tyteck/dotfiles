@@ -180,18 +180,18 @@ function runTriggerWithGoodNameOnly() {
 }
 
 function luciedown() {
-    cd ${LUCIE_PATH}
+    cd ${LUCIE_PATH}/..
     make down
 }
 
 function lucieup() {
     persodown
     ninadown
-    logFile=${LUCIE_PATH}/laravel/storage/logs/laravel-$(date "+%Y-%m-%d").log
+    logFile=${LUCIE_PATH}/storage/logs/laravel-$(date "+%Y-%m-%d").log
     touch $logFile && sudo chown www-data:fred $logFile
-    cd ${LUCIE_PATH}
+    cd ${LUCIE_PATH}/..
     make up
-    cd ${LUCIE_PATH}/laravel
+    cd ${LUCIE_PATH}
 }
 
 function lucierestart() {
@@ -238,6 +238,14 @@ function dacdown() {
     cd ${DAC_PATH} && docker compose --env-file .env -f docker/docker-compose.yml -p demande-acompte down --remove-orphans
 }
 
+function atlasdown() {
+    cd ${ATLAS_PATH} && make up
+}
+
+function atlasdown() {
+    cd ${ATLAS_PATH} && make down
+}
+
 function anaelup() {
     persodown
     cd ${ANAEL_PATH} && make up
@@ -253,6 +261,7 @@ function actualdown() {
     luciedown
     dacdown
     anaeldown
+    atlasdown
 }
 
 function persoup() {

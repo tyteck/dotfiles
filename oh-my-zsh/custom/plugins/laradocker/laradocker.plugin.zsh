@@ -42,7 +42,6 @@ function artisan() {
 }
 
 function getDockerPrefix() {
-
     local lastFolderName=$(getLastFolders)
     local dockerPrefix=''
     if inLucie; then # lucie - Actual
@@ -52,8 +51,10 @@ function getDockerPrefix() {
         dockerPrefix="docker compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
     elif inDac; then # demande-acompte - Actual
         dockerPrefix="docker compose --env-file ${DAC_PATH}/.env -f ${DAC_PATH}/docker/docker-compose.yml -p demande-acompte exec php-nginx "
-    elif inAnael; then # demande-acompte - Actual
+    elif inAnael; then
         dockerPrefix="docker compose -f ${ANAEL_PATH}/docker/docker-compose.yml --env-file=${ANAEL_PATH}/.project.env exec php-fpm "
+    elif inAtlas; then
+        dockerPrefix="docker compose -f ${ATLAS_PATH}/docker/docker-compose.yml --env-file=${ATLAS_PATH}/.project.env -p atlas exec php-nginx "
     elif isInstalled 'docker' && containerExists $lastFolderName; then
         dockerPrefix="docker exec -it $lastFolderName "
     fi
@@ -313,6 +314,10 @@ function inDac() {
 
 function inAnael() {
     inPath "anael-laravel"
+}
+
+function inAtlas() {
+    inPath "atlas-back"
 }
 
 

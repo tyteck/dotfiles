@@ -1,0 +1,31 @@
+#!/usr/bin/zsh
+source $HOME/.local.conf
+
+downloadedFile=latest-ray.AppImage
+wget -O $HOME/Downloads/$downloadedFile https://spatie.be/products/ray/download/linux/latest
+
+mkdir -p $HOME/Applications
+mv $HOME/Downloads/$downloadedFile ~/Applications/
+
+destFile=$HOME/Applications/$downloadedFile
+symlink=$HOME/Applications/ray.appimage
+if [ -L ${symlink} ]; then
+    unlink $symlink
+fi
+
+chmod +x $destFile
+ln -s $destFile $symlink
+cp $HOME/dotfiles/icons/ray.png $HOME/.local/share/icons/ray.png
+
+cat <<EOT >$HOME/.local/share/applications/myray.desktop
+[Desktop Entry]
+Encoding=UTF-8
+Name=Ray
+Comment=Ray from spatie
+Exec=/home/fred/Applications/ray.appimage
+Icon=/home/fred/.local/share/icons/ray.png
+StartupWMClass=Ray
+Type=Application
+Categories=Office
+#
+EOT

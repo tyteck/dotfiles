@@ -11,6 +11,8 @@ alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuil
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 alias fredseeder='artisan db:seed --class FredSeeder'
 alias actualGcloud='gcloud config configurations activate actual'
+alias ninadecrypt='docker compose -f /home/fred/Projects/nina/build/docker-compose.yml -p nina run tools gpg --quiet --batch --yes --decrypt --output app/app/.env.ci app/app/.env.ci.gpg'
+alias ninaencrypt='docker compose -f /home/fred/Projects/nina/build/docker-compose.yml -p nina run tools gpg --symmetric --cipher-algo AES256 app/app/.env.ci'
 
 #
 #-------------------------------------------------------------------------

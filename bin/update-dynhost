@@ -15,7 +15,7 @@ fi
 myIp=$(curl https://ipinfo.io/ip --silent)
 
 time=$(date +"%Y-%m-%d %H:%M")
-echo "${time} - ${myIp}" >>/var/log/starlink.log
+echo "${time} - ${myIp}" >>/var/log/perso/starlink.log
 
 echo "updating ${DYNHOST_NAME} ovh rule with ${myIp}"
 echo $(curl --user "${DYNHOST_USER}:${DYNHOST_PASS}" "https://www.ovh.com/nic/update?system=dyndns&hostname=${DYNHOST_NAME}&myip=${myIp}" --silent)

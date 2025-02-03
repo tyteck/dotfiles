@@ -328,9 +328,13 @@ function commiturl() {
 }
 
 function prs() {
-    gh pr list --author=ftytecaActual
+    gh pr list --author ftytecaActual
 }
 
 function prw() {
-    gh pr list --author=ftytecaActual --web
+    gh pr list --author ftytecaActual --web
+}
+
+function cleanMyOldClosedPrs() {
+    gh pr list --state closed --author ftytecaActual --json headRefName --jq '.[].headRefName' | xargs -n 1 git branch -D
 }

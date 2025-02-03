@@ -359,7 +359,7 @@ function amf(){
 function amfs(){
     local cmd
     if inNina; then # nina - Actual
-        cmd="artisan migrate:fresh --seed --seeder=FredSeeder"
+        cmd="artisan migrate:fresh --seed --seeder=LocalSeeder"
     else
         cmd="artisan migrate:fresh --seed$(migratePath)"
     fi

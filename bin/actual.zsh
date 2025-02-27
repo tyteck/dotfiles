@@ -83,17 +83,76 @@ function pushluciepp() {
     rungGcloudTriggersWithBranch $branchName
 }
 
-function pushninadev() {
+function isRunning() {
+    local program=$1
+    pgrep $program >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+        true
+    else
+        false
+    fi
+}
+
+function passninapp() {
+    local ninaEnvPath='/home/fred/Projects/infra/env_vars/nina-preprod-77a8'
+    local ninaEnvFile="$ninaEnvPath/env_vars"
+    if [[ ! -e $ninaEnvFile ]]; then
+        echo "nina env file does not exist, refreshing ..."
+        cd $ninaEnvPath && git pull && make decrypt
+    fi
+    echo "nina preprod db password is ... "
+    cat $ninaEnvFile | grep DB_PASSWORD | cut -d'=' -f2
+}
+
+function runshootpp() {
+    sshoot start actual-preprod
+}
+
+function sshninapp() {
+    if ! isRunning 'sshoot'; then
+        runshootpp
+    fi
+
+    commander=$(kubectl get pods -n nina-preprod | grep commander | grep Running | awk '{print $1}')
+    kubectl exec -it $commander -n nina-preprod -- /bin/bash
+}
+
+function pushninapp() {
     local branchName=$1
+    local triggers=${2:-"both"}
+
     if [ -z $branchName ]; then
-        warning 'Usage : pushninadev <BRANCH_NAME> (ie : pushninadev develop)'
+        warning 'Usage : pushninapp <BRANCH_NAME> [front/back/both] (ie : pushninapp develop back)'
         return 1
     fi
 
-    actualGcloud
-    gcloud config set project synchro-rh-dev
+    local triggerNamesToRun
+    case $triggers in
+    "front") triggerNamesToRun="deploy-front" ;;
+    "back") triggerNamesToRun="deploy-k8s-cloudrun" ;;
+    *) triggerNamesToRun="deploy-front deploy-k8s-cloudrun" ;;
+    esac
 
-    rungGcloudTriggersWithBranch $branchName
+    # recuperer le project id de nina-preprod
+    ninaProjectId=$(gcloud projects list | grep "nina-preprod" | awk '{print $1}')
+    echo "ninaProjectId : $ninaProjectId"
+    # specifier le projet courant
+    gcloud config set project $ninaProjectId
+
+    # recuperer les triggers
+    output=$(gcloud builds triggers list --region=europe-west9 --format=json)
+
+    # recuperer les noms et id des triggers
+    echo "$output" | jq -r '.[] | "\(.id) \(.name)"' | while IFS= read -r line; do
+        triggerId=$(echo "$line" | awk '{print $1}')
+        triggerName=$(echo "$line" | awk '{print $2}')
+
+        # si c'est un trigger à deploy
+        if in_array $triggerName $triggerNamesToRun; then
+            echo "=====> Running trigger ${triggerName} ($triggerId) with branch ${branchName} <====="
+            gcloud builds triggers run $triggerId --branch $branchName --region=europe-west9
+        fi
+    done
 }
 
 function pushluciedev() {

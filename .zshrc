@@ -1,7 +1,7 @@
 # If you come from bash you might have to change your $PATH.
 export HOST=$(uname -n)
 export XDG_CONFIG_HOME=$HOME/.config
-export PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin/
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin/:/snap/bin
 # Path to your oh-my-zsh installation.
 export PATH=$PATH:$HOME/bin:$HOME/dotfiles/bin:$HOME/.config/composer/vendor/bin:$HOME/.local/bin:$HOME/dotfiles/bin
 export ZSH="$HOME/.oh-my-zsh"

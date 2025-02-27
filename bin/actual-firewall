@@ -2,13 +2,13 @@
 # si tu te prends une erreur c'est que t'as pas configuré le bon project
 # ERROR: (gcloud.compute.firewall-rules.update) The required property [project] is not currently set.
 # fais un gcloud init
-# et set le projet eactual-215607 comme projet par défaut
+# et set le projet eactual-215607(20) dans la zone europe-west-1b(17) comme projet par défaut
 # dans la console google va dans "VPC Network > Firewall"
 # pour voir les projets
 
 myIp=$(curl https://ipinfo.io/ip --silent)
 
-gcloud config configurations activate default
+gcloud config configurations activate lucie
 
 echo "updating actual firewall rule with ${myIp}"
 gcloud compute firewall-rules update shared-vpc-reverse-proxy-allow-fredt --source-ranges=${myIp}

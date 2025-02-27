@@ -89,6 +89,7 @@ alias cdu='composer dump-autoload'
 alias edithosts='sudo vim /etc/hosts'
 alias etchosts='sudo vim /etc/hosts'
 alias editsshconfig='vim ~/.ssh/config'
+alias tunnel="ssh -f -N tunnel"
 alias sshconfig='vim ~/.ssh/config'
 alias editlocalconf='vim ~/.local.conf'
 alias biggestfolders='du -a . | sort -n -r | head -n 10'

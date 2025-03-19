@@ -117,24 +117,43 @@ function sshninapp() {
     kubectl exec -it $commander -n nina-preprod -- /bin/bash
 }
 
+function pushninadev() {
+    local branchName=$1
+    pushnina dev ${branchName}
+}
+
 function pushninapp() {
     local branchName=$1
-    local triggers=${2:-"both"}
+    pushnina preprod ${branchName}
+}
 
-    if [ -z $branchName ]; then
-        warning 'Usage : pushninapp <BRANCH_NAME> [front/back/both] (ie : pushninapp develop back)'
+function pushnina() {
+    if [[ $# -ne 2 ]]; then
+        warning 'Usage : pushninapp <ENVIRONMENT> <BRANCH_NAME> [front/back/both] (ie : pushninapp dev CHEW-29-ftp-pixid )'
         return 1
     fi
 
-    local triggerNamesToRun
-    case $triggers in
-    "front") triggerNamesToRun="deploy-front" ;;
-    "back") triggerNamesToRun="deploy-k8s-cloudrun" ;;
-    *) triggerNamesToRun="deploy-front deploy-k8s-cloudrun" ;;
+    local environment=$1
+    local branchName=$2
+    local gcloudEnv
+    local triggerNamesToRun="deploy-front deploy-k8s-cloudrun"
+
+    case $environment in
+    "dev") gcloudEnv="nina-dev" ;;
+    "preprod" | "pp") gcloudEnv="nina-preprod" ;;
+    *)
+        warning "environment ${environment} is unknown should be dev, preprod or pp"
+        return 1
+        ;;
     esac
 
     # recuperer le project id de nina-preprod
-    ninaProjectId=$(gcloud projects list | grep "nina-preprod" | awk '{print $1}')
+    ninaProjectId=$(gcloud projects list | grep $gcloudEnv | awk '{print $1}')
+    if [ -z $ninaProjectId ]; then
+        warning "gcloud project ${gcloudEnv} cannot be found"
+        return 1
+    fi
+
     echo "ninaProjectId : $ninaProjectId"
     # specifier le projet courant
     gcloud config set project $ninaProjectId
@@ -149,8 +168,8 @@ function pushninapp() {
 
         # si c'est un trigger à deploy
         if in_array $triggerName $triggerNamesToRun; then
-            echo "=====> Running trigger ${triggerName} ($triggerId) with branch ${branchName} <====="
-            gcloud builds triggers run $triggerId --branch $branchName --region=europe-west9
+            echo "=====> Running trigger ${triggerName} ($triggerId) with branch ${branchName} on ${gcloudEnv} <====="
+            #        gcloud builds triggers run $triggerId --branch $branchName --region=europe-west9
         fi
     done
 }

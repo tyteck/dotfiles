@@ -10,6 +10,9 @@ myIp=$(curl https://ipinfo.io/ip --silent)
 
 gcloud config configurations activate lucie
 
+echo "setting lucie project"
+gcloud config set project eactual-215607
+
 echo "updating actual firewall rule with ${myIp}"
 gcloud compute firewall-rules update shared-vpc-reverse-proxy-allow-fredt --source-ranges=${myIp}
 

@@ -39,6 +39,7 @@ function artisan() {
     local lastFolderName=$(getLastFolders)
     comment ${commandToRun}
     eval $commandToRun
+    apacheandme .
 }
 
 function getDockerPrefix() {

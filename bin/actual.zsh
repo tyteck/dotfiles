@@ -24,6 +24,11 @@ function rebuildLucieTestingIfNeeded() {
     comment "actual_testing ✅"
 }
 
+function rebuildNinaDbIfNeeded() {
+    dbnina -e "create database if not exists synchro_rh;" >/dev/null 2>&1
+    comment "synchro_rh ✅"
+}
+
 function rebuildNinaTestingIfNeeded() {
     dbninamem -e "create database if not exists nina_testing;" >/dev/null 2>&1
     comment "nina_testing ✅"
@@ -104,6 +109,17 @@ function passninapp() {
     cat $ninaEnvFile | grep DB_PASSWORD | cut -d'=' -f2
 }
 
+function passninadev() {
+    local ninaEnvPath='/home/fred/Projects/infra/env_vars/nina-dev-a593'
+    local ninaEnvFile="$ninaEnvPath/env_vars"
+    if [[ ! -e $ninaEnvFile ]]; then
+        echo "nina env file does not exist, refreshing ..."
+        cd $ninaEnvPath && git pull && make decrypt
+    fi
+    echo "nina dev db password is ... "
+    cat $ninaEnvFile | grep DB_PASSWORD | cut -d'=' -f2
+}
+
 function runshootpp() {
     sshoot start actual-preprod
 }
@@ -169,7 +185,7 @@ function pushnina() {
         # si c'est un trigger à deploy
         if in_array $triggerName $triggerNamesToRun; then
             echo "=====> Running trigger ${triggerName} ($triggerId) with branch ${branchName} on ${gcloudEnv} <====="
-            #        gcloud builds triggers run $triggerId --branch $branchName --region=europe-west9
+            gcloud builds triggers run $triggerId --branch $branchName --region=europe-west9
         fi
     done
 }
@@ -279,6 +295,10 @@ function lucierestart() {
     lucieup
 }
 
+function ninadbreset() {
+    docker volume rm -f nina_mysql-data
+}
+
 function ninaup() {
     persodown
     luciedown
@@ -291,6 +311,7 @@ function ninaup() {
         warning "command has failed."
         return
     fi
+    rebuildNinaDbIfNeeded
     cd ${NINA_PATH}
     docker ps -a
 }

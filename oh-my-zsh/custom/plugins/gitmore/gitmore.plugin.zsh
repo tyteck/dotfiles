@@ -30,11 +30,13 @@ function gdelete() {
         return 1
     fi
 
+    local protectedBranches="main master dev develop"
+
     for BRANCH_TO_DELETE in $@; do
         comment "Branch to be deleted : $BRANCH_TO_DELETE"
 
         # necessary to avoid
-        if [ "$BRANCH_TO_DELETE" = "master" ] || [ "$BRANCH_TO_DELETE" = "main" ] || [ "$BRANCH_TO_DELETE" = "dev" ]; then
+        if in_array $BRANCH_TO_DELETE $protectedBranches; then
             error "ARE YOU CRAZY ? you shouldn't delete \"$BRANCH_TO_DELETE\""
             return 1
         fi

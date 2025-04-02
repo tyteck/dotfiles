@@ -120,15 +120,22 @@ function passninadev() {
     cat $ninaEnvFile | grep DB_PASSWORD | cut -d'=' -f2
 }
 
+function runshootdev() {
+    sshoot start actual-dev
+}
+
+function sshninadev() {
+    runshootdev
+    commander=$(kubectl get pods -n nina-dev | grep commander | grep Running | awk '{print $1}')
+    kubectl exec -it $commander -n nina-dev -- /bin/bash
+}
+
 function runshootpp() {
     sshoot start actual-preprod
 }
 
 function sshninapp() {
-    if ! isRunning 'sshoot'; then
-        runshootpp
-    fi
-
+    runshootpp
     commander=$(kubectl get pods -n nina-preprod | grep commander | grep Running | awk '{print $1}')
     kubectl exec -it $commander -n nina-preprod -- /bin/bash
 }

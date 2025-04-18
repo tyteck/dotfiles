@@ -306,6 +306,17 @@ function ninadbreset() {
     docker volume rm -f nina_mysql-data
 }
 
+function ninaslipsfromuuid() {
+    local uuid=$1
+    if [ -z $uuid ]; then
+        warning 'Usage : ninaslipsfromuuid <UUID> (ie : ninaslipsfromuuid 12345678-1234-1234-1234-123456789012)'
+        return 1
+    fi
+    dbnina -e "select slips.timesheet_id, slips.anael_category_id, slips.type, slips.platform_category_code, slips.platform_category_label, slips.date, slips.quantity, slips.base_paid, slips.base_billed, slips.rate_paid, slips.rate_billed, slips.coefficient, slips.extra_data \
+        from slips inner join timesheets on slips.timesheet_id=timesheets.id \
+        where timesheets.uuid='${uuid}';"
+}
+
 function ninaup() {
     persodown
     luciedown

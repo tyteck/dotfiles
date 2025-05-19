@@ -331,6 +331,13 @@ function ninatimesheetfromuuid() {
 function ninaup() {
     persodown
     luciedown
+
+    # config for pulling from europe-docker.pkg.dev
+    cat ~/.docker/config.json | grep "europe-docker.pkg.dev" >/dev/null
+    if [ $? != 0 ]; then
+        gcloud auth configure-docker europe-docker.pkg.dev
+    fi
+
     docker network inspect actual-network >/dev/null 2>&1
     if [ $? != 0 ]; then
         docker network create actual-network

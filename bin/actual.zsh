@@ -317,6 +317,17 @@ function ninaslipsfromuuid() {
         where timesheets.uuid='${uuid}';"
 }
 
+function ninatimesheetfromuuid() {
+    local uuid=$1
+    if [ -z $uuid ]; then
+        warning 'Usage : ninatimesheetfromuuid <UUID> (ie : ninatimesheetfromuuid 12345678-1234-1234-1234-123456789012)'
+        return 1
+    fi
+    dbnina -e "select * \
+        from timesheets \
+        where timesheets.uuid='${uuid}';"
+}
+
 function ninaup() {
     persodown
     luciedown

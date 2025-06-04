@@ -21,36 +21,44 @@ if($argc<2){
     exit(0);
 }
 
-// get pinter path from binary or symlink that run.
-$pinterPath = getPinterPath($argv[0]);
-// check config is ok.
-list($pintBinaryPath, $pintJsonConfigPath) = checkPinterConfig($pinterPath);
+try {
+    // get pinter path from binary or symlink that run.
+    $pinterPath = getPinterPath($argv[0]);
 
-// extract folder that are excluded from formatting
-$foldersToExclude = getExcludedFoldersFromConfig($pintJsonConfigPath);
+    // check config is ok.
+    list($pintBinaryPath, $pintJsonConfigPath) = checkPinterConfig($pinterPath);
 
-// parsing arguments
-$filesOfFoldersToFormat = [];
-for ($i = 1; $i < $argc; $i++) {
-    if (shouldBeExcluded($argv[$i], $foldersToExclude)) {
-        continue;
+    // extract folder that are excluded from formatting
+    $foldersToExclude = getExcludedFoldersFromConfig($pintJsonConfigPath);
+
+    // parsing arguments
+    $filesOfFoldersToFormat = [];
+    for ($i = 1; $i < $argc; $i++) {
+        if (shouldBeExcluded($argv[$i], $foldersToExclude)) {
+            continue;
+        }
+        $filesOfFoldersToFormat[] = $argv[$i];
     }
-    $filesOfFoldersToFormat[] = $argv[$i];
-}
 
-if (count($filesOfFoldersToFormat)) {
-    $command = "{$pintBinaryPath} --config {$pintJsonConfigPath} " . implode(' ', $filesOfFoldersToFormat) ;
-    echo $command . PHP_EOL;
-    passthru($command, $result);
-    if ($result !== 0){
-        throw new RuntimeException("Command {{$command}} has failed.");
+    if (count($filesOfFoldersToFormat)) {
+        $command = "{$pintBinaryPath} --config {$pintJsonConfigPath} " . implode(' ', $filesOfFoldersToFormat) ;
+        echo $command . PHP_EOL;
+        passthru($command, $result);
+        if ($result !== 0){
+            throw new RuntimeException("Command {{$command}} has failed.");
+        }
+        exit(0);
     }
+    echo '=====================================' . PHP_EOL;
+    echo 'Nothing to do.' . PHP_EOL;
+    echo '=====================================' . PHP_EOL;
     exit(0);
+} catch(Throwable $thrown) {
+    echo '=====================================' . PHP_EOL;
+    echo $thrown->getMessage() . PHP_EOL;
+    echo '=====================================' . PHP_EOL;
+    exit(1);
 }
-echo '=====================================' . PHP_EOL;
-echo 'Nothing to do.' . PHP_EOL;
-echo '=====================================' . PHP_EOL;
-exit(0);
 
 /*
 |--------------------------------------------------------------------------
@@ -123,7 +131,6 @@ function checkPinterConfig(string $pinterPath): array
         throw new RuntimeException("Pint binary file is either missing or not executable.");
     }
 
-    
 
     if (!file_exists($pinterConfig['pint.json'])) {
         throw new RuntimeException("pint.json config is missing or invalid.");

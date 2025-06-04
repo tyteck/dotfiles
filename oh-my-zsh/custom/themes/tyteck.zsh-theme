@@ -1,6 +1,6 @@
 function coloredHost() {
     case ${HOST} in
-    "mini-forum" | "actual" | "debian" | "tour-fred")
+    "mini-forum" | "actual" | "actual-laptop" | "debian" | "tour-fred")
         echo "%{$fg[green]%}${HOST}%{$reset_color%} "
         ;;
     *)

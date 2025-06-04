@@ -12,12 +12,23 @@ gcloud config configurations activate lucie
 
 echo "setting lucie project"
 gcloud config set project eactual-215607
+if [ $? != 0 ]; then
+    echo "setting project to eactual-215607 has failed => exit"
+    exit 1
+fi
 
 echo "updating actual firewall rule with ${myIp}"
 gcloud compute firewall-rules update shared-vpc-reverse-proxy-allow-fredt --source-ranges=${myIp}
+if [ $? != 0 ]; then
+    echo "Updating firewall rule with my new ip has failed => exit"
+    exit 1
+fi
+
 
 time=$(date +"%Y-%m-%d %H:%M")
 if [ $? != 0 ]; then
     echo "${time} update failed."
+    exit 1
 fi
 echo "${time} update done."
+exit 0

@@ -1,0 +1,63 @@
+#!/usr/bin/php
+<?php
+
+declare(strict_types=1);
+// Vérification si un argument a été passé
+if (isset($argv[1])) {
+    // Utilisation du chemin fourni en argument
+    $directory = $argv[1];
+    if (substr($directory, -1) !== '/') {
+        $directory .= '/';
+    }
+} else {
+    // Affichage d'un message d'erreur et arrêt du script si aucun argument n'est fourni
+    echo "Veuillez fournir le chemin du répertoire en tant qu'argument.\n";
+    exit(1);
+}
+
+// Utilisation de glob pour obtenir la liste des fichiers XML
+$files   = glob($directory . '*.xml');
+$nbFiles = count($files);
+if ($nbFiles <= 0) {
+    echo 'No xml files in this folder' . PHP_EOL;
+    exit(1);
+}
+
+$allowedAgencies = ['008', '411', '675', '741', '443', 'C09', 'C58', 'C05', 'C55', '227'];
+$foundAgencies   = [];
+$found           = 0;
+foreach ($files as $file) {
+    // Chargement du contenu du fichier XML
+    $xmlContent = file_get_contents($file);
+
+    // Création d'un objet SimpleXMLElement
+    $xml = new SimpleXMLElement($xmlContent);
+
+    // Enregistrement des namespaces pour faciliter la recherche
+    $xml->registerXPathNamespace('ns', 'http://ns.hr-xml.org/2004-08-02');
+
+    // Recherche de l'élément spécifique avec XPath, sans tenir compte de idOwner
+    $agencyCodes = $xml->xpath('//ns:StaffingSupplierOrgUnitId/ns:IdValue');
+    // Vérification si l'élément a été trouvé
+    if (empty($agencyCodes)) {
+        continue;
+    }
+
+    $agencyCode = (string) $agencyCodes[0];
+
+    if (!isset($foundAgencies[$agencyCode])) {
+        $foundAgencies[$agencyCode] = 1;
+    } else {
+        $foundAgencies[$agencyCode]++;
+    }
+
+    if (in_array($agencyCode, $allowedAgencies)) {
+        echo "Fichier: {$file}, code agence : " . $agencyCode . "\n";
+        $found++;
+    }
+}
+
+echo "{$found} fichier(s) importable(s) sur {$nbFiles} ayant une agence autorisée." . PHP_EOL;
+arsort($foundAgencies);
+print_r($foundAgencies);
+exit(0);

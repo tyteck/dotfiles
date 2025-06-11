@@ -25,7 +25,7 @@ if ($nbFiles <= 0) {
 
 $allowedAgencies = ['008', '411', '675', '741', '443', 'C09', 'C58', 'C05', 'C55', '227'];
 $foundAgencies   = [];
-$found           = 0;
+$importables     = 0;
 foreach ($files as $file) {
     // Chargement du contenu du fichier XML
     $xmlContent = file_get_contents($file);
@@ -53,11 +53,11 @@ foreach ($files as $file) {
 
     if (in_array($agencyCode, $allowedAgencies)) {
         echo "Fichier: {$file}, code agence : " . $agencyCode . "\n";
-        $found++;
+        $importables++;
     }
 }
 
-echo "{$found} fichier(s) importable(s) sur {$nbFiles} ayant une agence autorisée." . PHP_EOL;
+echo "{$importables} fichier(s) importable(s) sur {$nbFiles} ayant une agence autorisée." . PHP_EOL;
 arsort($foundAgencies);
 print_r($foundAgencies);
 exit(0);

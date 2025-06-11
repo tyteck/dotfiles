@@ -122,6 +122,8 @@ function pint() {
 
     if inDac || inNina || inLucie ; then # Actual
         commandToRun="${dockerPrefix}${executablePath} --config /app/vendor/actual/code-quality/pint.run.json --ansi"
+    elif inAnaelApiHandler; then
+        commandToRun="make fix"
     else
         commandToRun="./${executablePath}"
     fi
@@ -321,6 +323,9 @@ function inAtlas() {
     inPath "atlas-back"
 }
 
+function inAnaelApiHandler() {
+    inPath "anael-api-handler"
+}
 
 # sample test
 # if inPath "lorem";then echo "IN";else echo "out";fi

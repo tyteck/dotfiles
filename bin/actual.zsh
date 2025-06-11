@@ -134,10 +134,22 @@ function runshootpp() {
     sshoot start actual-preprod
 }
 
+function runshootprod() {
+    sshoot start actual-prod
+}
+
 function sshninapp() {
     runshootpp
+    # run following command if needed
+    # gcloud container clusters get-credentials mutualise-prod --zone europe-west9-a --project mutualise-prod-f414 --internal-ip
     commander=$(kubectl get pods -n nina-preprod | grep commander | grep Running | awk '{print $1}')
     kubectl exec -it $commander -n nina-preprod -- /bin/bash
+}
+
+function sshninaprod() {
+    runshootprod
+    commander=$(kubectl get pods -n nina-prod | grep commander | grep Running | awk '{print $1}')
+    kubectl exec -it $commander -n nina-prod -- /bin/bash
 }
 
 function pushninadev() {

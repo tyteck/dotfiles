@@ -5,6 +5,7 @@
   [[default]]
     scrollback_lines = 900000
     scrollback_infinite = True
+    word_chars = "-,./?%&#_"
 [layouts]
   [[default]]
     [[[window0]]]

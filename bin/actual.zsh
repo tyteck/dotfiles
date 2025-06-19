@@ -141,7 +141,7 @@ function runshootprod() {
 function sshninapp() {
     runshootpp
     # run following command if needed
-    # gcloud container clusters get-credentials mutualise-preprod --zone europe-west9-a --project mutualise-preprod-c51e  --internal-ip
+    gcloud container clusters get-credentials mutualise-preprod --zone europe-west9-a --project mutualise-preprod-c51e --internal-ip
     commander=$(kubectl get pods -n nina-preprod | grep commander | grep Running | awk '{print $1}')
     kubectl exec -it $commander -n nina-preprod -- /bin/bash
 }
@@ -149,7 +149,7 @@ function sshninapp() {
 function sshninaprod() {
     runshootprod
     # run following command if needed
-    # gcloud container clusters get-credentials mutualise-prod --zone europe-west9-a --project mutualise-prod-f414 --internal-ip
+    gcloud container clusters get-credentials mutualise-prod --zone europe-west9-a --project mutualise-prod-f414 --internal-ip
     commander=$(kubectl get pods -n nina-prod | grep commander | grep Running | awk '{print $1}')
     kubectl exec -it $commander -n nina-prod -- /bin/bash
 }

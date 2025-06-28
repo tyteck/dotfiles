@@ -50,7 +50,7 @@ function tests() {
 
     # get the command to access container
     local dockerPrefix=$(getDockerPrefix)
-    local commandToRun="${dockerPrefix}${executablePath} $@"
+    local commandToRun="${dockerPrefix}${executablePath} --display-skipped --display-incomplete $@"
     comment $commandToRun
     eval $commandToRun
 }

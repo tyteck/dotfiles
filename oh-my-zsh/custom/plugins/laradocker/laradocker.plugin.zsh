@@ -49,7 +49,7 @@ function getDockerPrefix() {
         [ -z $LUCIE_COMPOSE ] && echo 'env var LUCIE_COMPOSE is not defined.' && return 1;
         dockerPrefix="${LUCIE_COMPOSE} exec php-nginx "
     elif inNina; then # nina - Actual
-        dockerPrefix="docker compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=off php-nginx "
+        dockerPrefix="docker compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=coverage php-nginx "
     elif inDac; then # demande-acompte - Actual
         dockerPrefix="docker compose --env-file ${DAC_PATH}/.env -f ${DAC_PATH}/docker/docker-compose.yml -p demande-acompte exec php-nginx "
     elif inAnael; then
@@ -120,8 +120,10 @@ function pint() {
     # get the command to access container
     local dockerPrefix=$(getDockerPrefix)
 
-    if inDac || inNina || inLucie ; then # Actual
+    if inNina || inLucie ; then # Actual
         commandToRun="${dockerPrefix}${executablePath} --config /app/vendor/actual/code-quality/pint.run.json --ansi"
+    elif inDac; then
+        commandToRun="artisan code:style"
     elif inAnaelApiHandler; then
         commandToRun="make fix"
     else
@@ -353,12 +355,12 @@ function migratePath(){
 }
 
 function am(){
-    local cmd="artisan migrate$(migratePath)"
+    local cmd="artisan migrate$(migratePath) --step"
     eval $cmd
 }
 
 function amf(){
-    local cmd="artisan migrate:fresh$(migratePath)"
+    local cmd="artisan migrate:fresh$(migratePath) --step"
     eval $cmd
 }
 
@@ -367,7 +369,7 @@ function amfs(){
     if inNina; then # nina - Actual
         cmd="artisan migrate:fresh --seed --seeder=LocalSeeder"
     else
-        cmd="artisan migrate:fresh --seed$(migratePath)"
+        cmd="artisan migrate:fresh --seed$(migratePath) --step"
     fi
     eval $cmd
 }
@@ -379,6 +381,11 @@ function amr(){
 
 function ams(){
     local cmd="artisan migrate:status$(migratePath)"
+    eval $cmd
+}
+
+function stopondefect(){
+    local cmd="tests --stop-on-defect"
     eval $cmd
 }
 

@@ -34,6 +34,13 @@ function rebuildNinaTestingIfNeeded() {
     comment "nina_testing ✅"
 }
 
+function mk(){
+    if inNina; then
+        make --directory ${NINA_PATH} $@
+    fi
+    return
+}
+
 function tests() {
     if inLucie; then
         rebuildLucieTestingIfNeeded
@@ -50,7 +57,7 @@ function tests() {
 
     # get the command to access container
     local dockerPrefix=$(getDockerPrefix)
-    local commandToRun="${dockerPrefix}${executablePath} --display-skipped --display-incomplete $@"
+    local commandToRun="${dockerPrefix}${executablePath} --display-skipped --display-incomplete --display-deprecations$@"
     comment $commandToRun
     eval $commandToRun
 }
@@ -365,8 +372,8 @@ function ninaup() {
         warning "command has failed."
         return
     fi
-    rebuildNinaDbIfNeeded
     cd ${NINA_PATH}
+    rebuildNinaDbIfNeeded
     docker ps -a
 }
 

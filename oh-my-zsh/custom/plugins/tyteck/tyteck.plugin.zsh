@@ -29,7 +29,7 @@ alias vstemp="cd ${TEMP_PATH} && screen -d -m npm run dev && code ."
 alias vsecran="cd ${ECRAN_PATH} && code ."
 alias vsjob="cd ${JOB_PATH} && code ."
 alias vsgnome="cd ${GNOME_PATH} && code ."
-alias vsgnomup="gnomeup && cd ${GNOME_PATH} && screen -dm npm run dev && code ."
+alias vsgnomeup="gnomeup && cd ${GNOME_PATH} && screen -dm npm run dev && code ."
 
 # actual
 alias vsninaback="cd ${NINA_BACK_PATH} && code ."

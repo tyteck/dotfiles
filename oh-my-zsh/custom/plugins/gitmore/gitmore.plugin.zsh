@@ -73,6 +73,9 @@ function mergeToMain() {
 
     # delete feat. branch
     gdelete $currentBranch
+
+    # return to dev
+    git checkout dev
 }
 
 function mergeCurrentWith() {

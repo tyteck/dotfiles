@@ -57,7 +57,7 @@ function tests() {
 
     # get the command to access container
     local dockerPrefix=$(getDockerPrefix)
-    local commandToRun="${dockerPrefix}${executablePath} --display-skipped --display-incomplete --display-deprecations$@"
+    local commandToRun="${dockerPrefix}${executablePath} --display-skipped --display-incomplete --display-deprecations --display-phpunit-deprecations $@"
     comment $commandToRun
     eval $commandToRun
 }
@@ -133,6 +133,7 @@ function runshootdev() {
 
 function sshninadev() {
     runshootdev
+    gcloud container clusters get-credentials mutualise-dev --zone europe-west9-a --project mutualise-dev-db42 --internal-ip
     commander=$(kubectl get pods -n nina-dev | grep commander | grep Running | awk '{print $1}')
     kubectl exec -it $commander -n nina-dev -- /bin/bash
 }
@@ -367,7 +368,7 @@ function ninaup() {
     if [ $? != 0 ]; then
         docker network create actual-network
     fi
-    docker compose -f ${NINA_PATH}/build/docker-compose.yml -p nina up -d
+    docker compose -f ${NINA_PATH}/docker/docker-compose.yml -p nina up -d
     if [ $? != 0 ]; then
         warning "command has failed."
         return

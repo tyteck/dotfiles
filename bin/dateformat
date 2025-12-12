@@ -1,0 +1,45 @@
+#!/usr/bin/php
+<?php
+
+declare(strict_types=1);
+
+use Carbon\Carbon;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$knownDateFormats = [
+    'atom'             => DateTimeInterface::ATOM,
+    'cookie'           => DateTimeInterface::COOKIE,
+    'iso8601'          => DateTimeInterface::ISO8601,
+    'iso8601_expanded' => DateTimeInterface::ISO8601_EXPANDED,
+    'rfc822'           => DateTimeInterface::RFC822,
+    'rfc850'           => DateTimeInterface::RFC850,
+    'rfc1036'          => DateTimeInterface::RFC1036,
+    'rfc1123'          => DateTimeInterface::RFC1123,
+    'rfc7231'          => DateTimeInterface::RFC7231,
+    'rfc2822'          => DateTimeInterface::RFC2822,
+    'rfc3339'          => DateTimeInterface::RFC3339,
+    'rfc3339_extended' => DateTimeInterface::RFC3339_EXTENDED,
+    'rss'              => DateTimeInterface::RSS,
+    'w3c'              => DateTimeInterface::W3C,
+];
+
+$curDate = Carbon::now();
+
+array_map(function (string $formatName, string $format) use ($curDate): void {
+    echo 'date au format ' . $formatName . ' => ' . $curDate->format($format) . PHP_EOL;
+}, array_keys($knownDateFormats), $knownDateFormats);
+
+// si une date est fournie on essaye de reconnaitre le format
+if (!empty($argv[1])) {
+    $found = false;
+    array_map(function (string $formatName, string $format) use ($argv, &$found): void {
+        if (Carbon::canBeCreatedFromFormat($argv[1], $format)) {
+            echo "SUCCESS : this date is format {$formatName}" . PHP_EOL;
+            $found = true;
+        }
+    }, array_keys($knownDateFormats), $knownDateFormats);
+    if (!$found) {
+        echo "FAILURE : This date {$argv[1]} format is unknown." . PHP_EOL;
+    }
+}

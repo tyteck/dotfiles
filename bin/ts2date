@@ -1,0 +1,27 @@
+#!/usr/bin/php
+<?php
+
+declare(strict_types=1);
+
+use Carbon\Carbon;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+if (empty($argv[1])) {
+    exit('Usage : lkdshjlksdf');
+}
+
+$type = match (strlen($argv[1])) {
+    10      => 'sec',
+    13      => 'ms',
+    default => exit('not a timestamp')
+};
+
+switch ($type) {
+    case 'ms': $date = Carbon::createFromTimestampMs($argv[1]);
+        break;
+    case 'sec': $date = Carbon::createFromTimestamp($argv[1]);
+        break;
+}
+
+echo $date->toDateTimeString();

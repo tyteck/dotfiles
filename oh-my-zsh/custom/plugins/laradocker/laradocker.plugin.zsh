@@ -87,7 +87,7 @@ function tests() {
 
     # get the command to access container
     local dockerPrefix=$(getDockerPrefix)    
-    local commandToRun="${dockerPrefix}${executablePath} --display-skipped --display-incomplete $@"
+    local commandToRun="${dockerPrefix}${executablePath} --display-incomplete $@"
     comment $commandToRun
     eval $commandToRun
 }
@@ -384,11 +384,6 @@ function ams(){
     eval $cmd
 }
 
-function stopondefect(){
-    local cmd="tests --stop-on-defect"
-    eval $cmd
-}
-
 alias acc='artisan cache:clear && artisan config:clear'
 alias ads='artisan db:seed'
 alias aie='artisan ide-helper:eloquent'
@@ -406,4 +401,3 @@ alias atp='artisan test --parallel'
 alias avp='artisan vendor:publish'
 alias tinker='artisan tinker'
 alias insights='artisan insights --no-interaction --verbose'
-alias tstop='tests --stop-on-failure --stop-on-error'

@@ -1,0 +1,4 @@
+#!/usr/bin/zsh
+
+IP=$(cat $HOME/minip)
+ssh fred@$IP

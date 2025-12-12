@@ -11,8 +11,8 @@ alias elasticreset='artisan elasticsearch:delete && artisan elasticsearch:rebuil
 alias seedocs='artisan db:seed --class DocumentsSeeder && elasticreset'
 alias fredseeder='artisan db:seed --class FredSeeder'
 alias actualGcloud='gcloud config configurations activate actual'
-alias ninadecrypt='docker compose -f /home/fred/Projects/nina/build/docker-compose.yml -p nina run tools gpg --quiet --batch --yes --decrypt --output app/app/.env.ci app/app/.env.ci.gpg'
-alias ninaencrypt='docker compose -f /home/fred/Projects/nina/build/docker-compose.yml -p nina run tools gpg --symmetric --cipher-algo AES256 app/app/.env.ci'
+alias ninadecrypt='docker compose -f /home/fred/Projects/nina/docker/docker-compose.yml -p nina run tools gpg --quiet --batch --yes --decrypt --output app/app/.env.ci app/app/.env.ci.gpg'
+alias ninaencrypt='docker compose -f /home/fred/Projects/nina/docker/docker-compose.yml -p nina run tools gpg --symmetric --cipher-algo AES256 app/app/.env.ci'
 
 #
 #-------------------------------------------------------------------------
@@ -57,7 +57,7 @@ function tests() {
 
     # get the command to access container
     local dockerPrefix=$(getDockerPrefix)
-    local commandToRun="${dockerPrefix}${executablePath} --display-skipped --display-incomplete --display-deprecations --display-phpunit-deprecations $@"
+    local commandToRun="${dockerPrefix}${executablePath} --display-incomplete --display-deprecations --display-phpunit-deprecations $@"
     comment $commandToRun
     eval $commandToRun
 }
@@ -127,15 +127,30 @@ function passninadev() {
     cat $ninaEnvFile | grep DB_PASSWORD | cut -d'=' -f2
 }
 
-function runshootdev() {
-    sshoot start actual-dev
-}
-
 function sshninadev() {
     runshootdev
     gcloud container clusters get-credentials mutualise-dev --zone europe-west9-a --project mutualise-dev-db42 --internal-ip
     commander=$(kubectl get pods -n nina-dev | grep commander | grep Running | awk '{print $1}')
     kubectl exec -it $commander -n nina-dev -- /bin/bash
+}
+
+function sshninaeod() {
+    local branchName=$1
+    if [ -z $branchName ]; then
+        warning 'Usage : sshninaeod <BRANCH_NAME> (ie : sshninaeod TASK-5237-updating-anael-contracts)'
+        warning '   check : kubectl get ns'
+        return 1
+    fi
+    local namespace="nina-${branchName:l}"
+    runshootdev
+    gcloud container clusters get-credentials eod --zone europe-west9-a --project mutualise-dev-db42 --internal-ip
+    commander=$(kubectl get pods -n $namespace | grep commander | grep Running | awk '{print $1}')
+    echo $commander
+    kubectl exec -it $commander -n $namespace -- /bin/bash
+}
+
+function runshootdev() {
+    sshoot start actual-dev
 }
 
 function runshootpp() {
@@ -368,7 +383,7 @@ function ninaup() {
     if [ $? != 0 ]; then
         docker network create actual-network
     fi
-    docker compose -f ${NINA_PATH}/docker/docker-compose.yml -p nina up -d
+    docker compose -f ${NINA_PATH}/docker/docker-compose.yml -p nina --env-file=${NINA_PATH}/.env up -d
     if [ $? != 0 ]; then
         warning "command has failed."
         return

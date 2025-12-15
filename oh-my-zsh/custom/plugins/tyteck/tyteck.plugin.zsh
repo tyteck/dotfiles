@@ -162,7 +162,8 @@ function emptyFile() {
 
 function whatsmyip() {
     local myIp=$(curl https://ipinfo.io/ip --silent)
-    echo $myIp
+    echo remote : $myIp
+    echo locale : $(hostname -I | cut -d' ' -f1)
 }
 
 function userExists() {

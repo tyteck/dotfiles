@@ -17,6 +17,7 @@
 	directory = /home/fred/Projects/gnomelab
 	directory = /home/fred/Projects/gnomelab
 	directory = /home/fred/Projects/gnomelab
+	directory = /home/fred/Projects/gloove
 [pull]
 	rebase = false
 [init]
@@ -27,3 +28,7 @@
 	username = ftytecaActual
 [credential "https://api.github.com"]
 	username = ftytecaActual
+[alias]
+	gone = "!git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -d"
+[push]
+	autoSetupRemote = true

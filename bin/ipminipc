@@ -1,4 +1,9 @@
 #!/usr/bin/zsh
 miniMacAddress="1C:83:41:28:40:6B"
 ipMini=$(sudo nmap -sn 192.168.1.0/24 | grep -B 3 "$miniMacAddress" | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+if [ $? != 0 ]; then
+    echo "Updating minipc ip address has failed => exit"
+    exit 1
+fi
+
 echo $ipMini > $HOME/minip

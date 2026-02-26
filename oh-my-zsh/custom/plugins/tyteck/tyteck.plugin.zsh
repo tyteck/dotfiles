@@ -32,6 +32,7 @@ alias vsgnome="cd ${GNOME_PATH} && code ."
 alias vsgnomeup="gnomeup && cd ${GNOME_PATH} && screen -dm npm run dev && code ."
 
 # actual
+alias vsnina="cd ${NINA_PATH} && code ."
 alias vsninaback="cd ${NINA_BACK_PATH} && code ."
 alias vsninafront="cd ${NINA_FRONT_PATH} && code ."
 alias vslucie="cd ${LUCIE_PATH} && code ."
@@ -500,7 +501,7 @@ function ecrandown() {
 }
 
 # ==================================
-# figures
+# gnomelab
 # ==================================
 function gnomeup() {
     persoup
@@ -509,6 +510,18 @@ function gnomeup() {
 
 function gnomedown() {
     containerdown "gnomelab" "$GNOME_PATH"
+}
+
+# ==================================
+# gloove
+# ==================================
+function glooveup() {
+    persoup
+    containerup "gloove" "$GLOOVE_PATH"
+}
+
+function gloovedown() {
+    containerdown "gloove" "$GLOOVE_PATH"
 }
 
 
@@ -543,6 +556,7 @@ function persodown() {
     maildown
     memorymysqldown
     gnomedown
+    gloovedown
 }
 
 function demoup() {

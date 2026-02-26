@@ -30,7 +30,7 @@ function rebuildNinaDbIfNeeded() {
 }
 
 function rebuildNinaTestingIfNeeded() {
-    dbninamem -e "create database if not exists nina_testing;" >/dev/null 2>&1
+    dbninamem -e "drop database nina_testing;create database if not exists nina_testing;" >/dev/null 2>&1
     comment "nina_testing ✅"
 }
 

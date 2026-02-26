@@ -49,7 +49,7 @@ function getDockerPrefix() {
         [ -z $LUCIE_COMPOSE ] && echo 'env var LUCIE_COMPOSE is not defined.' && return 1;
         dockerPrefix="${LUCIE_COMPOSE} exec php-nginx "
     elif inNina; then # nina - Actual
-        dockerPrefix="docker compose -f ${NINA_PATH}/build/docker-compose.yml -p nina exec -e XDEBUG_MODE=coverage php-nginx "
+        dockerPrefix="docker compose -f ${NINA_PATH}/docker/docker-compose.yml -p nina --env-file=${NINA_PATH}/.env exec php-nginx " 
     elif inDac; then # demande-acompte - Actual
         dockerPrefix="docker compose --env-file ${DAC_PATH}/.env -f ${DAC_PATH}/docker/docker-compose.yml -p demande-acompte exec php-nginx "
     elif inAnael; then

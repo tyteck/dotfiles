@@ -1,5 +1,5 @@
 [user]
-	email = frederick@tyteca.net
+	email = frederick.tyteca@actualgroup.com
 	name = frederick tyteca
 [pager]
 	branch = false
@@ -18,6 +18,10 @@
 	directory = /home/fred/Projects/gnomelab
 	directory = /home/fred/Projects/gnomelab
 	directory = /home/fred/Projects/gloove
+	directory = /home/fred/Projects/scud
+	directory = /home/fred/Projects/scud/front
+	directory = /home/fred/Projects/xtrackerx
+	directory = /home/fred/Projects/vera
 [pull]
 	rebase = false
 [init]

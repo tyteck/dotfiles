@@ -3,8 +3,11 @@ set -euo pipefail
 
 REPOS=(
   "actualtysoft/nina"
+  "actualtysoft/vera"
+  "actualtysoft/laravel"
   "actualtysoft/anael-api-handler"
   "actualtysoft/scud-api-handler"
+  "actualtysoft/scud"
 )
 
 GREEN='\033[1;32m'
@@ -28,12 +31,14 @@ trap 'rm -rf "$tmpdir"' EXIT
 
 # Fetch all authored PRs per repo + review-requested, all in parallel
 for repo in "${REPOS[@]}"; do
-  gh pr list --repo "$repo" --author "@me" --state open \
-    --json url,title,reviewDecision > "$tmpdir/${repo//\//_}.json" &
+  (gh pr list --repo "$repo" --author "@me" --state open \
+    --json url,title,reviewDecision > "$tmpdir/${repo//\//_}.json" 2>/dev/null \
+    || echo '[]' > "$tmpdir/${repo//\//_}.json") &
 done
 
-gh search prs --review-requested=@me --state=open --owner=actualtysoft \
-  --json url,title,repository > "$tmpdir/to_review.json" &
+(gh search prs --review-requested=@me --state=open --owner=actualtysoft \
+  --json url,title,repository > "$tmpdir/to_review.json" 2>/dev/null \
+  || echo '[]' > "$tmpdir/to_review.json") &
 
 wait
 

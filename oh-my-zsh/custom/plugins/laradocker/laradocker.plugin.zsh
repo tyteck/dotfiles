@@ -7,7 +7,7 @@
 #  		/path/../to/<containername>/artisan
 
 function isLaravelPath() {
-    if fileExists 'artisan' || fileExists 'laravel/artisan' || fileExists 'app/artisan'; then
+    if fileExists 'artisan' || fileExists 'laravel/artisan' || fileExists 'app/artisan' || fileExists 'src/artisan'; then
         true
     else
         false
@@ -50,6 +50,10 @@ function getDockerPrefix() {
         dockerPrefix="${LUCIE_COMPOSE} exec php-nginx "
     elif inNina; then # nina - Actual
         dockerPrefix="docker compose -f ${NINA_PATH}/docker/docker-compose.yml -p nina --env-file=${NINA_PATH}/.env exec php-nginx " 
+    elif inVera; then # nina - Actual
+        dockerPrefix="docker compose -f ${VERA_PATH}/docker/docker-compose.yml -p vera --env-file=${VERA_PATH}/.project.env exec php-nginx " 
+    elif inScud; then # scud - Actual
+        dockerPrefix="docker compose -f ${SCUD_PATH}/build/docker-compose.yml -p "scud" --env-file=${SCUD_PATH}/.project.env exec php-nginx "
     elif inDac; then # demande-acompte - Actual
         dockerPrefix="docker compose --env-file ${DAC_PATH}/.env -f ${DAC_PATH}/docker/docker-compose.yml -p demande-acompte exec php-nginx "
     elif inAnael; then
@@ -305,6 +309,15 @@ function catErrorsFromLog() {
 # if inNina;then echo "IN";else echo "out";fi
 function inNina() {
     inPath "nina"
+}
+
+function inVera() {
+    inPath "vera"
+}
+
+
+function inScud() {
+    inPath "scud"
 }
 
 # sample test

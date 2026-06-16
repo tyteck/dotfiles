@@ -369,9 +369,25 @@ function ninatimesheetfromuuid() {
         where timesheets.uuid='${uuid}';"
 }
 
+function veraup() {
+    persodown
+    scuddown
+    luciedown
+    
+    cd ${VERA_PATH}
+    make up    
+}
+
+function veradown() {
+    cd ${VERA_PATH}
+    make down
+}
+
+
 function ninaup() {
     persodown
     luciedown
+    scuddown
 
     # config for pulling from europe-docker.pkg.dev
     cat ~/.docker/config.json | grep "europe-docker.pkg.dev" >/dev/null
@@ -405,6 +421,15 @@ function ninastart() {
 
 function ninadown() {
     docker compose -f ${NINA_PATH}/front/docker/docker-compose.yml -p nina down --remove-orphans
+}
+
+function scudup() {
+    cd ${SCUD_PATH} && make up
+}
+
+
+function scuddown() {
+    docker compose -f ${SCUD_PATH}/build/docker-compose.yml -p scud down --remove-orphans
 }
 
 function dacup() {
@@ -448,6 +473,8 @@ function actualdown() {
     dacdown
     anaeldown
     atlasdown
+    scuddown
+    veradown
 }
 
 function persoup() {

@@ -32,6 +32,7 @@ alias vsgnome="cd ${GNOME_PATH} && code ."
 alias vsgnomeup="gnomeup && cd ${GNOME_PATH} && screen -dm npm run dev && code ."
 
 # actual
+alias vsscud="cd ${SCUD_PATH} && code ."
 alias vsnina="cd ${NINA_PATH} && code ."
 alias vsninaback="cd ${NINA_BACK_PATH} && code ."
 alias vsninafront="cd ${NINA_FRONT_PATH} && code ."
@@ -98,16 +99,9 @@ alias editlocalconf='vim ~/.local.conf'
 alias biggestfolders='du -a . | sort -n -r | head -n 10'
 alias biggestfiles='du -Sh . | sort -rh | head -20'
 
-# Go/Golang
-alias gor='go run'
-alias got='go test'
-alias gorm='gor main.go'
 
 # apt
 alias apt='sudo apt -y'
-alias aptu='apt update'
-alias aptg='apt upgrade'
-alias aptclean='apt autoremove'
 
 # apt
 alias fullapt='sudo apt-get update -q -y && \
@@ -453,51 +447,15 @@ function poddown() {
 }
 
 # ==================================
-# Temperatures
+# estimateAI
 # ==================================
-function tempup() {
+function estimup() {
     persoup
-    containerup "temperatures" "$TEMP_PATH"
+    containerup "estimateai" "$ESTIM_PATH"
 }
 
-function tempdown() {
-    containerdown "temperatures" "$TEMP_PATH"
-}
-
-# ==================================
-# GDPR
-# ==================================
-function docsup() {
-    persoup
-    containerup "apidocuments" "$DOCS_PATH"
-}
-
-function docsdown() {
-    containerdown "apidocuments" "$DOCS_PATH"
-}
-
-# ==================================
-# POKER
-# ==================================
-function pokerup() {
-    persoup
-    containerup "poker" "$POKER_PATH"
-}
-
-function pokerdown() {
-    containerdown "poker" "$POKER_PATH"
-}
-
-# ==================================
-# Ecran Inspirant
-# ==================================
-function ecranup() {
-    persoup
-    containerup "ecran-inspirant" "$ECRAN_PATH"
-}
-
-function ecrandown() {
-    containerdown "ecran-inspirant" "$ECRAN_PATH"
+function estimdown() {
+    containerdown "estimateai" "$ESTIM_PATH"
 }
 
 # ==================================
@@ -506,6 +464,7 @@ function ecrandown() {
 function gnomeup() {
     persoup
     containerup "gnomelab" "$GNOME_PATH"
+    screen -dm npm run dev
 }
 
 function gnomedown() {
@@ -544,8 +503,7 @@ function persoup() {
     mysqlup
     phpmyadminup
     mailup
-    memorymysqlup
-    gnomeup
+    memorymysqlup    
 }
 
 function persodown() {
@@ -556,7 +514,7 @@ function persodown() {
     maildown
     memorymysqldown
     gnomedown
-    gloovedown
+    estimdown
 }
 
 function demoup() {
@@ -577,6 +535,9 @@ function actualup() {
 
 function actualdown() {
     echo "actualdown is doing nothing and it's 👍"
+    ninadown
+    scuddown
+    veradown
 }
 
 function installdeb() {

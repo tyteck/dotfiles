@@ -128,17 +128,11 @@ function passninadev() {
 }
 
 function sshninadev() {
-    runshootdev
-    gcloud container clusters get-credentials mutualise-dev --zone europe-west9-a --project mutualise-dev-db42 --internal-ip
-    commander=$(kubectl get pods -n nina-dev | grep commander | grep Running | awk '{print $1}')
-    kubectl exec -it $commander -n nina-dev -- /bin/bash
+    _sshCommander mutualise-dev mutualise-dev-db42 nina-dev actual-dev
 }
 
 function sshveradev() {
-    runshootdev
-    gcloud container clusters get-credentials mutualise-dev --zone europe-west9-a --project mutualise-dev-db42 --internal-ip
-    commander=$(kubectl get pods -n vera-dev | grep commander | grep Running | awk '{print $1}')
-    kubectl exec -it $commander -n vera-dev -- /bin/bash
+    _sshCommander mutualise-dev mutualise-dev-db42 vera-dev actual-dev
 }
 
 function sshninaeod() {
@@ -148,12 +142,7 @@ function sshninaeod() {
         warning '   check : kubectl get ns'
         return 1
     fi
-    local namespace="nina-${branchName:l}"
-    runshootdev
-    gcloud container clusters get-credentials eod --zone europe-west9-a --project mutualise-dev-db42 --internal-ip
-    commander=$(kubectl get pods -n $namespace | grep commander | grep Running | awk '{print $1}')
-    echo $commander
-    kubectl exec -it $commander -n $namespace -- /bin/bash
+    _sshCommander eod mutualise-dev-db42 "nina-${branchName:l}" actual-dev
 }
 
 function runshootdev() {
@@ -168,20 +157,53 @@ function runshootprod() {
     sshoot start actual-prod
 }
 
+function _ensureShoot() {
+    local profile=$1
+    if ! sshoot is-running $profile >/dev/null 2>&1; then
+        comment "starting shoot ${profile} ..."
+        sshoot start $profile
+    fi
+}
+
+function _sshCommander() {
+    local cluster=$1 project=$2 namespace=$3 profile=$4
+    local zone=${5:-europe-west9-a}
+
+    _ensureShoot $profile
+    gcloud container clusters get-credentials $cluster --zone $zone --project $project --internal-ip
+
+    # Attend que le tunnel route réellement vers l'API server ET que le pod soit prêt
+    local commander="" i
+    for i in {1..15}; do
+        commander=$(kubectl get pods -n $namespace 2>/dev/null | grep commander | grep Running | awk '{print $1}')
+        [[ -n $commander ]] && break
+        sleep 1
+    done
+
+    if [[ -z $commander ]]; then
+        error "commander pod introuvable dans ${namespace} (tunnel pas prêt ou pod absent)"
+        return 1
+    fi
+
+    # Injecte des alias dans le pod éphémère : on écrit un rcfile temporaire,
+    # on source la conf existante (prompt, etc.), puis on ajoute nos alias.
+    kubectl exec -it $commander -n $namespace -- /bin/bash -c '
+cat > /tmp/.commanderrc <<"RCEOF"
+[ -f /etc/profile ] && . /etc/profile
+[ -f ~/.bashrc ] && . ~/.bashrc
+alias l="ls -lsa --color=auto"
+alias ll="ls -l --color=auto"
+alias la="ls -A --color=auto"
+RCEOF
+exec bash --rcfile /tmp/.commanderrc -i'
+}
+
 function sshninapp() {
-    runshootpp
-    # run following command if needed
-    gcloud container clusters get-credentials mutualise-preprod --zone europe-west9-a --project mutualise-preprod-c51e --internal-ip
-    commander=$(kubectl get pods -n nina-preprod | grep commander | grep Running | awk '{print $1}')
-    kubectl exec -it $commander -n nina-preprod -- /bin/bash
+    _sshCommander mutualise-preprod mutualise-preprod-c51e nina-preprod actual-preprod
 }
 
 function sshninaprod() {
-    runshootprod
-    # run following command if needed
-    gcloud container clusters get-credentials mutualise-prod --zone europe-west9-a --project mutualise-prod-f414 --internal-ip
-    commander=$(kubectl get pods -n nina-prod | grep commander | grep Running | awk '{print $1}')
-    kubectl exec -it $commander -n nina-prod -- /bin/bash
+    _sshCommander mutualise-prod mutualise-prod-f414 nina-prod actual-prod
 }
 
 function pushninadev() {

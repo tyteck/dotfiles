@@ -134,6 +134,13 @@ function sshninadev() {
     kubectl exec -it $commander -n nina-dev -- /bin/bash
 }
 
+function sshveradev() {
+    runshootdev
+    gcloud container clusters get-credentials mutualise-dev --zone europe-west9-a --project mutualise-dev-db42 --internal-ip
+    commander=$(kubectl get pods -n vera-dev | grep commander | grep Running | awk '{print $1}')
+    kubectl exec -it $commander -n vera-dev -- /bin/bash
+}
+
 function sshninaeod() {
     local branchName=$1
     if [ -z $branchName ]; then

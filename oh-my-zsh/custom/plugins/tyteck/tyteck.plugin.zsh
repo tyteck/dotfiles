@@ -4,6 +4,7 @@ alias myipeth0='ip addr show enp2s0'
 alias please='sudo'
 alias reboot='restart'
 alias restart='please shutdown -r now'
+alias suspend='systemctl suspend'
 alias zrc='exec zsh'
 
 # required to use php-cs-fixer on php 8.2 (fredt 2023-03-03)
@@ -29,6 +30,7 @@ alias vstemp="cd ${TEMP_PATH} && screen -d -m npm run dev && code ."
 alias vsecran="cd ${ECRAN_PATH} && code ."
 alias vsjob="cd ${JOB_PATH} && code ."
 alias vsgnome="cd ${GNOME_PATH} && code ."
+alias vsestim="cd ${ESTIM_PATH} && code ."
 alias vsgnomeup="gnomeup && cd ${GNOME_PATH} && screen -dm npm run dev && code ."
 
 # actual
@@ -39,6 +41,7 @@ alias vsninafront="cd ${NINA_FRONT_PATH} && code ."
 alias vslucie="cd ${LUCIE_PATH} && code ."
 alias vsanael="cd ${ANAEL_PATH} && code ."
 alias vsdac="cd ${DAC_PATH} && code ."
+alias vsvera="cd ${VERA_PATH} && code ."
 
 # ubuntu
 alias whichdesktop='env | grep XDG_CURRENT_DESKTOP'

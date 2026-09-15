@@ -349,6 +349,7 @@ function runTriggerWithGoodNameOnly() {
 }
 
 function luciedown() {
+    make --directory ${LUCIE_FRONT_PATH:-$HOME/Projects/lucie-front} stop
     cd ${LUCIE_PATH}/..
     make down
 }
@@ -360,7 +361,27 @@ function lucieup() {
     touch $logFile && sudo chown www-data:fred $logFile
     cd ${LUCIE_PATH}/..
     make up
+    luciefrontup
     cd ${LUCIE_PATH}
+}
+
+function luciefrontup() {
+    local frontPath=${LUCIE_FRONT_PATH:-$HOME/Projects/lucie-front}
+    comment "⬆️  lucie-front ⬆️"
+    # évite un conflit sur le port 3000 si un conteneur traîne
+    docker ps -q --filter "name=lucie-front-node-run" | xargs -r docker stop >/dev/null
+    # équivalent de `make start` mais détaché : make start bloque le terminal (Vite au premier plan)
+    local cid
+    cid=$(PROJECT_NAME=lucie-front PROJECT_PORT=3000 GIT_ACCESS_TOKEN=${GITHUB_TOKEN} \
+        docker compose -f ${frontPath}/docker/docker-compose.yml -p lucie-front \
+        run --rm -d -p 127.0.0.1:3000:3000 node pnpm start) || { warning "lucie-front n'a pas démarré."; return 1; }
+    comment "lucie-front ✅ http://localhost:3000 — logs : luciefrontlogs"
+}
+
+function luciefrontlogs() {
+    local cid=$(docker ps -q --filter "name=lucie-front-node-run" | head -1)
+    [[ -z $cid ]] && { warning "aucun conteneur lucie-front en cours."; return 1; }
+    docker logs -f $cid
 }
 
 function lucierestart() {

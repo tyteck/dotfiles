@@ -135,6 +135,10 @@ function sshveradev() {
     _sshCommander mutualise-dev mutualise-dev-db42 vera-dev actual-dev
 }
 
+function sshveraprod() {
+    _sshCommander mutualise-prod mutualise-prod-f414 vera-prod actual-prod
+}
+
 function sshninaeod() {
     local branchName=$1
     if [ -z $branchName ]; then
@@ -165,17 +169,44 @@ function _ensureShoot() {
     fi
 }
 
+# `sshoot is-running` ne teste qu'un pid : après une veille ou une coupure ssh le
+# process sshuttle survit alors que le tunnel est mort. Comme sshuttle accepte la
+# connexion tcp localement avant de la router, kubectl ne reçoit jamais d'erreur et
+# attend indéfiniment : on interroge donc l'API server avec un timeout explicite.
+function _apiServerReachable() {
+    kubectl get --raw=/version --request-timeout=5s >/dev/null 2>&1
+}
+
+function _waitForApiServer() {
+    local tries=${1:-1} i
+    for i in {1..$tries}; do
+        _apiServerReachable && return 0
+        ((i < tries)) && sleep 2
+    done
+    return 1
+}
+
 function _sshCommander() {
     local cluster=$1 project=$2 namespace=$3 profile=$4
     local zone=${5:-europe-west9-a}
 
     _ensureShoot $profile
-    gcloud container clusters get-credentials $cluster --zone $zone --project $project --internal-ip
+    gcloud container clusters get-credentials $cluster --zone $zone --project $project --internal-ip || return 1
 
-    # Attend que le tunnel route réellement vers l'API server ET que le pod soit prêt
+    if ! _waitForApiServer; then
+        warning "tunnel ${profile} injoignable, redémarrage du shoot ..."
+        sshoot stop $profile >/dev/null 2>&1
+        sshoot start $profile || return 1
+        if ! _waitForApiServer 3; then
+            error "API server toujours injoignable via ${profile}"
+            return 1
+        fi
+    fi
+
+    # Attend que le pod soit prêt
     local commander="" i
     for i in {1..15}; do
-        commander=$(kubectl get pods -n $namespace 2>/dev/null | grep commander | grep Running | awk '{print $1}')
+        commander=$(kubectl get pods -n $namespace --request-timeout=10s 2>/dev/null | grep commander | grep Running | awk '{print $1}')
         [[ -n $commander ]] && break
         sleep 1
     done

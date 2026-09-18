@@ -475,15 +475,15 @@ function gnomedown() {
 }
 
 # ==================================
-# gloove
+# collines
 # ==================================
-function glooveup() {
+function collinesup() {
     persoup
-    containerup "gloove" "$GLOOVE_PATH"
+    containerup "collines" "$COLLINES_PATH"
 }
 
-function gloovedown() {
-    containerdown "gloove" "$GLOOVE_PATH"
+function collinesdown() {
+    containerdown "collines" "$COLLINES_PATH"
 }
 
 
@@ -511,13 +511,13 @@ function persoup() {
 
 function persodown() {
     comment "⬇️  perso ⬇️"
-    gcloudActual
     mysqldown
     phpmyadmindown
     maildown
     memorymysqldown
     gnomedown
     estimdown
+    collinesdown
 }
 
 function demoup() {

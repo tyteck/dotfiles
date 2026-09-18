@@ -31,3 +31,12 @@ rm -rfv ~/.config/Code/User/snippets && ln -s ~/dotfiles/vscode_snippets ~/.conf
 ln -s ~/dotfiles/docker_config.json ~/.docker/config.json
 ```
 
+
+## Claude Code status line
+```
+ln -s ~/dotfiles/claude/statusline.sh ~/.claude/statusline.sh
+```
+Puis dans `~/.claude/settings.json` :
+```json
+"statusLine": { "type": "command", "command": "~/.claude/statusline.sh", "padding": 0, "refreshInterval": 10 }
+```

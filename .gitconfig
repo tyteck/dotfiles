@@ -6,22 +6,6 @@
 [core]
 	pager = cat
 	excludesfile = /home/fred/.gitignore
-[safe]
-	directory = /home/fred/Projects/podmytube
-	directory = /home/fred/Projects/lucie
-	directory = /home/fred/Projects/jefaismescomptes
-	directory = /home/fred/Projects/rss-bot
-	directory = /home/fred/Projects/nina
-	directory = /home/fred/Projects/sogedep-om-manager
-	directory = /home/fred/Projects/figures
-	directory = /home/fred/Projects/gnomelab
-	directory = /home/fred/Projects/gnomelab
-	directory = /home/fred/Projects/gnomelab
-	directory = /home/fred/Projects/gloove
-	directory = /home/fred/Projects/scud
-	directory = /home/fred/Projects/scud/front
-	directory = /home/fred/Projects/xtrackerx
-	directory = /home/fred/Projects/vera
 [pull]
 	rebase = false
 [init]
@@ -36,3 +20,7 @@
 	gone = "!git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs -r git branch -d"
 [push]
 	autoSetupRemote = true
+# Machine-specific settings (safe.directory, user.email override...) live in an
+# unversioned ~/.gitconfig.local. Keep this last so it can override the above.
+[include]
+	path = ~/.gitconfig.local

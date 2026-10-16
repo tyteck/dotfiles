@@ -1,0 +1,18 @@
+#!/bin/bash
+# Pulls newer images for every running Docker Compose project and recreates
+# the containers whose image changed. Run weekly from /etc/cron.d/docker-images-update.
+set -u
+
+status=0
+dirs=$(docker ps --format "{{.Label \"com.docker.compose.project.working_dir\"}}" | sort -u)
+
+for dir in $dirs; do
+    echo "== $dir"
+    if ! (cd "$dir" && docker compose pull --quiet --ignore-buildable && docker compose up -d --quiet-pull); then
+        echo "FAILED: $dir" >&2
+        status=1
+    fi
+done
+
+docker image prune -f >/dev/null
+exit $status

@@ -1,18 +1,77 @@
 #!/bin/bash
-# Pulls newer images for every running Docker Compose project and recreates
+# Pulls newer images for every running Docker Compose project, rebuilds the
+# locally built images when one of their base images (FROM) changed (e.g. gnomelab
+# on dunglas/frankenphp, so a PHP security release is picked up), and recreates
 # the containers whose image changed. Run weekly from /etc/cron.d/docker-images-update.
 set -u
 
+# Prints the base images (FROM, minus build stages) of the project's buildable services.
+base_images() {
+    docker compose config --format json | python3 -c '
+import json, os, re, sys
+images = set()
+for svc in json.load(sys.stdin)["services"].values():
+    build = svc.get("build")
+    if not build:
+        continue
+    path = os.path.join(build["context"], build.get("dockerfile", "Dockerfile"))
+    stages = set()
+    for line in open(path):
+        m = re.match(r"\s*FROM\s+(?:--\S+\s+)*(\S+)(?:\s+AS\s+(\S+))?", line, re.I)
+        if not m:
+            continue
+        if m.group(1).lower() not in stages and "$" not in m.group(1):
+            images.add(m.group(1))
+        if m.group(2):
+            stages.add(m.group(2).lower())
+print("\n".join(sorted(images)))
+'
+}
+
+# Pulls the base images; succeeds if at least one of them changed.
+base_images_updated() {
+    local image before after updated=1
+    for image in $(base_images); do
+        before=$(docker image inspect --format '{{.Id}}' "$image" 2>/dev/null)
+        docker pull --quiet "$image" >/dev/null || return 2
+        after=$(docker image inspect --format '{{.Id}}' "$image")
+        if [ "$before" != "$after" ]; then
+            echo "base image updated: $image"
+            updated=0
+        fi
+    done
+    return $updated
+}
+
 status=0
+recreated=0
 dirs=$(docker ps --format "{{.Label \"com.docker.compose.project.working_dir\"}}" | sort -u)
 
 for dir in $dirs; do
-    echo "== $dir"
-    if ! (cd "$dir" && docker compose pull --quiet --ignore-buildable && docker compose up -d --quiet-pull); then
+    echo "== $(date '+%F %T') $dir"
+    before=$(cd "$dir" && docker compose ps -q | sort)
+    # No rebuild unless a base image changed: a "COPY ." of a live app dir
+    # (logs, cache) would otherwise produce a new image, hence a restart, every week.
+    if ! (cd "$dir" \
+        && docker compose pull --quiet --ignore-buildable \
+        && { base_images_updated; rc=$?; [ $rc = 2 ] && exit 1; [ $rc = 1 ] || docker compose build --quiet; } \
+        && docker compose up -d --quiet-pull --wait --wait-timeout 120); then
         echo "FAILED: $dir" >&2
         status=1
     fi
+    after=$(cd "$dir" && docker compose ps -q | sort)
+    if [ "$before" != "$after" ]; then
+        echo "recreated: $dir"
+        recreated=1
+    fi
 done
+
+# Supervisor programs that "docker exec" into a container (gnomelab queue workers)
+# give up while their container, or the database they use, is being recreated:
+# start them again once everything is healthy ("up --wait" above).
+if [ "$recreated" = 1 ] && command -v supervisorctl >/dev/null; then
+    supervisorctl start all
+fi
 
 docker image prune -f >/dev/null
 exit $status

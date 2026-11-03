@@ -161,6 +161,10 @@ function runshootprod() {
     sshoot start actual-prod
 }
 
+alias sshootdev=runshootdev
+alias sshootpp=runshootpp
+alias sshootprod=runshootprod
+
 function _ensureShoot() {
     local profile=$1
     if ! sshoot is-running $profile >/dev/null 2>&1; then
@@ -249,34 +253,57 @@ function pushninapp() {
 
 function pushnina() {
     if [[ $# -ne 2 ]]; then
-        warning 'Usage : pushninapp <ENVIRONMENT> <BRANCH_NAME> [front/back/both] (ie : pushninapp dev CHEW-29-ftp-pixid )'
+        warning 'Usage : pushnina <ENVIRONMENT> <BRANCH_NAME> (ie : pushnina dev CHEW-29-ftp-pixid )'
         return 1
     fi
+    _pushCloudbuildApp nina $1 $2
+}
 
-    local environment=$1
-    local branchName=$2
+function pushecdev() {
+    local branchName=$1
+    pushec dev ${branchName}
+}
+
+function pushecpp() {
+    local branchName=$1
+    pushec preprod ${branchName}
+}
+
+function pushec() {
+    if [[ $# -ne 2 ]]; then
+        warning 'Usage : pushec <ENVIRONMENT> <BRANCH_NAME> (ie : pushec dev CHEW-29-ftp-pixid )'
+        return 1
+    fi
+    _pushCloudbuildApp espace-client $1 $2
+}
+
+# lance les triggers deploy-front et deploy-k8s-cloudrun du projet gcloud <app>-<env> sur une branche
+function _pushCloudbuildApp() {
+    local app=$1
+    local environment=$2
+    local branchName=$3
     local gcloudEnv
     local triggerNamesToRun="deploy-front deploy-k8s-cloudrun"
 
     case $environment in
-    "dev") gcloudEnv="nina-dev" ;;
-    "preprod" | "pp") gcloudEnv="nina-preprod" ;;
+    "dev") gcloudEnv="${app}-dev" ;;
+    "preprod" | "pp") gcloudEnv="${app}-preprod" ;;
     *)
         warning "environment ${environment} is unknown should be dev, preprod or pp"
         return 1
         ;;
     esac
 
-    # recuperer le project id de nina-preprod
-    ninaProjectId=$(gcloud projects list | grep $gcloudEnv | awk '{print $1}')
-    if [ -z $ninaProjectId ]; then
+    # recuperer le project id (ie : nina-preprod-c51e)
+    local projectId=$(gcloud projects list --format='value(projectId)' --filter="name=${gcloudEnv}")
+    if [ -z $projectId ]; then
         warning "gcloud project ${gcloudEnv} cannot be found"
         return 1
     fi
 
-    echo "ninaProjectId : $ninaProjectId"
+    echo "projectId : $projectId"
     # specifier le projet courant
-    gcloud config set project $ninaProjectId
+    gcloud config set project $projectId
 
     # recuperer les triggers
     output=$(gcloud builds triggers list --region=europe-west9 --format=json)
@@ -464,6 +491,61 @@ function veradown() {
     make down
 }
 
+
+function ecup() {
+    local ecPath=${EC_PATH:-$HOME/Projects/espace-client}
+    persodown
+    luciedown
+    ninadown
+    scuddown
+
+    comment "⬆️  espace-client back ⬆️"
+    make --directory ${ecPath}/back up || { warning "espace-client back n'a pas démarré."; return 1; }
+
+    ecfrontup || return 1
+    cd ${ecPath}
+}
+
+function ecfrontup() {
+    local frontPath=${EC_PATH:-$HOME/Projects/espace-client}/front
+    comment "⬆️  espace-client front ⬆️"
+    # même token que lucie-front (celui de .project.env ne passe pas pour les dépôts git actualtysoft)
+    local -a dc=(env PROJECT_NAME=espace-client PROJECT_PORT=3000 GIT_ACCESS_TOKEN=${GITHUB_TOKEN}
+        docker compose -f ${frontPath}/docker/docker-compose.yml -p espace-client)
+    # premier lancement : fichiers d'env + dépendances
+    if [[ ! -d ${frontPath}/app/node_modules/.bin ]]; then
+        make --directory ${frontPath} init >/dev/null
+        $dc run --rm node pnpm install || { warning "pnpm install a échoué."; return 1; }
+    fi
+    # évite un conflit sur le port 3000 si un conteneur traîne
+    docker ps -aq --filter "name=espace-client-node" | xargs -r docker rm -f >/dev/null
+    # équivalent de `make front start` mais détaché : make start bloque le terminal (Vite au premier plan)
+    local cid
+    # Vite 6 bloque les hosts inconnus : autorise localhost.groupeactual.io sans toucher au vite.config du projet
+    cid=$($dc run -d -p 127.0.0.1:3000:3000 -e __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=localhost.groupeactual.io node pnpm start) || { warning "espace-client front n'a pas démarré."; return 1; }
+    # prestart (build du design system) peut prendre un moment : on attend que Vite réponde
+    local scheme=http
+    [[ -f ${frontPath}/app/certs/localhost.pem ]] && scheme=https
+    local url=${scheme}://localhost.groupeactual.io:3000
+    local i
+    for i in {1..120}; do
+        curl -sk -o /dev/null ${url} && { comment "espace-client front ✅ ${url}"; return 0; }
+        if [[ $(docker inspect -f '{{.State.Running}}' ${cid}) != true ]]; then
+            warning "le conteneur front s'est arrêté :"
+            docker logs ${cid} 2>&1 | tail -20
+            docker rm ${cid} >/dev/null
+            return 1
+        fi
+        sleep 1
+    done
+    warning "Vite ne répond toujours pas sur ${url} — docker logs -f ${cid}"
+}
+
+function ecdown() {
+    local ecPath=${EC_PATH:-$HOME/Projects/espace-client}
+    docker ps -aq --filter "name=espace-client-node" | xargs -r docker rm -f >/dev/null
+    make --directory ${ecPath}/back down
+}
 
 function ninaup() {
     persodown

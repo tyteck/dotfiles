@@ -541,6 +541,7 @@ function actualdown() {
     ninadown
     scuddown
     veradown
+    ecdown
 }
 
 function installdeb() {

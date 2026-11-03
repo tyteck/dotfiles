@@ -1,0 +1,951 @@
+#!/bin/bash
+# slack-watch — surveillance Slack (mentions, DMs, canaux suivis, fils) pilotée par cron.
+#
+# Principe : l'état (curseur temporel, messages déjà vus) est tenu par CE script.
+# `claude -p` ne fait que récolter et classer, et rend du JSON strict. Un run raté
+# ou une hallucination ne peut donc ni faire sauter un message ni en rejouer un.
+#
+# Usage :
+#   slack-watch                 un tick (ce qu'appelle cron)
+#   slack-watch --test          tick à blanc : affiche le JSON, ne notifie pas,
+#                               n'avance pas le curseur
+#   slack-watch --since 24h     rejoue une fenêtre passée (30m | 6h | 7d | <ts unix>)
+#   slack-watch --last          réaffiche le dernier lot avec les permaliens
+#   slack-watch --channels      liste tes canaux Slack pour remplir la config
+#   slack-watch --reset         repositionne le curseur à maintenant
+#   slack-watch --force         ignore la fenêtre horaire
+#
+# Config  : ~/.config/slack-watch/config.json  +  prompt.md
+# État    : ~/.local/state/slack-watch/
+
+set -uo pipefail
+
+# ---------------------------------------------------------------- environnement
+# Cron n'a ni PATH utilisable, ni DISPLAY, ni bus DBUS : sans ce bloc, aucune
+# notification ne sort (« Cannot autolaunch D-Bus without X11 $DISPLAY »).
+export HOME="${HOME:-/home/fred}"
+export USER="${USER:-$(id -un)}"
+# ~/dotfiles/bin en tete : c'est la que vit mail-popup. Sans lui, `command -v
+# mail-popup` echoue et TOUT evenement bruyant retombe sur une notification GNOME
+# ephemere -> on ne voit rien.
+export PATH="$HOME/dotfiles/bin:$HOME/.local/bin:/usr/local/bin:/usr/bin:/bin"
+export XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+export DISPLAY="${DISPLAY:-:0}"
+
+# On va piocher plusieurs variables dans l'environnement du process de session
+# graphique : c'est la seule source fiable, cron n'en herite d'aucune.
+session_env() { # NOM -> valeur sur stdout, 1 si introuvable
+  local var="$1" proc pid val
+  for proc in gnome-session gnome-shell plasmashell xfce4-session; do
+    pid=$(pgrep -u "$USER" -n "$proc" 2>/dev/null) || continue
+    [ -r "/proc/$pid/environ" ] || continue
+    val=$(tr '\0' '\n' < "/proc/$pid/environ" | sed -n "s/^$var=//p" | head -1)
+    if [ -n "$val" ]; then printf '%s' "$val"; return 0; fi
+  done
+  return 1
+}
+
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]; then
+  addr=$(session_env DBUS_SESSION_BUS_ADDRESS) && export DBUS_SESSION_BUS_ADDRESS="$addr"
+fi
+# Repli : le bus standard de la session systemd-logind.
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] && [ -S "$XDG_RUNTIME_DIR/bus" ]; then
+  export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+fi
+
+# XAUTHORITY : sans lui AUCUN client X ne demarre depuis cron. Sous GNOME/Wayland le
+# cookie Xwayland est dans /run/user/<uid>/.mutter-Xwaylandauth.XXXXXX, dont le suffixe
+# est tire au sort a chaque ouverture de session (impossible a coder en dur), et
+# ~/.Xauthority n'existe meme pas. C'est ce qui rendait mail-popup muet : xrandr ne
+# voyait aucun moniteur, yad ne s'ouvrait jamais, et comme notify-send passe par DBus et
+# non par X, seule la notification ephemere sortait. Le mail d'Amaury du 09/09 12:23 a
+# ete collecte et « notifie » d'apres le journal, sans que rien ne s'affiche.
+if [ -z "${XAUTHORITY:-}" ]; then
+  xa=$(session_env XAUTHORITY) || xa=""
+  [ -n "$xa" ] || xa=$(ls -1t "$XDG_RUNTIME_DIR"/.mutter-Xwaylandauth.* 2>/dev/null | head -1)
+  [ -n "$xa" ] || { [ -r "$HOME/.Xauthority" ] && xa="$HOME/.Xauthority"; }
+  [ -n "$xa" ] && export XAUTHORITY="$xa"
+fi
+
+# ---------------------------------------------------------------------- chemins
+CONFIG_DIR="$HOME/.config/slack-watch"
+STATE_DIR="$HOME/.local/state/slack-watch"
+CONFIG="$CONFIG_DIR/config.json"
+PROMPT_TPL="$CONFIG_DIR/prompt.md"
+CURSOR_F="$STATE_DIR/cursor"
+SEEN_F="$STATE_DIR/seen.txt"
+FEED_F="$STATE_DIR/feed.jsonl"
+LAST_F="$STATE_DIR/last.json"
+THREADS_F="$STATE_DIR/threads.json"
+RAW_F="$STATE_DIR/last-raw.json"
+LOCK_F="$STATE_DIR/lock"
+
+SOUND="/usr/share/sounds/freedesktop/stereo/message-new-instant.oga"
+[ -f "$SOUND" ] || SOUND="/usr/share/sounds/freedesktop/stereo/dialog-information.oga"
+
+mkdir -p "$STATE_DIR" "$CONFIG_DIR"
+
+# Rotation : ~130 ticks/jour ouvre, le journal ne doit pas grossir indefiniment.
+for f in "$STATE_DIR/slack-watch.log" "$STATE_DIR/claude.err" "$STATE_DIR/notify.err"; do
+  if [ -f "$f" ] && [ "$(stat -c %s "$f" 2>/dev/null || echo 0)" -gt 524288 ]; then
+    tail -n 300 "$f" > "$f.tmp" 2>/dev/null && mv "$f.tmp" "$f"
+  fi
+done
+
+log() { printf '[%s] %s\n' "$(date '+%F %T')" "$*" >&2; }
+die() { log "ERREUR: $*"; exit 1; }
+
+# ------------------------------------------------------------------- arguments
+MODE="tick"; DRY=0; FORCE=0; SINCE_OVERRIDE=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --test)     DRY=1 ;;
+    --force)    FORCE=1 ;;
+    --last)     MODE="last" ;;
+    --channels) MODE="channels" ;;
+    --reset)    MODE="reset" ;;
+    --since)    shift; SINCE_OVERRIDE="${1:-}" ;;
+    --since=*)  SINCE_OVERRIDE="${1#*=}" ;;
+    -h|--help)  sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *)          die "argument inconnu : $1" ;;
+  esac
+  shift
+done
+
+# En mode --test on ecrit la reponse brute a part, pour ne pas ecraser celle qu'un
+# tick de production serait en train de relire.
+[ "$DRY" = 1 ] && RAW_F="$STATE_DIR/last-raw-test.json"
+
+# Le budget d'appels d'outils doit suivre le nombre de canaux surveilles : chaque
+# canal coute un slack_read_channel. Sans ca, a 7 canaux le modele plafonne et
+# abandonne silencieusement les dernieres collectes.
+NCHAN=$(jq -r '(.channels // []) | length' "$CONFIG" 2>/dev/null)
+case "$NCHAN" in ''|*[!0-9]*) NCHAN=0 ;; esac
+MAIL_ON=$(jq -r '(.watch.mail // false)' "$CONFIG" 2>/dev/null)
+[ "$MAIL_ON" = "true" ] || MAIL_ON=false
+MAX_CALLS=$(( 6 + NCHAN ))
+MAX_TURNS=$(( 12 + 2 * NCHAN ))
+# La collecte mail est un appel d'outil de plus : sans cette marge elle serait la
+# premiere sacrifiee quand le modele plafonne, et silencieusement.
+if [ "$MAIL_ON" = "true" ]; then
+  MAX_CALLS=$(( MAX_CALLS + 2 ))
+  MAX_TURNS=$(( MAX_TURNS + 4 ))
+fi
+# Meme raisonnement pour les collectes « deja traite » : une recherche `from:me`, et
+# UNE PAR EMOJI d'accuse de reception (Slack refuse le OR sur `hasmy:`, teste). Sans
+# cette marge elles seraient les premieres sacrifiees quand le modele plafonne.
+SKIP_REPLIED=$(jq -r '(.skip_if_handled.replied // false)' "$CONFIG" 2>/dev/null)
+SKIP_REACTED=$(jq -r '(.skip_if_handled.reacted // false)' "$CONFIG" 2>/dev/null)
+NEMOJI=$(jq -r '((.skip_if_handled.ack_emojis // []) | length)' "$CONFIG" 2>/dev/null)
+case "$NEMOJI" in ''|*[!0-9]*) NEMOJI=0 ;; esac
+if [ "$SKIP_REPLIED" = "true" ]; then
+  MAX_CALLS=$(( MAX_CALLS + 1 )); MAX_TURNS=$(( MAX_TURNS + 2 ))
+fi
+if [ "$SKIP_REACTED" = "true" ] && [ "$NEMOJI" -gt 0 ]; then
+  MAX_CALLS=$(( MAX_CALLS + NEMOJI )); MAX_TURNS=$(( MAX_TURNS + 2 * NEMOJI ))
+fi
+[ "$MAX_TURNS" -gt 50 ] && MAX_TURNS=50
+export MAX_CALLS
+
+# --------------------------------------------------------------------- helpers
+now() { date +%s; }
+
+parse_since() { # 30m | 6h | 7d | 1725442800
+  local v="$1"
+  case "$v" in
+    *m) echo $(( $(now) - ${v%m} * 60 )) ;;
+    *h) echo $(( $(now) - ${v%h} * 3600 )) ;;
+    *d) echo $(( $(now) - ${v%d} * 86400 )) ;;
+    ''|*[!0-9]*) die "format --since invalide : $v (attendu 30m, 6h, 7d ou un timestamp)" ;;
+    *)  echo "$v" ;;
+  esac
+}
+
+in_window() {
+  [ "$FORCE" = 1 ] && return 0
+  python3 - "$CONFIG" <<'PY'
+import json,sys,datetime
+try: cfg=json.load(open(sys.argv[1])).get("window") or {}
+except Exception: sys.exit(0)
+now=datetime.datetime.now()
+days=cfg.get("days") or [1,2,3,4,5]
+if now.isoweekday() not in days: sys.exit(1)
+def m(s):
+    h,mi=str(s).split(":"); return int(h)*60+int(mi)
+cur=now.hour*60+now.minute
+if not (m(cfg.get("start","00:00")) <= cur < m(cfg.get("end","23:59"))): sys.exit(1)
+sys.exit(0)
+PY
+}
+
+have_network() { # au moins une des deux sources joignable
+  timeout 5 getent hosts slack.com >/dev/null 2>&1 && return 0
+  timeout 5 getent hosts mail.google.com >/dev/null 2>&1 && return 0
+  return 1
+}
+
+notify_send() { # urgency title body [app] [icon]
+  command -v notify-send >/dev/null || { log "notify-send absent"; return 1; }
+  local app="${4:-Slack}" icon="${5:-slack}"
+  # -a change l'application declaree : GNOME cree alors une nouvelle entree dans
+  # Reglages > Notifications, avec ses preferences par defaut.
+  notify-send -a "$app" -i "$icon" -u "$1" \
+    -h "string:desktop-entry:$icon" \
+    "$2" "$3" 2>>"$STATE_DIR/notify.err" \
+    || { log "notify-send a échoué (voir $STATE_DIR/notify.err)"; return 1; }
+}
+
+# Fenetre persistante, centree sur chaque ecran et au premier plan, pour les evenements
+# qui meritent vraiment l'attention (voir LOUD). Une notification GNOME s'efface en
+# quelques secondes ; ca, non.
+#
+# DETACHE, et ce n'est pas cosmetique : le tick tient un flock non bloquant (voir plus
+# haut) pour toute la duree du script. Si on attendait le clic, chaque tick cron suivant
+# sortirait sur « tick precedent encore en cours » tant que la fenetre reste ouverte, et
+# passe max_lookback_minutes (60) le rattrapage serait tronque -> messages perdus.
+# setsid + redirections coupent le lien avec ce process et avec le fd du verrou.
+popup_send() { # title body
+  command -v mail-popup >/dev/null || { log "mail-popup absent, repli sur la notif"; return 1; }
+  # Pre-vol SYNCHRONE. La fenetre est detachee juste apres (voir plus bas), donc une
+  # fois lancee on ne saura jamais si elle s'est ouverte : popup_send rendait 0 dans
+  # tous les cas et le repli sur notify-send n'etait jamais declenche. On verifie donc
+  # AVANT que yad et l'affichage X repondent.
+  if ! mail-popup --check 2>>"$STATE_DIR/notify.err"; then
+    log "popup indisponible (voir $STATE_DIR/notify.err), repli sur la notif"
+    return 1
+  fi
+  # 9>&- n'est PAS optionnel : setsid --fork ouvre une nouvelle session mais n'hérite
+  # d'aucune fermeture de fd, et >/dev/null 2>&1 ne touche que 1 et 2. Sans ça la popup
+  # herite du fd 9 du flock et TIENT le verrou tant qu'elle est ouverte -> tous les ticks
+  # cron suivants sortent sur « tick precedent encore en cours ». Mesure faite : verrou
+  # encore pris 3 s apres la fin du script.
+  printf '%s' "$2" | setsid --fork mail-popup --screen all "$1" >/dev/null 2>&1 9>&- &
+  return 0
+}
+
+# Joue l'alerte dans le casque (Corsair) ET sur les haut-parleurs du portable, pour ne
+# pas la rater. Le HDMI n'a AUCUNE enceinte ici : on l'ignore.
+#
+# Piege mesure le 2026-09-21 : la carte Intel etait sur le profil output:hdmi-stereo,
+# qui n'expose aucun sink pour les haut-parleurs. Le son partait donc a 100 % dans un
+# casque eteint et a 40 % dans un ecran muet -> « aucun son ». Les profils HDMI et
+# analogique sont exclusifs sur cette carte ; si elle n'est pas sur l'analogique, on
+# la rebascule avant de jouer. Le micro est analogique dans les deux profils, un appel
+# en cours n'y perd rien. Les noms de sinks ne sont pas codes en dur : enumeres a
+# chaque fois, ca survit a un changement de casque.
+ANALOG_CARD="alsa_card.pci-0000_00_1f.3"
+ANALOG_PROFILE="output:analog-stereo+input:analog-stereo"
+play_sound() {
+  [ "$(jq -r '.sound // true' "$CONFIG" 2>/dev/null)" = "true" ] || return 0
+  command -v paplay >/dev/null || return 0
+  local sinks
+  sinks=$(pactl list short sinks 2>/dev/null | awk '{print $2}' | grep -v -i hdmi)
+  if ! grep -q 'pci-.*analog' <<< "$sinks"; then
+    if pactl set-card-profile "$ANALOG_CARD" "$ANALOG_PROFILE" 2>/dev/null; then
+      log "carte son rebasculee sur les haut-parleurs ($ANALOG_PROFILE)"
+      sleep 0.5
+      sinks=$(pactl list short sinks 2>/dev/null | awk '{print $2}' | grep -v -i hdmi)
+    fi
+  fi
+  if [ -z "$sinks" ]; then
+    ( paplay "$SOUND" >/dev/null 2>&1 & )   # repli : sortie par defaut
+    return 0
+  fi
+  local s
+  while IFS= read -r s; do
+    [ -n "$s" ] || continue
+    pactl suspend-sink "$s" 0 2>/dev/null     # reveille un sink en veille, sinon le debut est mange
+    ( paplay --device="$s" "$SOUND" >/dev/null 2>&1 & )
+  done <<< "$sinks"
+  return 0
+}
+
+# Les outils MCP sont DIFFERES : ils n'apparaissent pas dans la liste d'outils du
+# modele, qui doit d'abord les charger via ToolSearch. Sans la consigne ci-dessous,
+# haiku appelait ToolSearch puis rendait directement {"events":[],"threads":[]} en
+# croyant en avoir fini -- c'est la cause des ticks vides alors que les messages
+# existaient (mention du 09/09 10:04, DM de 10:54). Constate aussi : il partait
+# chercher les IDs de canaux avec slack_search_channels jusqu'a epuiser son budget.
+SYSTEM_EXTRA='Les outils MCP Slack et Gmail sont differes : commence TOUJOURS par un
+appel ToolSearch "select:mcp__claude_ai_Slack__slack_search_public_and_private,mcp__claude_ai_Slack__slack_read_channel,mcp__claude_ai_Slack__slack_read_thread,mcp__claude_ai_Gmail__search_threads"
+pour les charger. ToolSearch ne collecte RIEN, ce nest quun chargement. Une fois
+quil a repondu, tu DOIS encore effectuer chacune des collectes demandees. Rendre
+{"events":[],"threads":[]} sans avoir appele au moins une fois slack_read_channel ou
+slack_search_public_and_private est une ERREUR, jamais une reponse valide.'
+
+run_claude() { # prompt -> JSON brut de claude sur stdout
+  timeout "${SLACK_WATCH_TIMEOUT:-240}" claude -p "$1" \
+    --model "${SLACK_WATCH_MODEL:-claude-haiku-4-5-20251001}" \
+    --output-format json \
+    --max-turns "${MAX_TURNS:-14}" \
+    --permission-mode bypassPermissions \
+    --append-system-prompt "$SYSTEM_EXTRA" \
+    --allowedTools "ToolSearch,mcp__claude_ai_Slack__slack_search_public_and_private,mcp__claude_ai_Slack__slack_read_channel,mcp__claude_ai_Slack__slack_read_thread,mcp__claude_ai_Gmail__search_threads" \
+    < /dev/null 2>>"$STATE_DIR/claude.err"
+    # `< /dev/null` : sans lui, claude attend 3 s d'eventuelles donnees sur stdin
+    # a chaque tick, pour rien.
+}
+
+# ------------------------------------------------------- modes non-collectants
+case "$MODE" in
+  reset)
+    now > "$CURSOR_F"; log "curseur repositionné à $(date '+%F %T')"; exit 0 ;;
+  last)
+    [ -s "$LAST_F" ] || { echo "Aucun lot enregistré."; exit 0; }
+    python3 - "$LAST_F" <<'PY'
+import json,sys
+d=json.load(open(sys.argv[1]))
+ev=d.get("events") or []
+if not ev: print("Dernier lot : aucun evenement."); sys.exit(0)
+TAG={"mention":"@","here":"@here","thread":"reponse","dm":"DM","channel":"","mail":"mail"}
+for e in ev:
+    kind=e.get("kind"); chan=str(e.get("channel") or "?")
+    # le modele met parfois le channel_id a la place du nom : on ne prefixe pas d'un #
+    if chan.startswith("#C0") and " " not in chan: chan=chan[1:]
+    head="DM" if kind=="dm" else ("%s %s" % (TAG.get(kind,""), chan)).strip()
+    print('%s  ·  %s' % (head, e.get("author","?")))
+    if e.get("excerpt"): print(f'    {e["excerpt"]}')
+    if e.get("permalink"): print(f'    {e["permalink"]}')
+    print()
+PY
+    exit 0 ;;
+  channels)
+    cd "$HOME" || exit 1
+    UID_CFG=$(jq -r '.user_id' "$CONFIG" 2>/dev/null)
+    log "interrogation de Slack..."
+    # NB: slack_search_channels n'est pas expose en mode headless, et il listerait de
+    # toute facon tout le workspace. On deduit les canaux pertinents de l'activite
+    # reelle : ceux ou tu postes, et ceux ou on te mentionne.
+    out=$(run_claude "Fais exactement deux recherches avec mcp__claude_ai_Slack__slack_search_public_and_private,
+en passant a chaque fois only_my_channels=true, sort=timestamp, limit=20, include_context=false :
+1. filters=\"from:me\"
+2. keywords=[\"<@${UID_CFG}>\"] (sans filters)
+
+Puis agrege les canaux distincts rencontres (ignore les DM).
+Reponds UNIQUEMENT avec un tableau JSON, sans prose ni bloc markdown :
+[{\"id\":\"C01ABCDEF\",\"name\":\"#nom-du-canal\",\"purpose\":\"nb de messages vus et derniere activite\"}]")
+    printf '%s' "$out" | python3 -c '
+import json,sys,re
+raw=sys.stdin.read()
+try: txt=json.loads(raw).get("result","")
+except Exception: txt=raw
+m=re.search(r"\[.*\]", txt, re.S)
+if not m:
+    print(txt); sys.exit(0)
+entries = json.loads(m.group(0))
+for c in entries:
+    print("  %-12s %-34s %s" % (c.get("id","?"), c.get("name","?"), (c.get("purpose") or "")[:50]))
+print()
+# On recrache directement la forme attendue par la config : l ID est obligatoire,
+# slack_read_channel ne resout pas les noms.
+print("A coller dans la cle \"channels\" de ~/.config/slack-watch/config.json :")
+print(json.dumps([{"id": c.get("id"), "name": c.get("name")} for c in entries],
+                 ensure_ascii=False, indent=2))
+'
+    exit 0 ;;
+esac
+
+# -------------------------------------------------------------- garde-fous tick
+[ -f "$CONFIG" ]     || die "config absente : $CONFIG"
+[ -f "$PROMPT_TPL" ] || die "template de prompt absent : $PROMPT_TPL"
+command -v claude >/dev/null || die "binaire claude introuvable dans PATH=$PATH"
+command -v jq >/dev/null     || die "jq requis"
+
+if [ "$DRY" = 0 ] && ! in_window; then exit 0; fi
+if ! have_network; then log "hors ligne, tick ignore"; exit 0; fi
+
+# Verrou non bloquant : deux ticks de production ne doivent jamais s'empiler.
+# `--test` en est EXEMPTE : il n'ecrit aucun etat, donc rien a proteger, et il
+# doit rester utilisable pendant qu'un tick cron tourne.
+if [ "$DRY" = 0 ]; then
+  exec 9>"$LOCK_F"
+  if ! flock -n 9; then log "tick precedent encore en cours, on passe"; exit 0; fi
+fi
+
+# ------------------------------------------------------------------- curseur
+TICK_START=$(now)
+if [ -n "$SINCE_OVERRIDE" ]; then
+  # Rattrapage manuel explicite : on respecte la fenetre demandee telle quelle.
+  SINCE=$(parse_since "$SINCE_OVERRIDE")
+else
+  if [ -s "$CURSOR_F" ]; then SINCE=$(cat "$CURSOR_F"); else SINCE=$(( TICK_START - 900 )); fi
+  # Plafond de rattrapage. Sans lui, apres une machine eteinte 3 jours, le tick
+  # demanderait 3 jours d'historique : le modele en renvoie alors un sous-ensemble
+  # arbitraire et te noie sous des messages perimes. Mieux vaut repartir propre.
+  MAXBACK=$(jq -r '.max_lookback_minutes // 60' "$CONFIG" 2>/dev/null)
+  case "$MAXBACK" in ''|*[!0-9]*) MAXBACK=60 ;; esac
+  FLOOR=$(( TICK_START - MAXBACK * 60 ))
+  if [ "$SINCE" -lt "$FLOOR" ]; then
+    log "curseur vieux de $(( (TICK_START - SINCE) / 60 )) min, plafonne a ${MAXBACK} min"
+    SINCE=$FLOOR
+  fi
+fi
+
+# ------------------------------------------------------------ rendu du prompt
+PROMPT=$(python3 - "$CONFIG" "$PROMPT_TPL" "$SINCE" "$THREADS_F" <<'PY'
+import json, sys, datetime, pathlib, os
+cfg   = json.load(open(sys.argv[1]))
+tpl   = pathlib.Path(sys.argv[2]).read_text()
+since = int(sys.argv[3])
+try:    threads = json.load(open(sys.argv[4]))
+except Exception: threads = []
+
+uid   = cfg.get("user_id", "")
+ws    = cfg.get("workspace", "")
+chans = cfg.get("channels") or []
+w     = cfg.get("watch") or {}
+
+tasks = []
+# L'outil n'a pas de parametre `query` : seulement `keywords` (tableau) et `filters`.
+# Quand on demandait `query="<@U..>"`, le modele mettait la mention dans `filters`, ou
+# Slack l'ignore : la recherche renvoyait alors TOUS les messages recents du workspace,
+# tous etiquetes `mention` (vu le 2026-10-29 sur #p_storiz_demandes). `keywords` est la
+# forme verifiee, elle ne rend que les vraies mentions.
+if w.get("mentions", True):
+    tasks.append(
+        '- **Mentions directes** - `slack_search_public_and_private` avec '
+        '`keywords=["<@%s>"]` et SANS `filters`. Toute mention explicite de moi, dans '
+        'n\'importe quel canal public ou prive. `kind` = `mention`. Ne marque `mention` '
+        'que les messages dont le texte contient reellement `<@%s` ; un resultat qui ne '
+        'la contient pas est ignore.' % (uid, uid))
+if w.get("dms", True):
+    tasks.append(
+        '- **Messages directs** - `slack_search_public_and_private` avec `filters="to:me"`, '
+        '`keywords=[]` et `channel_types="im,mpim"`. `kind` = `dm`.')
+# Un canal se donne par ID, pas par nom : `slack_read_channel` ne resout pas les
+# noms. Quand on lui passait "#squad-omega-3", le modele appelait
+# `slack_search_channels` une fois par canal pour retrouver l'ID, epuisait son
+# budget d'appels et rendait {"events":[]} sans avoir rien collecte -> silence
+# total, alors meme que les messages existaient. On accepte encore l'ancien format
+# (chaine) pour ne pas casser une config non migree.
+def chan_pair(c):
+    if isinstance(c, dict):
+        return str(c.get("id") or ""), str(c.get("name") or c.get("id") or "")
+    c = str(c)
+    return ("", c) if c.startswith("#") else (c, c)
+
+pairs = [chan_pair(c) for c in chans]
+
+if chans:
+    lst = ", ".join(
+        ("`%s` (= %s)" % (cid, name)) if cid else ("`%s` (ID inconnu)" % name)
+        for cid, name in pairs)
+    tasks.append(
+        '- **Canaux surveilles** - `slack_read_channel` sur chacun de : %s. '
+        'Passe l\'ID tel quel en `channel_id` : il est deja resolu, n\'appelle '
+        'JAMAIS `slack_search_channels`. Dans l\'event, `channel_id` = l\'ID et '
+        '`channel` = le nom indique entre parentheses. '
+        'Tout nouveau message y compte. `kind` = `channel`.' % lst)
+    if w.get("here_channel", True):
+        tasks.append(
+            '- **@here / @channel** - parmi les messages des canaux surveilles ci-dessus, '
+            'marque `kind` = `here` ceux dont le texte contient `<!here>` ou `<!channel>`. '
+            'Ne fais PAS de recherche supplementaire pour cela.')
+else:
+    tasks.append(
+        '- **Canaux surveilles** - aucun canal configure pour le moment : saute cette '
+        'collecte (et donc aussi la detection @here/@channel).')
+if w.get("mail", False):
+    mc  = cfg.get("mail") or {}
+    q   = mc.get("query") or "is:unread to:me in:inbox newer_than:1d"
+    ign = mc.get("ignore_senders") or []
+    # Les exclusions partent cote requete Gmail : moins de jetons consommes que de
+    # filtrer apres coup, et le filtre ignore_authors du shell sert de 2e filet.
+    if ign:
+        q += "".join(" -from:%s" % a for a in ign)
+    tasks.append(
+        '- **Courrier non lu** - `mcp__claude_ai_Gmail__search_threads` avec '
+        '`query="%s"`, `pageSize=%d`, `view="THREAD_VIEW_MINIMAL"`. **Un seul appel**, '
+        'pas de pagination. Pour chaque thread renvoye, produis un event : `kind` = '
+        '`mail`, `id` = `mail-` suivi de l\'`id` du thread, `channel` = `mail`, '
+        '`author` = le `sender`, `excerpt` = le `subject` (140 car. max), `ts` = '
+        '`internalDate` divise par 1000 (il est en millisecondes), `permalink` = '
+        '`https://mail.google.com/mail/u/0/#inbox/` suivi de l\'`id` du thread. '
+        'Ajoute aussi `last_author` : l\'expediteur du message le PLUS RECENT du fil '
+        '(pas forcement celui qui a ouvert le fil) — c\'est ce qui permet a l\'appelant '
+        'de savoir si j\'y ai deja repondu. '
+        'N\'appelle AUCUN autre outil Gmail. Ne filtre pas sur `%d` pour cette '
+        'collecte : le programme appelant s\'en charge.'
+        % (q, int(mc.get("max_results", 20)), since))
+# Ces deux collectes ne produisent AUCUN event : elles rapportent des permaliens
+# bruts que le shell recoupe ensuite lui-meme. On ne demande pas au modele de decider
+# si un message est « deja traite » — il rapporte des faits, le filtrage est
+# deterministe cote appelant.
+sh = cfg.get("skip_if_handled") or {}
+lookback = int(sh.get("reply_lookback_minutes", 120)) * 60
+handled_since = since - lookback
+if sh.get("replied"):
+    tasks.append(
+        '- **Mes propres messages recents** - `slack_search_public_and_private` avec '
+        '`filters="from:me"`, `after=%d`, `limit=20`. Ne produis AUCUN event pour cette '
+        'collecte : recopie seulement le `permalink` de chacun de mes messages dans le '
+        'tableau `my_posts`, tel quel, avec son `?thread_ts=...&cid=...` s\'il en a un.'
+        % handled_since)
+if sh.get("reacted") and (sh.get("ack_emojis") or []):
+    qs = ", ".join('`filters="hasmy::%s:"`' % str(e).strip(":")
+                   for e in sh["ack_emojis"])
+    tasks.append(
+        '- **Messages sur lesquels j\'ai deja reagi** - une recherche '
+        '`slack_search_public_and_private` PAR requete ci-dessous, chacune avec '
+        '`after=%d` et `limit=20` : %s. Slack n\'accepte pas de OR entre ces filtres, '
+        'il faut donc bien un appel par emoji. Ne produis AUCUN event : recopie le '
+        '`permalink` de chaque message trouve dans le tableau `my_reactions`.'
+        % (handled_since, qs))
+
+if w.get("thread_replies", True):
+    if threads:
+        lst = ", ".join("`%s`" % t for t in threads)
+        tasks.append(
+            '- **Reponses dans mes fils** - `slack_read_thread` sur chacun de : %s. '
+            'Ne retiens que les reponses posterieures a `%d` et qui ne sont pas de '
+            'moi. `kind` = `thread`.' % (lst, since))
+    else:
+        tasks.append(
+            '- **Reponses dans mes fils** - aucun fil suivi pour l\'instant : il faut '
+            'AMORCER le registre. Fais UN appel `slack_search_public_and_private` avec '
+            '`filters="from:me is:thread"`, `limit=10`, `sort=timestamp`, et **SANS aucun '
+            'filtre `after`** (contrairement aux autres collectes : on cherche ici mes '
+            'fils recents, pas ceux de la fenetre). Renvoie les identifiants trouves, au '
+            'format `<channel_id>-<thread_ts>`, dans le champ `threads`. Effectue cette '
+            'collecte MEME si les collectes precedentes n\'ont rien donne. Ne produis '
+            'aucun `event` pour celle-ci.')
+
+subs = {
+    "{{USER_ID}}":         uid,
+    "{{WORKSPACE}}":       ws,
+    "{{SINCE}}":           str(since),
+    "{{SINCE_HUMAN}}":     datetime.datetime.fromtimestamp(since).strftime("%d/%m/%Y %H:%M:%S"),
+    "{{CHANNELS}}":        (", ".join("`%s` (= %s)" % (cid or "?", name)
+                                      for cid, name in pairs) or "aucun"),
+    "{{THREADS}}":         (", ".join("`%s`" % t for t in threads) or "aucun"),
+    "{{TASKS}}":           "\n".join(tasks),
+    "{{IGNORE_AUTHORS}}":  (", ".join('"%s"' % a for a in (cfg.get("ignore_authors") or [])) or "(aucun)"),
+    "{{IGNORE_PATTERNS}}": (", ".join('"%s"' % p for p in (cfg.get("ignore_patterns") or [])) or "(aucune)"),
+    "{{MAX_THREADS}}":     str(cfg.get("max_threads_tracked", 10)),
+    "{{MAX_CALLS}}":       os.environ.get("MAX_CALLS", "12"),
+}
+for k, v in subs.items():
+    tpl = tpl.replace(k, v)
+print(tpl)
+PY
+) || die "echec du rendu du prompt"
+
+# --------------------------------------------------------------- appel Claude
+# Un lot vide est ambigu : soit il ne s'est rien passe, soit le modele n'a pas
+# collecte. On tranche sur du factuel — le nombre d'appels de collecte reellement
+# emis, lu dans la transcription de la session. Sans ca, un run qui n'a rien
+# interroge etait pris pour « rien a signaler » et faisait avancer le curseur :
+# les messages de la fenetre etaient perdus DEFINITIVEMENT.
+collect_calls() { # session_id -> nb d'appels de collecte, ou -1 si indeterminable
+  local sid="$1" f
+  [ -n "$sid" ] && [ "$sid" != "null" ] || { echo -1; return; }
+  f=$(find "$HOME/.claude/projects" -maxdepth 2 -name "$sid.jsonl" -print -quit 2>/dev/null)
+  [ -n "$f" ] || { echo -1; return; }
+  grep -c -o -E '"name":"mcp__claude_ai_(Slack__slack_(read_channel|read_thread|search_public_and_private)|Gmail__search_threads)"' "$f" 2>/dev/null || echo 0
+}
+
+cd "$HOME" || exit 1
+for attempt in 1 2; do
+  RAW=$(run_claude "$PROMPT")
+  RC=$?
+  printf '%s' "$RAW" > "$RAW_F"
+
+  if [ $RC -ne 0 ] || [ -z "$RAW" ]; then
+    log "claude a echoue (code $RC) - curseur inchange, le prochain tick rattrapera"
+    exit 0
+  fi
+
+  SID=$(printf '%s' "$RAW" | jq -r '.session_id // empty' 2>/dev/null)
+  NCALLS=$(collect_calls "$SID")
+  [ "$NCALLS" = 0 ] || break
+  # Une seule reprise immediate : au-dela on rend la main au tick suivant, qui
+  # repartira du meme curseur puisqu'on ne l'avance pas.
+  if [ "$attempt" = 1 ]; then
+    log "aucun appel de collecte emis (ToolSearch seul) - nouvelle tentative"
+  else
+    log "aucun appel de collecte apres 2 tentatives - curseur inchange, rattrapage au prochain tick"
+    exit 0
+  fi
+done
+
+# ------------------------------------------------- extraction / dedup / rendu
+NOTIF=$(python3 - "$RAW_F" "$SEEN_F" "$FEED_F" "$LAST_F" "$THREADS_F" "$CONFIG" "$SINCE" "$DRY" "$TICK_START" <<'PY'
+import json, re, sys, pathlib, os
+
+raw_f, seen_f, feed_f, last_f, threads_f, cfg_f, since, dry, tick_start = sys.argv[1:10]
+since, dry, tick_start = int(since), int(dry), int(tick_start)
+cfg = json.load(open(cfg_f))
+
+raw = pathlib.Path(raw_f).read_text()
+try:
+    txt = json.loads(raw).get("result", raw)
+except Exception:
+    txt = raw
+
+# Le modele peut malgre tout encadrer sa reponse : on recupere le premier objet JSON.
+txt = re.sub(r"^\s*```(?:json)?|```\s*$", "", txt.strip(), flags=re.M)
+m = re.search(r"\{.*\}", txt, re.S)
+if not m:
+    print(json.dumps({"error": "aucun JSON dans la reponse", "sample": txt[:300]}))
+    sys.exit(3)
+try:
+    data = json.loads(m.group(0))
+except Exception as e:
+    print(json.dumps({"error": "JSON invalide: %s" % e, "sample": txt[:300]}))
+    sys.exit(3)
+
+events  = data.get("events") or []
+threads = data.get("threads") or []
+
+# Le modele recopie parfois le permalien avec le point du Message_ts
+# (`p1788945203.834009` au lieu de `p1788945203834009`) : mesure sur `my_reactions`.
+# Les deux formes doivent donner LA MEME cle, sinon la reaction ne se recoupe jamais
+# avec l'evenement correspondant et le filtre echoue en silence.
+PERMA_RE = re.compile(r"/archives/([A-Z0-9]+)/p(\d+(?:\.\d+)?)")
+
+def perma_key(url):
+    """permalien -> \"<channel_id>-<ts sans point>\", ou None."""
+    m = PERMA_RE.search(str(url or ""))
+    return "%s-%s" % (m.group(1), m.group(2).replace(".", "")) if m else None
+
+
+# ------------------------------------------------ « deja traite » (permaliens)
+# Le modele ne rend que des permaliens bruts ; tout le raisonnement est ici, ou il
+# est testable et ne peut pas halluciner.
+sh_cfg   = cfg.get("skip_if_handled") or {}
+my_posts = data.get("my_posts") or []
+my_react = data.get("my_reactions") or []
+
+def link_parts(url):
+    """permalien -> (channel_id, ts flottant, thread_ts ou None)."""
+    m = PERMA_RE.search(str(url or ""))
+    if not m:
+        return None
+    cid, d = m.group(1), m.group(2).replace(".", "")
+    ts = float("%s.%s" % (d[:10], d[10:])) if len(d) > 10 else float(d)
+    t = re.search(r"thread_ts=([0-9.]+)", str(url))
+    return cid, ts, (t.group(1) if t else None)
+
+# Meme cle que make_key, sinon le recoupement avec l'evenement ne se fait pas.
+acked = {k for k in (perma_key(u) for u in my_react) if k}
+
+# Mon dernier message par conversation, et separement par fil : avoir repondu dans UN
+# fil de #canal ne veut pas dire avoir traite un autre message du meme canal.
+last_conv, last_thread = {}, {}
+for u in my_posts:
+    pp = link_parts(u)
+    if not pp:
+        continue
+    cid, pts, tts = pp
+    if tts:
+        k = "%s#%s" % (cid, tts)
+        last_thread[k] = max(last_thread.get(k, 0.0), pts)
+    # Un message de tete porte thread_ts == son propre ts : c'est aussi une prise de
+    # parole au niveau du canal, pas seulement dans le fil.
+    if not tts or abs(float(tts) - pts) < 1e-6:
+        last_conv[cid] = max(last_conv.get(cid, 0.0), pts)
+
+def handled_reason(e, ts, eid):
+    """Pourquoi cet evenement n'a pas besoin d'etre signale, ou None."""
+    if e.get("kind") == "mail":
+        if sh_cfg.get("replied") and me_mail:
+            if me_mail in str(e.get("last_author") or "").lower():
+                return "deja repondu"
+        return None
+    if sh_cfg.get("reacted") and eid in acked:
+        return "reaction posee"
+    if not sh_cfg.get("replied"):
+        return None
+    pp  = link_parts(e.get("permalink"))
+    cid = pp[0] if pp else str(e.get("channel_id") or e.get("channel") or "").lstrip("#")
+    ets = pp[1] if pp else float(ts)
+    tts = pp[2] if pp else None
+    # Le permalien d'une reponse de fil arrive souvent SANS `?thread_ts=` (37 des 62
+    # events `thread` du feed au 2026-10-29) : sans le fil parent, ma reponse dans ce
+    # fil ne se recoupait jamais et le message etait renotifie. Le modele rend donc
+    # aussi `thread_ts` a part.
+    if not tts and re.fullmatch(r"\d+\.\d+", str(e.get("thread_ts") or "")):
+        tts = str(e["thread_ts"])
+    # Deux fils possibles : celui auquel le message appartient, et le sien propre
+    # (j'ai pu repondre DANS son fil, ce qui vaut traitement).
+    tkeys = ["%s#%.6f" % (cid, ets)]
+    if tts:
+        tkeys.append("%s#%s" % (cid, tts))
+    if any(last_thread.get(k, 0.0) > ets for k in tkeys):
+        return "deja repondu (fil)"
+    if last_conv.get(cid, 0.0) > ets:
+        return "deja repondu"
+    return None
+
+seen = set()
+if os.path.exists(seen_f):
+    seen = {l.strip() for l in open(seen_f) if l.strip()}
+
+ign_a = [a.lower() for a in (cfg.get("ignore_authors") or [])]
+ign_p = [p.lower() for p in (cfg.get("ignore_patterns") or [])]
+uid   = cfg.get("user_id", "")
+# Les auteurs Gmail sont des adresses, pas des UID Slack : sans cette 2e identite,
+# le courrier que je m'envoie ne serait pas filtre.
+me_mail = (cfg.get("my_email") or "").lower()
+
+# Amorcage de la source mail. Detecte sur seen.txt lui-meme, pour ne pas ajouter un
+# fichier d'etat de plus (et donc une fuite possible en mode --test).
+mail_seeded = any(k.startswith("mail-") for k in seen)
+
+def make_key(e, ts):
+    """Cle de deduplication DETERMINISTE.
+
+    On ne fait pas confiance au champ `id` produit par le modele : d'un run a
+    l'autre il le formate differemment (avec ou sans les microsecondes), ce qui
+    ferait renotifier le meme message. Le permalien, lui, vient de l'API Slack et
+    contient l'identifiant de canal + le ts complet.
+    """
+    # Exception mail : Gmail fournit un id de thread stable, donc contrairement a
+    # Slack l'id du modele est fiable ici. Sans cette branche, un mail tomberait sur
+    # le repli "?-<ts>" et deux mails recus dans la meme seconde se recouvriraient,
+    # l'un etant silencieusement perdu.
+    eid = str(e.get("id") or "")
+    if e.get("kind") == "mail" and eid.startswith("mail-") and len(eid) > 5:
+        return eid
+
+    k = perma_key(e.get("permalink"))
+    if k:
+        return k
+    cid = str(e.get("channel_id") or e.get("channel") or "?").lstrip("#")
+    return "%s-%d" % (cid, ts)
+
+# Mes propres reponses passent par la recherche, en retard de 20 a 40 s sur Slack
+# (cf. search_lag_seconds) : un message auquel je viens de repondre juste avant le tick
+# etait notifie, ma reponse n'etant pas encore indexee. On laisse donc murir les
+# messages trop recents : ni notifies ni inscrits dans seen.txt, ils reviennent au tick
+# suivant grace au recul du curseur (TICK_START - search_lag_seconds), qui doit donc
+# rester plus large que ce delai.
+lag  = int(cfg.get("search_lag_seconds", 180))
+hold = min(int(cfg.get("hold_young_seconds", 90)), max(lag - 30, 0))
+held = 0
+
+fresh = []
+for e in events:
+    if not isinstance(e, dict):
+        continue
+    try:
+        ts = int(float(e.get("ts") or 0))
+    except Exception:
+        continue
+    eid = make_key(e, ts)
+    if eid in seen:
+        continue
+    # `is:unread` est un etat persistant, contrairement a un message Slack qui defile :
+    # un mail non lu ressort de la requete a chaque tick. On ne lui applique donc pas le
+    # filtre de curseur — c'est seen.txt qui garantit l'unicite de la notification. Effet
+    # de bord voulu : si un tick avance le curseur alors que la collecte mail a echoue,
+    # le mail est repris au tick suivant au lieu d'etre perdu. Pas besoin d'un 2e curseur.
+    if e.get("kind") != "mail" and ts <= since:
+        continue
+    if e.get("kind") != "mail" and ts > tick_start - hold:
+        held += 1
+        continue
+    author  = str(e.get("author") or "")
+    excerpt = str(e.get("excerpt") or "")
+    if author == uid or any(a and a in author.lower() for a in ign_a):
+        continue
+    if me_mail and me_mail in author.lower():
+        continue
+    if any(p and p in excerpt.lower() for p in ign_p):
+        continue
+    e["id"], e["ts"] = eid, ts
+    # Marque, pas jete : l'evenement part quand meme dans le feed et dans seen.txt,
+    # pour garder la trace (et pour ne pas etre re-evalue a chaque tick).
+    reason = handled_reason(e, ts, eid)
+    if reason:
+        e["skipped"] = reason
+    fresh.append(e)
+
+fresh.sort(key=lambda x: x["ts"])
+
+# `fresh` est ce qu'on memorise ; `shown` est ce qu'on notifie. Les deux ne diffent
+# qu'au tout premier passage de la source mail.
+seeded_now = [e for e in fresh if e.get("kind") == "mail"] if not mail_seeded else []
+skipped   = [e for e in fresh if e.get("skipped")]
+shown     = [e for e in fresh if e not in seeded_now and not e.get("skipped")]
+
+# ---- notification
+LABEL = {"mention": "@", "here": "@here", "thread": "reponse", "dm": "DM",
+         "channel": "", "mail": "mail"}
+LOUD  = {"mention", "dm", "here", "thread", "mail"}
+maxl  = int(cfg.get("max_notify_lines", 6))
+
+# Deux rendus du meme lot. `lines` alimente notify-send : une ligne par evenement,
+# extrait coupe a 70 car, pas de permalien (une notification n'est pas cliquable ligne a
+# ligne). `plines` alimente mail-popup : extrait complet + permalien, et sans plafond de
+# lignes puisque --text-info scrolle. C'est tout l'interet de la fenetre persistante :
+# on peut y cliquer le lien au lieu d'aller rechercher le message a la main.
+lines  = []
+plines = []
+for i, e in enumerate(shown):
+    kind = e.get("kind", "channel")
+    tag  = LABEL.get(kind, "")
+    if kind in ("dm", "mail"):
+        # Pas de nom de canal a afficher pour ces deux-la : l'entete est le type.
+        head = "DM" if kind == "dm" else "mail"
+    else:
+        chan = str(e.get("channel") or "?")
+        if chan.startswith("#C0") and " " not in chan:
+            chan = chan[1:]          # channel_id renvoye a la place du nom
+        head = ("%s %s" % (tag, chan)).strip()
+    flat = re.sub(r"\s+", " ", str(e.get("excerpt") or "")).strip()
+    if i < maxl:
+        ex = flat[:70]
+        lines.append("%s . %s%s" % (head, e.get("author", "?"), (" - " + ex) if ex else ""))
+    plines.append("%s \u00b7 %s" % (head, e.get("author", "?")))
+    if flat:
+        plines.append("    %s" % flat)
+    if e.get("permalink"):
+        plines.append("    %s" % e["permalink"])
+    plines.append("")
+if len(shown) > maxl:
+    lines.append("... et %d autre(s)" % (len(shown) - maxl))
+
+n = len(shown)
+kinds = {e.get("kind") for e in shown}
+# Le titre suit les sources reellement presentes, au lieu d'annoncer « Slack » pour
+# un lot qui peut ne contenir que du courrier.
+if kinds == {"mail"}:
+    src, app, icon = "Mail", "Mail", "internet-mail"
+elif "mail" in kinds:
+    src, app, icon = "Slack + mail", "Messages", "internet-mail"
+else:
+    src, app, icon = "Slack", "Slack", "slack"
+
+out = {
+    "count":   n,
+    "urgency": "normal" if any(e.get("kind") in LOUD for e in shown) else "low",
+    "loud":    any(e.get("kind") in LOUD for e in shown),
+    "title":   "%s . %d nouveau%s" % (src, n, "x" if n > 1 else ""),
+    "body":    "\n".join(lines),
+    "popup_body": "\n".join(plines).rstrip(),
+    "app":     app,
+    "icon":    icon,
+    "seeded":  len(seeded_now),
+    "skipped": len(skipped),
+    "held":    held,
+    "skipped_detail": ["%s (%s) - %s" % (e.get("author", "?"), e.get("kind", "?"),
+                                         e["skipped"]) for e in skipped],
+}
+
+if not dry:
+    pathlib.Path(last_f).write_text(json.dumps({"events": shown}, ensure_ascii=False, indent=2))
+    if fresh:
+        with open(feed_f, "a") as f:
+            for e in fresh:
+                f.write(json.dumps(e, ensure_ascii=False) + "\n")
+        with open(seen_f, "a") as f:
+            for e in fresh:
+                f.write(e["id"] + "\n")
+        # on borne seen.txt aux 500 dernieres cles
+        keys = [l.strip() for l in open(seen_f) if l.strip()][-500:]
+        pathlib.Path(seen_f).write_text("\n".join(keys) + "\n")
+    # Registre de fils : on FUSIONNE au lieu d'ecraser. Sur un tick calme le modele
+    # renvoie `threads: []`, ce qui viderait sinon le registre et ferait perdre le
+    # suivi des fils. On garde les plus recents (le ts est dans la cle).
+    if isinstance(threads, list):
+        try:
+            known = json.load(open(threads_f))
+            if not isinstance(known, list):
+                known = []
+        except Exception:
+            known = []
+        merged, seen_t = [], set()
+        for t in [str(x) for x in threads] + [str(x) for x in known]:
+            if t and t not in seen_t:
+                seen_t.add(t)
+                merged.append(t)
+
+        def thread_ts(k):
+            m2 = re.search(r"-(\d+)", k)
+            return float(m2.group(1)) if m2 else 0.0
+
+        merged.sort(key=thread_ts, reverse=True)
+        max_age = float(cfg.get("thread_max_age_hours", 72)) * 3600
+        floor   = since - max_age
+        merged  = [t for t in merged if thread_ts(t) >= floor or thread_ts(t) == 0.0]
+        pathlib.Path(threads_f).write_text(
+            json.dumps(merged[: int(cfg.get("max_threads_tracked", 10))]))
+
+print(json.dumps(out, ensure_ascii=False))
+PY
+)
+PRC=$?
+
+if [ $PRC -eq 3 ]; then
+  log "reponse illisible : $(printf '%s' "$NOTIF" | head -c 300)"
+  log "sortie brute conservee dans $RAW_F - curseur inchange"
+  exit 0
+fi
+if [ $PRC -ne 0 ]; then log "echec du traitement (code $PRC)"; exit 0; fi
+
+COUNT=$(printf '%s' "$NOTIF" | jq -r '.count')
+TITLE=$(printf '%s' "$NOTIF" | jq -r '.title')
+BODY=$(printf '%s'  "$NOTIF" | jq -r '.body')
+PBODY=$(printf '%s' "$NOTIF" | jq -r '.popup_body // .body')
+URG=$(printf '%s'   "$NOTIF" | jq -r '.urgency')
+LOUD=$(printf '%s'  "$NOTIF" | jq -r '.loud')
+APP=$(printf '%s'   "$NOTIF" | jq -r '.app // "Slack"')
+ICON=$(printf '%s'  "$NOTIF" | jq -r '.icon // "slack"')
+SEEDED=$(printf '%s' "$NOTIF" | jq -r '.seeded // 0')
+
+SKIPPED=$(printf '%s' "$NOTIF" | jq -r '.skipped // 0')
+
+if [ "$SEEDED" -gt 0 ] 2>/dev/null; then
+  log "source mail amorcee : $SEEDED fil(s) enregistre(s) sans notification"
+fi
+# Journalise ce qu'on a tu : un filtre silencieux est un filtre qu'on ne peut pas
+# debusquer quand il se trompe.
+if [ "$SKIPPED" -gt 0 ] 2>/dev/null; then
+  log "$SKIPPED evenement(s) tus, deja traites : $(printf '%s' "$NOTIF" | jq -r '.skipped_detail | join(" | ")')"
+fi
+HELD=$(printf '%s' "$NOTIF" | jq -r '.held // 0')
+if [ "$HELD" -gt 0 ] 2>/dev/null; then
+  log "$HELD evenement(s) trop recent(s), reportes au tick suivant"
+fi
+
+if [ "$DRY" = 1 ]; then
+  echo "--- tick a blanc (depuis $(date -d "@$SINCE" '+%F %T')) ---"
+  echo "$COUNT evenement(s) retenu(s), urgence=$URG, app=$APP"
+  [ "$SEEDED" -gt 0 ] 2>/dev/null && echo "(+ $SEEDED mail(s) qui seraient amorces sans notification)"
+  if [ "$SKIPPED" -gt 0 ] 2>/dev/null; then
+    echo "(+ $SKIPPED tu(s) car deja traite(s) :)"
+    printf '%s' "$NOTIF" | jq -r '.skipped_detail[] | "    " + .'
+  fi
+  if [ "$COUNT" -gt 0 ]; then echo; echo "$TITLE"; echo "$BODY"; fi
+  echo; echo "--- reponse brute du modele ---"
+  jq -r '.result' "$RAW_F" 2>/dev/null || cat "$RAW_F"
+  exit 0
+fi
+
+if [ "$COUNT" -gt 0 ]; then
+  # Le lot bruyant (mail, mention, DM, @here, reponse de fil) passe en fenetre
+  # persistante ; le bruit de canal reste une notification ephemere, qui est le bon
+  # traitement pour lui. Repli sur la notif si mail-popup manque ou echoue.
+  if [ "$LOUD" = "true" ]; then
+    popup_send "$TITLE" "$PBODY" || notify_send "$URG" "$TITLE" "$BODY" "$APP" "$ICON"
+    play_sound
+  else
+    notify_send "$URG" "$TITLE" "$BODY" "$APP" "$ICON"
+  fi
+  log "$COUNT evenement(s) notifie(s)"
+fi
+
+# Recouvrement volontaire du curseur. Les collectes « mentions » et « DM » passent par
+# slack_search_public_and_private, dont l'index a plusieurs dizaines de secondes de
+# retard sur la publication du message. Un message poste juste avant le debut du tick
+# est donc invisible a la recherche de CE tick ; en avancant le curseur a TICK_START
+# tel quel, la fenetre du tick suivant commencait apres lui et il etait perdu pour
+# toujours. Mesure : mention de 10:04:39 manquee par le tick de 10:05:00 (21 s), DM de
+# 10:54:28 manque par celui de 10:55:01 (33 s), aucun des deux jamais rattrape.
+# On recule donc le curseur : chaque message est presente a deux ticks au moins.
+# Aucun risque de doublon, seen.txt dedoublonne sur (channel_id, ts) complet.
+LAG=$(jq -r '.search_lag_seconds // 180' "$CONFIG" 2>/dev/null)
+case "$LAG" in ''|*[!0-9]*) LAG=180 ;; esac
+echo "$(( TICK_START - LAG ))" > "$CURSOR_F"
+exit 0

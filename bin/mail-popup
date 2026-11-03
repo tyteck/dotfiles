@@ -1,0 +1,119 @@
+#!/bin/bash
+# mail-popup — fenetre d'alerte persistante, centree et au premier plan, pour slack-watch.
+#
+# Pourquoi une fenetre et pas notify-send : une notification GNOME s'efface au bout de
+# quelques secondes et part dans le tiroir. Ici ca reste jusqu'au clic.
+#
+# Trois lecons deja payees ailleurs, ne pas les redecouvrir :
+#
+#  1. GDK_BACKEND=x11 est obligatoire. --on-top/--sticky mappent
+#     gtk_window_set_keep_above(), un no-op sous Wayland natif. En forcant le backend X11,
+#     yad devient client Xwayland et mutter honore _NET_WM_STATE_ABOVE. (Meme levier que
+#     ~/Projects/nevermissathing/src/Popup.php.)
+#
+#  2. Ne JAMAIS utiliser --center ici. Sous Xwayland l'ecran X est l'union des dalles
+#     (mesure : 5360x1440 pour 3440x1440 + 1920x1080), donc --center vise la couture entre
+#     les deux ecrans. On calcule le centre par moniteur et on passe --posx/--posy, que
+#     mutter honore (verifie : +1340+617 et +4020+797, au pixel pres).
+#
+#  3. Le corps passe par --text-info sur stdin, jamais par --text. Avec --text (GtkLabel)
+#     GTK negocie la taille sur la hauteur minimale du label : --height est ignore et la
+#     fenetre grandit sans limite. Mesure dans nevermissathing : 64 lignes -> 4338 px de
+#     haut sur un ecran de 1080, bouton de fermeture hors ecran, et avec --on-top une
+#     fenetre impossible a fermer. --text-info scrolle, donc la hauteur est bornee.
+#
+# Usage : mail-popup [--screen all|primary|<NOM>] [--timeout N] [--size WxH] TITRE < corps
+set -uo pipefail
+
+SCREEN=all
+TIMEOUT=0
+W=760
+H=320
+CHECK=0
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --screen)  SCREEN="$2"; shift 2 ;;
+    --timeout) TIMEOUT="$2"; shift 2 ;;
+    --size)    W="${2%x*}"; H="${2#*x}"; shift 2 ;;
+    # Pre-vol pour l appelant : verifie que yad et l affichage X repondent, sans
+    # ouvrir de fenetre ni lire stdin. slack-watch detache la popup et ne peut donc
+    # pas constater son echec apres coup ; il interroge --check avant.
+    --check)   CHECK=1; shift ;;
+    --) shift; break ;;
+    *) break ;;
+  esac
+done
+TITLE="${1:-Nouveau message}"
+
+# Cron n'a ni DISPLAY ni DBUS ; slack-watch les exporte deja, mais ce script doit rester
+# lancable seul.
+export GDK_BACKEND=x11 NO_AT_BRIDGE=1
+export DISPLAY="${DISPLAY:-:0}"
+
+command -v yad >/dev/null || { echo "yad absent" >&2; exit 1; }
+
+# Ligne type de xrandr --listmonitors :
+#   0: +*XWAYLAND2 3440/790x1440/330+0+0  XWAYLAND2
+# On emet TOUJOURS 6 champs, le 1er valant 1/0 selon le primaire : un champ optionnel vide
+# serait mange par `read` (qui collapse les espaces de tete) et decalerait toutes les
+# colonnes, ce qui donne un name="1920" et une geometrie absurde.
+mons=$(xrandr --listmonitors 2>/dev/null | tail -n +2 | awk '
+  {
+    prim = ($2 ~ /\*/) ? 1 : 0
+    name = $NF
+    g = $3                                   # 3440/790x1440/330+0+0
+    gsub(/\/[0-9]+/, "", g)                  # -> 3440x1440+0+0
+    if (match(g, /^[0-9]+x[0-9]+\+[0-9]+\+[0-9]+$/)) {
+      split(g, a, /[x+]/)
+      print prim, name, a[1], a[2], a[3], a[4]
+    }
+  }')
+
+[ -n "$mons" ] || {
+  echo "aucun moniteur detecte (DISPLAY=${DISPLAY:-?} XAUTHORITY=${XAUTHORITY:-<non defini>})" >&2
+  exit 1
+}
+
+[ "$CHECK" = 1 ] && exit 0
+
+# Apres le pre-vol seulement : en mode --check on ne doit pas bloquer sur stdin.
+BODY=$(cat)
+
+targets=""
+while read -r prim name mw mh mx my; do
+  [ -n "${my:-}" ] || continue
+  case "$SCREEN" in
+    all)     targets="$targets$mw $mh $mx $my"$'\n' ;;
+    primary) [ "$prim" = "1" ] && targets="$mw $mh $mx $my" ;;
+    *)       [ "$name" = "$SCREEN" ] && targets="$mw $mh $mx $my" ;;
+  esac
+done <<< "$mons"
+
+# Repli : aucun primaire marque (ca arrive selon l'ordre de branchement), ou nom inconnu.
+[ -n "$targets" ] || targets=$(head -1 <<< "$mons" | awk '{print $3, $4, $5, $6}')
+
+pids=""
+while read -r mw mh mx my; do
+  [ -n "${my:-}" ] || continue
+  px=$(( mx + (mw - W) / 2 ))
+  py=$(( my + (mh - H) / 2 ))
+  printf '%s' "$BODY" | yad \
+    --title="$TITLE" --text="<b>$TITLE</b>" --text-info \
+    --width="$W" --height="$H" --posx="$px" --posy="$py" \
+    --on-top --sticky --skip-taskbar --show-uri --wrap \
+    --fontname="Sans 10" \
+    --button="Vu!gtk-ok:0" --buttons-layout=center \
+    --timeout="$TIMEOUT" --timeout-indicator=bottom \
+    >/dev/null 2>&1 &
+  pids="$pids $!"
+done <<< "$targets"
+
+# Un seul clic doit emporter toutes les fenetres, sinon il faudrait cliquer sur chaque
+# ecran. wait -n rend la main des que la premiere se ferme, on tue les autres.
+if [ -n "$pids" ]; then
+  wait -n $pids 2>/dev/null
+  for p in $pids; do kill "$p" 2>/dev/null; done
+  wait $pids 2>/dev/null
+fi
+exit 0

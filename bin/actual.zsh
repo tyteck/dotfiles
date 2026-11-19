@@ -241,6 +241,18 @@ function sshninaprod() {
     _sshCommander mutualise-prod mutualise-prod-f414 nina-prod actual-prod
 }
 
+function sshecdev() {
+    _sshCommander mutualise-dev mutualise-dev-db42 espace-client-dev actual-dev
+}
+
+function sshecpp() {
+    _sshCommander mutualise-preprod mutualise-preprod-c51e espace-client-preprod actual-preprod
+}
+
+function sshecprod() {
+    _sshCommander mutualise-prod mutualise-prod-f414 espace-client-prod actual-prod
+}
+
 function pushninadev() {
     local branchName=$1
     pushnina dev ${branchName}

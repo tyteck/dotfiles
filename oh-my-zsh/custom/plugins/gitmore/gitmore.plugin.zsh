@@ -288,11 +288,13 @@ function gdiffall() {
     for n in {1..20}; do
         echo ''
     done
-    local nbFiles=$(git ls-files -m | wc -l)
+    local -a filesToDiff=("${(@f)$(git diff HEAD --name-only --relative)}")
+    filesToDiff=(${filesToDiff:#})
+    local nbFiles=${#filesToDiff}
     local index=1
-    for fileToDiff in $(git ls-files -m); do
+    for fileToDiff in $filesToDiff; do
         echo "\n\n\n========= $fileToDiff (${index}/${nbFiles}) =========\n\n"
-        git diff $fileToDiff
+        git diff HEAD -- "$fileToDiff"
         let index=${index}+1
         pause
     done

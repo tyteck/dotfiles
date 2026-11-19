@@ -147,3 +147,23 @@ case ":$PATH:" in
 *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# Claude Code : compte pro (Actualgroup, ~/.claude) ou perso (Claude Pro, ~/.claude-perso)
+_claude_is_perso() {
+    local dir=${PWD:A}
+    case "$dir/" in
+        $HOME/Personal/*) return 0 ;;
+        $HOME/Projects/(perso|freebox|eedomus)/*) return 0 ;;
+        $HOME/dotfiles/*) return 1 ;;
+    esac
+    git -C "$dir" remote get-url origin 2>/dev/null | grep -q 'perso\.github\.com'
+}
+claude() {
+    if [ -n "$CLAUDE_CONFIG_DIR" ]; then command claude "$@"
+    elif _claude_is_perso; then CLAUDE_CONFIG_DIR=$HOME/.claude-perso command claude "$@"
+    else command claude "$@"
+    fi
+}
+gilbert() { CLAUDE_CONFIG_DIR=$HOME/.claude-perso command claude "$@"; }
+gr() { gilbert --resume "$@"; }
+claude-pro() { env -u CLAUDE_CONFIG_DIR claude "$@"; }

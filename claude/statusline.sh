@@ -65,7 +65,11 @@ dir_name=${dir##*/}
 branch=$(git -C "$dir" --no-optional-locks branch --show-current 2>/dev/null)
 
 # --- Ligne 1 : ou je suis -----------------------------------------------------
-line1="${C_DIM}📁${C_RESET} ${C_BOLD}${dir_name}${C_RESET}"
+case "${CLAUDE_CONFIG_DIR%/}" in
+  */.claude-perso) account=$'\033[95m🏠 perso\033[0m' ;;
+  *)               account=$'\033[96m💼 pro\033[0m' ;;
+esac
+line1="${account}  ${C_DIM}📁${C_RESET} ${C_BOLD}${dir_name}${C_RESET}"
 [ -n "$branch" ] && line1+=" ${C_DIM}⎇ ${branch}${C_RESET}"
 line1+="  ${C_DIM}${model}${C_RESET}"
 if [ -n "$ctx" ]; then
